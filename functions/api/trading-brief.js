@@ -6,17 +6,17 @@ export async function onRequest(context) {
     // Try to get latest trading brief from KV
     const latestBrief = await kv.get('latest_brief', 'json');
     
-    // If data is fresh (less than 1 hour old), return it
+    // If data is fresh (less than 2 minutes old), return it
     if (latestBrief && latestBrief.generated) {
       const generatedTime = new Date(latestBrief.generated).getTime();
-      const oneHourAgo = Date.now() - (60 * 60 * 1000);
+      const twoMinutesAgo = Date.now() - (2 * 60 * 1000);
       
-      if (generatedTime > oneHourAgo) {
+      if (generatedTime > twoMinutesAgo) {
         return new Response(JSON.stringify(latestBrief, null, 2), {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            'Cache-Control': 'max-age=300'
+            'Cache-Control': 'max-age=30'
           }
         });
       }
@@ -32,7 +32,7 @@ export async function onRequest(context) {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'max-age=300'
+          'Cache-Control': 'max-age=30'
         }
       });
     } catch (fetchError) {
@@ -44,7 +44,7 @@ export async function onRequest(context) {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            'Cache-Control': 'max-age=60'
+            'Cache-Control': 'max-age=15'
           }
         });
       }
@@ -54,7 +54,7 @@ export async function onRequest(context) {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'max-age=60'
+          'Cache-Control': 'max-age=15'
         }
       });
     }
@@ -133,7 +133,11 @@ async function fetchRealTradingData() {
       { symbol: "CL", name: "Crude Oil", price: 86.75, change: -0.5, weather_risk: 7 },
       { symbol: "GC", name: "Gold", price: 2475.50, change: 0.3, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 33.25, change: 0.8, weather_risk: 4 },
-      { symbol: "PL", name: "Platinum", price: 1075.00, change: 0.2, weather_risk: 6 }
+      { symbol: "PL", name: "Platinum", price: 1075.00, change: 0.2, weather_risk: 6 },
+      { symbol: "ES", name: "S&P 500 Futures", price: 7140.00, change: 0.4, weather_risk: 5 },
+      { symbol: "NQ", name: "NASDAQ Futures", price: 24500.00, change: 0.6, weather_risk: 5 },
+      { symbol: "YM", name: "Dow Futures", price: 39500.00, change: 0.3, weather_risk: 5 },
+      { symbol: "RTY", name: "Russell 2000 Futures", price: 2100.00, change: 0.2, weather_risk: 5 }
     ],
     equities: [
       { symbol: "AAPL", price: 218.25, change: 0.9, iv: 28 },
@@ -204,7 +208,11 @@ function getMockData() {
       { symbol: "CL", name: "Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
       { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
-      { symbol: "PL", name: "Platinum", price: 1050.00, change: 0.3, weather_risk: 6 }
+      { symbol: "PL", name: "Platinum", price: 1050.00, change: 0.3, weather_risk: 6 },
+      { symbol: "ES", name: "S&P 500 Futures", price: 5255.00, change: 0.4, weather_risk: 5 },
+      { symbol: "NQ", name: "NASDAQ Futures", price: 18380.00, change: 0.6, weather_risk: 5 },
+      { symbol: "YM", name: "Dow Futures", price: 39500.00, change: 0.3, weather_risk: 5 },
+      { symbol: "RTY", name: "Russell 2000 Futures", price: 2100.00, change: 0.2, weather_risk: 5 }
     ],
     equities: [
       { symbol: "AAPL", price: 215.50, change: 0.75, iv: 28 },
