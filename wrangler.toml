@@ -1,6 +1,7 @@
 name = "mc-ruralhaven"
 compatibility_date = "2024-04-01"
 pages_build_output_dir = "./public"
+main = "functions/index.js"
 
 [[kv_namespaces]]
 binding = "TRADING_KV"
@@ -8,13 +9,3 @@ id = "7897be3dd02240bcb61bcccc33ad6ec1"
 
 [vars]
 API_KEY = "1ea53bef7ef3111c599fbbc0b853a25253ff057178cca0bc16015805b82ee34b"
-
-[env.production]
-zone_id = "fd722b9209b4036080154dfc702d70b1"
-routes = [
-  { pattern = "mc.ruralhaven.co", custom_domain = true }
-]
-
-[site]
-bucket = "./public"
-entry-point = "./functions"
