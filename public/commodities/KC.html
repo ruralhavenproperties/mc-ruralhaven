@@ -524,6 +524,35 @@
             const premium = 1250; // Conservative premium estimate
             const maxLoss = strike * 375; // Max loss if exercised
             
+            // Weighted factor analysis for Coffee (KC) based on historical influence
+            const factorWeights = {
+                "Weather": 0.30,      // Frost, drought significantly affect supply
+                "Geopolitical": 0.25,  // Brazil elections, trade policies
+                "Supply/Demand": 0.20, // Inventory levels, global consumption
+                "News Sentiment": 0.10, // Market sentiment, speculation
+                "Technical Analysis": 0.10, // Price trends, support/resistance
+                "Government Policy": 0.05  // Tariffs, subsidies (less impact)
+            };
+            
+            const factors = [
+                { name: "Weather", score: 8, reason: "Brazil frost season approaching" },
+                { name: "News Sentiment", score: 6, reason: "Election uncertainty in Brazil" },
+                { name: "Supply/Demand", score: 4, reason: "Global inventory builds" },
+                { name: "Geopolitical", score: 9, reason: "Brazil election could disrupt exports" },
+                { name: "Government Policy", score: 3, reason: "No tariff changes expected" },
+                { name: "Technical Analysis", score: 7, reason: "Holding above support, bullish attempt" }
+            ];
+            
+            // Calculate weighted composite score (1-10)
+            let weightedSum = 0;
+            factors.forEach(factor => {
+                weightedSum += factor.score * (factorWeights[factor.name] || 0);
+            });
+            const composite_score = Math.round(weightedSum * 10) / 10; // Round to 1 decimal
+            
+            // Determine trading bias based on composite score
+            const trading_bias = composite_score >= 7 ? "Bearish" : composite_score >= 4 ? "Neutral" : "Bullish";
+            
             return {
                 date: new Date().toISOString().split('T')[0],
                 current_price: currentPrice,
@@ -531,16 +560,10 @@
                 estimated_premium: premium,
                 delta: 0.08,
                 dte: 35,
-                composite_score: 7.8,
-                trading_bias: "Bearish",
-                factors: [
-                    { name: "Weather", score: 8, reason: "Brazil frost season approaching" },
-                    { name: "News Sentiment", score: 6, reason: "Election uncertainty in Brazil" },
-                    { name: "Supply/Demand", score: 4, reason: "Global inventory builds" },
-                    { name: "Geopolitical", score: 9, reason: "Brazil election could disrupt exports" },
-                    { name: "Government Policy", score: 3, reason: "No tariff changes expected" },
-                    { name: "Technical Analysis", score: 7, reason: "Holding above support, bullish attempt" }
-                ],
+                composite_score: composite_score,
+                trading_bias: trading_bias,
+                factors: factors,
+                factor_weights: factorWeights, // Include for transparency
                 risk_metrics: {
                     max_loss: maxLoss.toFixed(0),
                     probability_otm: "83.5%",

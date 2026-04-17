@@ -524,6 +524,42 @@
             const premium = 2200; // Conservative premium estimate
             const maxLoss = strike * 50; // Max loss if exercised ($50 per $1)
             
+            // Weighted factor analysis for Silver (SI) based on historical influence
+            const factorWeights = {
+                "Industrial Demand": 0.30, // Solar panels, electronics, green energy
+                "Gold Ratio": 0.20,         // Gold/silver ratio mean reversion
+                "Fed Policy": 0.20,         // Interest rates, monetary policy
+                "Inflation Hedge": 0.15,    // Inflation protection demand
+                "Supply": 0.10,             // Mine production, scrap recycling
+                "Technical": 0.05           // Price trends, support/resistance
+            };
+            
+            const factors = [
+                { name: "Industrial Demand", score: 7, reason: "Strong solar panel, electronics demand" },
+                { name: "Gold Ratio", score: 5, reason: "Gold/silver ratio at historical highs" },
+                { name: "Fed Policy", score: 6, reason: "Interest rate uncertainty" },
+                { name: "Inflation Hedge", score: 4, reason: "Moderate inflation hedge demand" },
+                { name: "Technical", score: 5, reason: "Range-bound $30-$35" },
+                { name: "Supply", score: 3, reason: "Adequate mine supply" }
+            ];
+            
+            // Calculate weighted composite score (1-10)
+            let weightedSum = 0;
+            factors.forEach(factor => {
+                weightedSum += factor.score * (factorWeights[factor.name] || 0);
+            });
+            const composite_score = Math.round(weightedSum * 10) / 10; // Round to 1 decimal
+            
+            // Determine trading bias based on composite score
+            let trading_bias;
+            if (composite_score >= 7) {
+                trading_bias = "Bearish";
+            } else if (composite_score >= 4) {
+                trading_bias = "Neutral";
+            } else {
+                trading_bias = "Bullish";
+            }
+            
             return {
                 date: new Date().toISOString().split('T')[0],
                 current_price: currentPrice,
@@ -531,16 +567,10 @@
                 estimated_premium: premium,
                 delta: 0.08,
                 dte: 35,
-                composite_score: 6.2,
-                trading_bias: "Neutral-Slightly Bullish",
-                factors: [
-                    { name: "Industrial Demand", score: 7, reason: "Strong solar panel, electronics demand" },
-                    { name: "Gold Ratio", score: 5, reason: "Gold/silver ratio at historical highs" },
-                    { name: "Fed Policy", score: 6, reason: "Interest rate uncertainty" },
-                    { name: "Inflation Hedge", score: 4, reason: "Moderate inflation hedge demand" },
-                    { name: "Technical", score: 5, reason: "Range-bound $30-$35" },
-                    { name: "Supply", score: 3, reason: "Adequate mine supply" }
-                ],
+                composite_score: composite_score,
+                trading_bias: trading_bias,
+                factors: factors,
+                factor_weights: factorWeights, // Include for transparency
                 risk_metrics: {
                     max_loss: maxLoss.toFixed(0),
                     probability_otm: "84.7%",

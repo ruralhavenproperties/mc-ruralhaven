@@ -524,6 +524,42 @@
             const premium = 2800; // Conservative premium estimate
             const maxLoss = strike * 50; // Max loss if exercised ($50 per $1)
             
+            // Weighted factor analysis for Platinum (PL) based on historical influence
+            const factorWeights = {
+                "South Africa": 0.30,      // Mining production, power constraints, labor issues
+                "Supply Deficit": 0.25,     // Structural supply-demand imbalance
+                "Auto Demand": 0.20,        // Catalytic converter demand, EV transition impact
+                "Gold Ratio": 0.10,         // Platinum/gold ratio mean reversion
+                "Investment": 0.10,         // ETF holdings, investor sentiment
+                "Technical": 0.05           // Price trends, support/resistance
+            };
+            
+            const factors = [
+                { name: "Auto Demand", score: 6, reason: "Catalytic converter demand stable" },
+                { name: "Supply Deficit", score: 7, reason: "Persistent structural deficit" },
+                { name: "Investment", score: 4, reason: "Limited investment interest" },
+                { name: "Gold Ratio", score: 5, reason: "Platinum discount to gold" },
+                { name: "Technical", score: 5, reason: "Range-bound $1000-$1100" },
+                { name: "South Africa", score: 8, reason: "Mining issues, power constraints" }
+            ];
+            
+            // Calculate weighted composite score (1-10)
+            let weightedSum = 0;
+            factors.forEach(factor => {
+                weightedSum += factor.score * (factorWeights[factor.name] || 0);
+            });
+            const composite_score = Math.round(weightedSum * 10) / 10; // Round to 1 decimal
+            
+            // Determine trading bias based on composite score
+            let trading_bias;
+            if (composite_score >= 7) {
+                trading_bias = "Bearish";
+            } else if (composite_score >= 4) {
+                trading_bias = "Neutral";
+            } else {
+                trading_bias = "Bullish";
+            }
+            
             return {
                 date: new Date().toISOString().split('T')[0],
                 current_price: currentPrice,
@@ -531,16 +567,10 @@
                 estimated_premium: premium,
                 delta: 0.08,
                 dte: 35,
-                composite_score: 5.5,
-                trading_bias: "Neutral",
-                factors: [
-                    { name: "Auto Demand", score: 6, reason: "Catalytic converter demand stable" },
-                    { name: "Supply Deficit", score: 7, reason: "Persistent structural deficit" },
-                    { name: "Investment", score: 4, reason: "Limited investment interest" },
-                    { name: "Gold Ratio", score: 5, reason: "Platinum discount to gold" },
-                    { name: "Technical", score: 5, reason: "Range-bound $1000-$1100" },
-                    { name: "South Africa", score: 8, reason: "Mining issues, power constraints" }
-                ],
+                composite_score: composite_score,
+                trading_bias: trading_bias,
+                factors: factors,
+                factor_weights: factorWeights, // Include for transparency
                 risk_metrics: {
                     max_loss: maxLoss.toFixed(0),
                     probability_otm: "86.3%",

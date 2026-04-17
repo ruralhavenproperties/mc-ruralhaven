@@ -524,6 +524,42 @@
             const premium = 2200; // Conservative premium estimate
             const maxLoss = strike * 1000; // Max loss if exercised ($1,000 per $1)
             
+            // Weighted factor analysis for Crude Oil (CL) based on historical influence
+            const factorWeights = {
+                "Geopolitical": 0.35,      // Middle East tensions, wars, sanctions
+                "Supply/Demand": 0.25,      // OPEC production, US shale, global demand
+                "OPEC Policy": 0.20,        // Production cuts, quota decisions
+                "USD Strength": 0.10,       // Dollar index correlation
+                "Economic Growth": 0.05,    // Global GDP growth forecasts
+                "Technical Analysis": 0.05  // Price trends, support/resistance
+            };
+            
+            const factors = [
+                { name: "Geopolitical", score: 8, reason: "Middle East tensions, OPEC+ uncertainty" },
+                { name: "Supply/Demand", score: 5, reason: "Balanced inventories, modest demand growth" },
+                { name: "USD Strength", score: 7, reason: "Strong dollar pressures commodities" },
+                { name: "OPEC Policy", score: 6, reason: "Production cuts supporting but may ease" },
+                { name: "Economic Growth", score: 4, reason: "Moderate global growth outlook" },
+                { name: "Technical Analysis", score: 5, reason: "Range-bound between $80-$90" }
+            ];
+            
+            // Calculate weighted composite score (1-10)
+            let weightedSum = 0;
+            factors.forEach(factor => {
+                weightedSum += factor.score * (factorWeights[factor.name] || 0);
+            });
+            const composite_score = Math.round(weightedSum * 10) / 10; // Round to 1 decimal
+            
+            // Determine trading bias based on composite score
+            let trading_bias;
+            if (composite_score >= 7) {
+                trading_bias = "Bearish";
+            } else if (composite_score >= 4) {
+                trading_bias = "Neutral";
+            } else {
+                trading_bias = "Bullish";
+            }
+            
             return {
                 date: new Date().toISOString().split('T')[0],
                 current_price: currentPrice,
@@ -531,16 +567,10 @@
                 estimated_premium: premium,
                 delta: 0.08,
                 dte: 35,
-                composite_score: 6.5,
-                trading_bias: "Neutral-Slightly Bearish",
-                factors: [
-                    { name: "Geopolitical", score: 8, reason: "Middle East tensions, OPEC+ uncertainty" },
-                    { name: "Supply/Demand", score: 5, reason: "Balanced inventories, modest demand growth" },
-                    { name: "USD Strength", score: 7, reason: "Strong dollar pressures commodities" },
-                    { name: "OPEC Policy", score: 6, reason: "Production cuts supporting but may ease" },
-                    { name: "Economic Growth", score: 4, reason: "Moderate global growth outlook" },
-                    { name: "Technical Analysis", score: 5, reason: "Range-bound between $80-$90" }
-                ],
+                composite_score: composite_score,
+                trading_bias: trading_bias,
+                factors: factors,
+                factor_weights: factorWeights, // Include for transparency
                 risk_metrics: {
                     max_loss: maxLoss.toFixed(0),
                     probability_otm: "84.2%",

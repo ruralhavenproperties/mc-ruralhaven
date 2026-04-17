@@ -524,6 +524,42 @@
             const premium = 3200; // Conservative premium estimate
             const maxLoss = strike * 100; // Max loss if exercised ($100 per $1)
             
+            // Weighted factor analysis for Gold (GC) based on historical influence
+            const factorWeights = {
+                "Fed Policy": 0.30,       // Interest rates, monetary policy
+                "Inflation": 0.25,         // CPI, PCE, real yields
+                "USD Strength": 0.20,      // Dollar index inverse correlation
+                "Geopolitical": 0.10,      // Safe-haven demand during crises
+                "Central Banks": 0.10,     // Reserve buying/selling
+                "Technical": 0.05          // Price trends, support/resistance
+            };
+            
+            const factors = [
+                { name: "Fed Policy", score: 7, reason: "Interest rate uncertainty, hawkish Fed talk" },
+                { name: "Inflation", score: 6, reason: "Persistent inflation supports gold" },
+                { name: "USD Strength", score: 5, reason: "Dollar strength pressures gold" },
+                { name: "Geopolitical", score: 4, reason: "Reduced safe-haven demand" },
+                { name: "Technical", score: 5, reason: "Range-bound $2400-$2500" },
+                { name: "Central Banks", score: 6, reason: "Continued central bank buying" }
+            ];
+            
+            // Calculate weighted composite score (1-10)
+            let weightedSum = 0;
+            factors.forEach(factor => {
+                weightedSum += factor.score * (factorWeights[factor.name] || 0);
+            });
+            const composite_score = Math.round(weightedSum * 10) / 10; // Round to 1 decimal
+            
+            // Determine trading bias based on composite score
+            let trading_bias;
+            if (composite_score >= 7) {
+                trading_bias = "Bearish";
+            } else if (composite_score >= 4) {
+                trading_bias = "Neutral";
+            } else {
+                trading_bias = "Bullish";
+            }
+            
             return {
                 date: new Date().toISOString().split('T')[0],
                 current_price: currentPrice,
@@ -531,16 +567,10 @@
                 estimated_premium: premium,
                 delta: 0.08,
                 dte: 35,
-                composite_score: 5.8,
-                trading_bias: "Neutral",
-                factors: [
-                    { name: "Fed Policy", score: 7, reason: "Interest rate uncertainty, hawkish Fed talk" },
-                    { name: "Inflation", score: 6, reason: "Persistent inflation supports gold" },
-                    { name: "USD Strength", score: 5, reason: "Dollar strength pressures gold" },
-                    { name: "Geopolitical", score: 4, reason: "Reduced safe-haven demand" },
-                    { name: "Technical", score: 5, reason: "Range-bound $2400-$2500" },
-                    { name: "Central Banks", score: 6, reason: "Continued central bank buying" }
-                ],
+                composite_score: composite_score,
+                trading_bias: trading_bias,
+                factors: factors,
+                factor_weights: factorWeights, // Include for transparency
                 risk_metrics: {
                     max_loss: maxLoss.toFixed(0),
                     probability_otm: "85.1%",
