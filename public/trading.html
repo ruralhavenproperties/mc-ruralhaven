@@ -405,7 +405,11 @@
                     { symbol: "SB", name: "Sugar", price: 22.45, change: 0.5, weather_risk: 4 },
                     { symbol: "ZC", name: "Corn", price: 485.75, change: 0.3, weather_risk: 3 },
                     { symbol: "ZS", name: "Soybeans", price: 1220.50, change: -0.8, weather_risk: 5 },
-                    { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 }
+                    { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 },
+                    { symbol: "CL", name: "Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
+                    { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
+                    { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
+                    { symbol: "PL", name: "Platinum", price: 1050.00, change: 0.3, weather_risk: 6 }
                 ],
                 equities: [
                     { symbol: "AAPL", price: 215.50, change: 0.75, iv: 28 },
@@ -422,15 +426,28 @@
                         premium: 1683,
                         probability: 82.5,
                         description: "Coffee PUT - Weather risk premium"
+                    },
+                    {
+                        symbol: "GC",
+                        type: "PUT",
+                        strike: 2205.00,
+                        premium: 3200,
+                        probability: 85.1,
+                        description: "Gold PUT - Fed policy hedge"
                     }
                 ],
                 weather_risk: [
                     { commodity: "Coffee (KC)", risk: 8, reason: "Brazil frost concerns" },
-                    { commodity: "Orange Juice (OJ)", risk: 9, reason: "Florida drought" }
+                    { commodity: "Orange Juice (OJ)", risk: 9, reason: "Florida drought" },
+                    { commodity: "Crude Oil (CL)", risk: 7, reason: "Middle East tensions, OPEC+ uncertainty" },
+                    { commodity: "Gold (GC)", risk: 5, reason: "Fed policy uncertainty, inflation data" },
+                    { commodity: "Platinum (PL)", risk: 6, reason: "South African supply constraints" }
                 ],
                 iv_opportunities: [
                     { symbol: "OJ", iv: 35, recommendation: "Premium selling" },
-                    { symbol: "KC", iv: 30, recommendation: "Weather plays" }
+                    { symbol: "KC", iv: 30, recommendation: "Weather plays" },
+                    { symbol: "CL", iv: 32, recommendation: "Geopolitical volatility" },
+                    { symbol: "GC", iv: 18, recommendation: "Fed policy plays" }
                 ]
             };
         }
