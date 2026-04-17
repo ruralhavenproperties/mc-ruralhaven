@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Calculator - Rural Haven</title>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #475569;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--primary);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+        
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        /* Card */
+        .card {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Results */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .result-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .result-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.primary {
+            background: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .grid, .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Property Calculator</h1>
+            <p>Analyze property deals, calculate returns, and manage your investment pipeline. <span class="badge">Supabase Powered</span></p>
+            <p style="color: #94a3b8; font-size: 1rem;">Full underwriting engine with deal tracking and pipeline management</p>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="/" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/trading" class="nav-btn">
+                <i class="fas fa-chart-line"></i> Trading
+            </a>
+            <a href="/commodities/KC" class="nav-btn">
+                <i class="fas fa-coffee"></i> Commodities
+            </a>
+            <a href="https://calculator.ruralhaven.co" class="nav-btn primary" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Original Calculator
+            </a>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Calculator Form -->
+            <div class="card">
+                <h3><i class="fas fa-edit"></i> Deal Analysis</h3>
+                <div class="form-group">
+                    <label class="form-label">Purchase Price ($)</label>
+                    <input type="number" class="form-input" id="purchase-price" value="150000" min="0" step="1000">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">After Repair Value (ARV) ($)</label>
+                    <input type="number" class="form-input" id="arv" value="225000" min="0" step="1000">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Rehab Costs ($)</label>
+                    <input type="number" class="form-input" id="rehab" value="35000" min="0" step="1000">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Closing Costs ($)</label>
+                    <input type="number" class="form-input" id="closing" value="5000" min="0" step="1000">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Holding Period (Months)</label>
+                    <input type="number" class="form-input" id="holding" value="6" min="1" step="1">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Monthly Rent ($)</label>
+                    <input type="number" class="form-input" id="rent" value="1800" min="0" step="100">
+                </div>
+                
+                <button class="btn" onclick="calculateDeal()">
+                    <i class="fas fa-calculator"></i> Calculate Deal
+                </button>
+            </div>
+            
+            <!-- Results -->
+            <div class="card">
+                <h3><i class="fas fa-chart-bar"></i> Deal Metrics</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label">Total Investment</div>
+                        <div class="result-value" id="total-investment">$190,000</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Profit Potential</div>
+                        <div class="result-value" id="profit">$35,000</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">ROI %</div>
+                        <div class="result-value" id="roi">18.4%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Cash on Cash</div>
+                        <div class="result-value" id="coc">22.1%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Monthly Cash Flow</div>
+                        <div class="result-value" id="cash-flow">$800</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">BRRRR Score</div>
+                        <div class="result-value" id="brrrr">7.8/10</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px; padding: 20px; background: rgba(30, 41, 59, 0.5); border-radius: 10px;">
+                    <h4 style="color: #cbd5e1; margin-bottom: 10px;"><i class="fasfa-lightbulb"></i> Deal Assessment</h4>
+                    <p id="deal-assessment" style="color: #94a3b8;">Strong deal with good profit margin and cash flow. Meets BRRRR criteria for refinance potential.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pipeline -->
+        <div class="card">
+            <h3><i class="fas fa-project-diagram"></i> Deal Pipeline</h3>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Track properties through acquisition, rehab, rent, refinance cycle.</p>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: rgba(30, 41, 59, 0.5);">
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Property</th>
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Stage</th>
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Investment</th>
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Profit</th>
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">ROI</th>
+                            <th style="padding: 12px; text-align: left; color: #cbd5e1;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <td style="padding: 12px;">217 S Lowry St</td>
+                            <td style="padding: 12px;"><span style="background: #3b82f6; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">Analysis</span></td>
+                            <td style="padding: 12px;">$190,000</td>
+                            <td style="padding: 12px; color: #10b981;">$35,000</td>
+                            <td style="padding: 12px;">18.4%</td>
+                            <td style="padding: 12px;">
+                                <button style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Analyze</button>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <td style="padding: 12px;">Evansville Property</td>
+                            <td style="padding: 12px;"><span style="background: #f59e0b; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">Rehab</span></td>
+                            <td style="padding: 12px;">$165,000</td>
+                            <td style="padding: 12px; color: #10b981;">$28,500</td>
+                            <td style="padding: 12px;">17.3%</td>
+                            <td style="padding: 12px;">
+                                <button style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Update</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">Florida Teammate</td>
+                            <td style="padding: 12px;"><span style="background: #10b981; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">Rented</span></td>
+                            <td style="padding: 12px;">$210,000</td>
+                            <td style="padding: 12px; color: #10b981;">$42,000</td>
+                            <td style="padding: 12px;">20.0%</td>
+                            <td style="padding: 12px;">
+                                <button style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Refinance</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Integration Note -->
+        <div class="card" style="border-left: 5px solid #f59e0b;">
+            <h3><i class="fas fa-sync-alt"></i> Integration Status</h3>
+            <p style="color: #94a3b8; margin-bottom: 15px;">This calculator will be fully integrated with the original Supabase backend. Currently displaying sample data.</p>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="padding: 10px 15px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; flex: 1;">
+                    <div style="color: #cbd5e1; font-size: 0.9rem;">Supabase Connection</div>
+                    <div style="color: #f59e0b; font-weight: 600;"><i class="fas fa-sync-alt"></i> Pending Migration</div>
+                </div>
+                <div style="padding: 10px 15px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; flex: 1;">
+                    <div style="color: #cbd5e1; font-size: 0.9rem;">Live Data</div>
+                    <div style="color: #ef4444; font-weight: 600;"><i class="fas fa-unlink"></i> Sample Data Only</div>
+                </div>
+                <a href="https://calculator.ruralhaven.co" class="btn" target="_blank" style="flex-shrink: 0;">
+                    <i class="fas fa-external-link-alt"></i> Use Original
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Calculate deal function
+        function calculateDeal() {
+            const purchase = parseFloat(document.getElementById('purchase-price').value) || 0;
+            const arv = parseFloat(document.getElementById('arv').value) || 0;
+            const rehab = parseFloat(document.getElementById('rehab').value) || 0;
+            const closing = parseFloat(document.getElementById('closing').value) || 0;
+            const holding = parseFloat(document.getElementById('holding').value) || 1;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            
+            // Calculations
+            const totalInvestment = purchase + rehab + closing;
+            const profit = arv - totalInvestment;
+            const roi = ((profit / totalInvestment) * 100).toFixed(1);
+            const coc = ((profit / totalInvestment) * 100).toFixed(1); // Simplified
+            const cashFlow = rent - (totalInvestment * 0.01 / 12); // Simplified
+            
+            // BRRRR score (simplified)
+            const brrrrScore = Math.min(10, ((arv / totalInvestment) * 8)).toFixed(1);
+            
+            // Update UI
+            document.getElementById('total-investment').textContent = '$' + totalInvestment.toLocaleString();
+            document.getElementById('profit').textContent = '$' + profit.toLocaleString();
+            document.getElementById('roi').textContent = roi + '%';
+            document.getElementById('coc').textContent = coc + '%';
+            document.getElementById('cash-flow').textContent = '$' + cashFlow.toLocaleString();
+            document.getElementById('brrrr').textContent = brrrrScore + '/10';
+            
+            // Deal assessment
+            let assessment = '';
+            if (profit > 50000) {
+                assessment = 'Excellent deal with high profit margin. Strong candidate for BRRRR strategy.';
+            } else if (profit > 20000) {
+                assessment = 'Good deal with solid profit. Meets investment criteria.';
+            } else {
+                assessment = 'Marginal deal. Review numbers or negotiate better terms.';
+            }
+            document.getElementById('deal-assessment').textContent = assessment;
+        }
+        
+        // Initialize with default values
+        calculateDeal();
+    </script>
+</body>
+</html>
