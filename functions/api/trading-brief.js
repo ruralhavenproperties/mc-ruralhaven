@@ -127,10 +127,13 @@ async function fetchRealTradingData() {
       { symbol: "SB", name: "Sugar", price: 23.10, change: 0.3, weather_risk: 4 },
       { symbol: "ZC", name: "Corn", price: 490.25, change: 0.1, weather_risk: 3 },
       { symbol: "ZS", name: "Soybeans", price: 1235.75, change: -0.5, weather_risk: 5 },
-      { symbol: "OJ", name: "Orange Juice", price: 325.40, change: 1.8, weather_risk: 9 }
+      { symbol: "OJ", name: "Orange Juice", price: 325.40, change: 1.8, weather_risk: 9 },
+      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
+      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 }
     ],
     futures: [
-      { symbol: "CL", name: "Crude Oil", price: 86.75, change: -0.5, weather_risk: 7 },
+      { symbol: "CL", name: "WTI Crude Oil", price: 86.75, change: -0.5, weather_risk: 7 },
+      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 },
       { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
       { symbol: "GC", name: "Gold", price: 2475.50, change: 0.3, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 33.25, change: 0.8, weather_risk: 4 },
@@ -203,10 +206,13 @@ function getMockData() {
       { symbol: "SB", name: "Sugar", price: 22.45, change: 0.5, weather_risk: 4 },
       { symbol: "ZC", name: "Corn", price: 485.75, change: 0.3, weather_risk: 3 },
       { symbol: "ZS", name: "Soybeans", price: 1220.50, change: -0.8, weather_risk: 5 },
-      { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 }
+      { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 },
+      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
+      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 }
     ],
     futures: [
-      { symbol: "CL", name: "Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
+      { symbol: "CL", name: "WTI Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
+      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 },
       { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
       { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
