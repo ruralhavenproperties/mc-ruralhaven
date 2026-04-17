@@ -1,0 +1,20 @@
+name = "mc-ruralhaven"
+compatibility_date = "2024-04-01"
+pages_build_output_dir = "./public"
+
+[[kv_namespaces]]
+binding = "TRADING_KV"
+id = "trading_kv_id"  # You'll need to create this in Cloudflare dashboard
+
+[vars]
+API_KEY = "your-secure-api-key-here"  # Change this to a secure key
+
+[env.production]
+zone_id = "your-zone-id-here"  # Your Cloudflare zone ID
+routes = [
+  { pattern = "mc.ruralhaven.co", custom_domain = true }
+]
+
+[site]
+bucket = "./public"
+entry-point = "./functions"

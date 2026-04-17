@@ -1,0 +1,34 @@
+# Secrets (create local copies)
+wrangler.local.toml
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.python-version
+
+# Environment
+.env.development
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary
+tmp/
+temp/

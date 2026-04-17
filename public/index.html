@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Rural Haven</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #475569;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Status */
+        .status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .nav-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-btn.primary {
+            background: var(--primary);
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        /* Links */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .link:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .link i {
+            color: var(--primary);
+            width: 20px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-satellite-dish"></i> Mission Control</h1>
+            <p>Dynamic trading dashboard with real-time updates, weather integration, and automated briefs</p>
+            <div class="status">
+                <i class="fas fa-check-circle"></i> Cloudflare Powered • Real-time Updates
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="/trading" class="nav-btn primary">
+                <i class="fas fa-chart-line"></i> Trading Dashboard
+            </a>
+            <a href="/mission-control" class="nav-btn">
+                <i class="fas fa-rocket"></i> Mission Control
+            </a>
+            <a href="/weather" class="nav-btn">
+                <i class="fas fa-cloud-sun-rain"></i> Weather Research
+            </a>
+            <a href="/api/trading-brief" class="nav-btn">
+                <i class="fas fa-code"></i> API Access
+            </a>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Trading System -->
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> Trading Systems</h3>
+                <p>Complete trading dashboard with daily briefs, market analysis, and weather-aware commodity trading.</p>
+                <div class="links">
+                    <a href="/trading" class="link">
+                        <i class="fas fa-tachometer-alt"></i> Trading Dashboard
+                    </a>
+                    <a href="/api/trading-brief" class="link">
+                        <i class="fas fa-code"></i> JSON API
+                    </a>
+                    <a href="/weather/trading" class="link">
+                        <i class="fas fa-cloud-sun-rain"></i> Weather Integration
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mission Control -->
+            <div class="card">
+                <h3><i class="fas fa-rocket"></i> Mission Control</h3>
+                <p>Full mission control interface with system monitoring, task management, and agent oversight.</p>
+                <div class="links">
+                    <a href="/mission-control" class="link">
+                        <i class="fas fa-satellite-dish"></i> Control Panel
+                    </a>
+                    <a href="/mission-control/status" class="link">
+                        <i class="fas fa-heartbeat"></i> System Status
+                    </a>
+                    <a href="/mission-control/tasks" class="link">
+                        <i class="fas fa-tasks"></i> Task Manager
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Automation -->
+            <div class="card">
+                <h3><i class="fas fa-robot"></i> Automation</h3>
+                <p>Automated daily briefs, market scans, weather analysis, and real-time updates.</p>
+                <div class="links">
+                    <a href="/automation" class="link">
+                        <i class="fas fa-cogs"></i> Automation Dashboard
+                    </a>
+                    <a href="/automation/schedule" class="link">
+                        <i class="fas fa-clock"></i> Schedule
+                    </a>
+                    <a href="/automation/logs" class="link">
+                        <i class="fas fa-file-alt"></i> Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="card">
+            <h3><i class="fas fa-bolt"></i> System Status</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div>
+                    <h4 style="color: var(--success); margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Cloudflare Pages
+                    </h4>
+                    <p style="color: #cbd5e1;">✅ Online & Serving</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--success); margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Workers API
+                    </h4>
+                    <p style="color: #cbd5e1;">✅ Ready for Data</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--warning); margin-bottom: 10px;">
+                        <i class="fas fa-sync-alt"></i> VPS Integration
+                    </h4>
+                    <p style="color: #cbd5e1;">🔄 Pending Setup</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--success); margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> KV Storage
+                    </h4>
+                    <p style="color: #cbd5e1;">✅ Available</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><i class="fas fa-satellite-dish"></i> Mission Control • Powered by Cloudflare</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                Real-time trading dashboard • Dynamic updates • Free hosting
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Fetch system status from API
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/api/status');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('System status:', data);
+                }
+            } catch (error) {
+                console.log('API not ready yet - will auto-configure');
+            }
+        }
+        
+        // Load on start
+        window.addEventListener('load', loadSystemStatus);
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadSystemStatus, 30000);
+    </script>
+</body>
+</html>
