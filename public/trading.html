@@ -317,7 +317,7 @@
                 </div>
             </div>
             
-            <!-- Grid: Commodities & Equities -->
+            <!-- Grid: Commodities, Futures & Equities -->
             <div class="grid">
                 <!-- Commodities -->
                 <div class="card">
@@ -332,6 +332,24 @@
                             </tr>
                         </thead>
                         <tbody id="commodities-table">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Futures -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Futures</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Price</th>
+                                <th>Change</th>
+                                <th>Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody id="futures-table">
                             <!-- Filled by JavaScript -->
                         </tbody>
                     </table>
@@ -386,6 +404,7 @@
         const marketStatsEl = document.getElementById('market-stats');
         const topTradesEl = document.getElementById('top-trades');
         const commoditiesTableEl = document.getElementById('commodities-table');
+        const futuresTableEl = document.getElementById('futures-table');
         const equitiesTableEl = document.getElementById('equities-table');
         const weatherRiskEl = document.getElementById('weather-risk');
         const ivOpportunitiesEl = document.getElementById('iv-opportunities');
@@ -408,7 +427,9 @@
                     { symbol: "SB", name: "Sugar", price: 22.45, change: 0.5, weather_risk: 4 },
                     { symbol: "ZC", name: "Corn", price: 485.75, change: 0.3, weather_risk: 3 },
                     { symbol: "ZS", name: "Soybeans", price: 1220.50, change: -0.8, weather_risk: 5 },
-                    { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 },
+                    { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 }
+                ],
+                futures: [
                     { symbol: "CL", name: "Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
                     { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
                     { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
@@ -545,6 +566,26 @@
                     `).join('');
                 } else {
                     commoditiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No commodity data available.</td></tr>';
+                }
+                
+                // Futures Table
+                if (data.futures && data.futures.length > 0) {
+                    futuresTableEl.innerHTML = data.futures.map(future => `
+                        <tr>
+                            <td><strong>${future.symbol}</strong></td>
+                            <td>$${future.price}</td>
+                            <td class="${future.change >= 0 ? 'trend-up' : 'trend-down'}">
+                                ${future.change >= 0 ? '+' : ''}${future.change}%
+                            </td>
+                            <td>
+                                <span style="color: ${future.weather_risk >= 7 ? '#ef4444' : future.weather_risk >= 4 ? '#f59e0b' : '#10b981'}">
+                                    ${future.weather_risk}/10
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    futuresTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No futures data available.</td></tr>';
                 }
                 
                 // Equities Table
