@@ -131,6 +131,7 @@ async function fetchRealTradingData() {
     ],
     futures: [
       { symbol: "CL", name: "Crude Oil", price: 86.75, change: -0.5, weather_risk: 7 },
+      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
       { symbol: "GC", name: "Gold", price: 2475.50, change: 0.3, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 33.25, change: 0.8, weather_risk: 4 },
       { symbol: "PL", name: "Platinum", price: 1075.00, change: 0.2, weather_risk: 6 },
@@ -206,6 +207,7 @@ function getMockData() {
     ],
     futures: [
       { symbol: "CL", name: "Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
+      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
       { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
       { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
       { symbol: "PL", name: "Platinum", price: 1050.00, change: 0.3, weather_risk: 6 },
