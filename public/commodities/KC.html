@@ -362,7 +362,7 @@
                 <div class="trade-params">
                     <div class="param">
                         <div class="param-label">OTM Percentage</div>
-                        <div class="param-value">12-15%</div>
+                        <div class="param-value">7-15%</div>
                         <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Far out-of-money for safety</div>
                     </div>
                     <div class="param">
@@ -420,7 +420,7 @@
                         <div class="param">
                             <div class="param-label">Strike Price</div>
                             <div class="param-value" id="strike-price">Loading...</div>
-                            <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Approx. 13% OTM</div>
+                            <div style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Approx. 10% OTM</div>
                         </div>
                         <div class="param">
                             <div class="param-label">Estimated Premium</div>
@@ -517,7 +517,7 @@
         // Mock data for ultra-conservative coffee trading
         function getConservativeCoffeeData() {
             const currentPrice = 289.15; // From Yahoo Finance
-            const strike = currentPrice * 0.87; // 13% OTM
+            const strike = currentPrice * 0.90; // 10% OTM
             const premium = 1250; // Conservative premium estimate
             const maxLoss = strike * 375; // Max loss if exercised
             
@@ -550,7 +550,7 @@
                     "USDA monthly coffee report expected to show inventory builds",
                     "Brazilian Real (BRL) exchange rate affecting export competitiveness"
                 ],
-                rationale: "Bearish fundamentals with elevated weather risk suggest selling OTM puts. Conservative parameters (13% OTM, delta 0.08, 35 DTE) provide high probability of success with limited premium but minimal risk."
+                rationale: "Bearish fundamentals with elevated weather risk suggest selling OTM puts. Conservative parameters (10% OTM within 7-15% range, delta 0.08, 35 DTE) provide high probability of success with limited premium but minimal risk."
             };
         }
         
