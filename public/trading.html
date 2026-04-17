@@ -15,8 +15,6 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --profit: #10b981;
-            --loss: #ef4444;
         }
         
         * {
@@ -34,56 +32,57 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
         
         /* Header */
         .header {
-            padding: 30px;
+            text-align: center;
+            padding: 30px 20px;
             background: rgba(15, 23, 42, 0.8);
-            border-radius: 20px;
+            border-radius: 15px;
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
         }
         
-        .header-left h1 {
+        .header h1 {
             font-size: 2.5rem;
             background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         
-        .header-left p {
+        .header p {
             color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
         }
         
-        .header-right {
+        /* Controls */
+        .controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
         
         .btn {
             background: var(--secondary);
             color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
             border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s;
         }
         
         .btn:hover {
@@ -99,74 +98,61 @@
             background: var(--success);
         }
         
-        /* Navigation */
-        .nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 15px;
-        }
-        
-        .nav a {
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
             color: #94a3b8;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s;
+            font-size: 1.2rem;
         }
         
-        .nav a:hover, .nav a.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--primary);
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: block;
         }
         
-        /* Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+        /* Content */
+        #content {
+            display: none;
         }
         
+        /* Card */
         .card {
             background: rgba(15, 23, 42, 0.8);
             padding: 25px;
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 25px;
         }
         
         .card h3 {
             color: var(--primary);
             margin-bottom: 20px;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
         }
         
-        /* Market Overview */
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        /* Market Stats */
         .market-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
         
         .stat {
             background: rgba(30, 41, 59, 0.5);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
         }
@@ -174,70 +160,64 @@
         .stat-label {
             color: #94a3b8;
             font-size: 0.9rem;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
         }
         
         .stat-value.positive {
-            color: var(--profit);
+            color: var(--success);
         }
         
         .stat-value.negative {
-            color: var(--loss);
+            color: var(--danger);
         }
         
-        /* Table */
+        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         th {
+            text-align: left;
+            padding: 12px 15px;
             color: #94a3b8;
             font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         td {
-            color: var(--light);
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .trend-up {
-            color: var(--profit);
+            color: var(--success);
         }
         
         .trend-down {
-            color: var(--loss);
+            color: var(--danger);
         }
         
-        /* Trade Recommendations */
+        /* Trade Cards */
         .trade {
             background: rgba(30, 41, 59, 0.5);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
-        }
-        
-        .trade.profit {
-            border-left-color: var(--profit);
+            border-left: 4px solid;
         }
         
         .trade.risk {
-            border-left-color: var(--warning);
+            border-left-color: var(--danger);
+        }
+        
+        .trade.profit {
+            border-left-color: var(--success);
         }
         
         .trade-header {
@@ -248,23 +228,18 @@
         }
         
         .trade-symbol {
+            font-size: 1.2rem;
             font-weight: 700;
-            font-size: 1.1rem;
+            color: var(--light);
         }
         
         .trade-type {
             background: var(--secondary);
-            padding: 4px 10px;
+            color: white;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #94a3b8;
         }
         
         /* Last Updated */
@@ -273,20 +248,14 @@
             color: #94a3b8;
             font-size: 0.9rem;
             margin-top: 30px;
-            padding: 15px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 10px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         /* Responsive */
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .header-right {
-                justify-content: center;
+            .header h1 {
+                font-size: 2rem;
             }
             
             .grid {
@@ -294,12 +263,7 @@
             }
             
             .market-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -309,41 +273,31 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="header-left">
-                <h1><i class="fas fa-chart-line"></i> Trading Dashboard</h1>
-                <p>Real-time market analysis, weather-aware commodities, and trade recommendations</p>
-            </div>
-            <div class="header-right">
-                <button class="btn" onclick="window.location.href='/'">
-                    <i class="fas fa-home"></i> Home
-                </button>
-                <button class="btn primary" onclick="refreshData()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-                <button class="btn success" onclick="window.location.href='/api/trading-brief'">
-                    <i class="fas fa-code"></i> API
-                </button>
-            </div>
+            <h1><i class="fas fa-chart-line"></i> Trading Dashboard</h1>
+            <p>Real-time market data, commodity analysis, and trade recommendations powered by Cloudflare</p>
         </div>
         
-        <!-- Navigation -->
-        <div class="nav">
-            <a href="#" class="active">Overview</a>
-            <a href="#commodities">Commodities</a>
-            <a href="#equities">Equities</a>
-            <a href="#weather">Weather</a>
-            <a href="#recommendations">Trades</a>
-            <a href="#scans">Market Scans</a>
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn" onclick="window.location.href='/'">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="btn primary" onclick="refreshData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn success" onclick="window.location.href='/api/trading-brief'">
+                <i class="fas fa-code"></i> API
+            </button>
         </div>
         
         <!-- Loading State -->
         <div id="loading" class="loading">
-            <i class="fas fa-spinner fa-spin fa-2x"></i>
-            <p style="margin-top: 15px;">Loading trading data from Cloudflare API...</p>
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading trading data from Cloudflare API...</p>
         </div>
         
         <!-- Content (hidden until loaded) -->
-        <div id="content" style="display: none;">
+        <div id="content">
             <!-- Market Overview -->
             <div class="card">
                 <h3><i class="fas fa-globe-americas"></i> Market Overview</h3>
@@ -434,6 +388,53 @@
         const ivOpportunitiesEl = document.getElementById('iv-opportunities');
         const updateTimeEl = document.getElementById('update-time');
         
+        // Mock data for fallback
+        function getMockData() {
+            return {
+                date: "2026-04-17",
+                summary: "TRADING BRIEF - Mock Data",
+                market: {
+                    snp: { price: 5250.75, change: 0.85 },
+                    nasdaq: { price: 18350.25, change: 1.25 },
+                    vix: 15.5,
+                    sentiment: "Bullish",
+                    theme: "AI momentum vs valuation concerns"
+                },
+                commodities: [
+                    { symbol: "KC", name: "Coffee", price: 265.33, change: -1.2, weather_risk: 8 },
+                    { symbol: "SB", name: "Sugar", price: 22.45, change: 0.5, weather_risk: 4 },
+                    { symbol: "ZC", name: "Corn", price: 485.75, change: 0.3, weather_risk: 3 },
+                    { symbol: "ZS", name: "Soybeans", price: 1220.50, change: -0.8, weather_risk: 5 },
+                    { symbol: "OJ", name: "Orange Juice", price: 320.25, change: 2.1, weather_risk: 9 }
+                ],
+                equities: [
+                    { symbol: "AAPL", price: 215.50, change: 0.75, iv: 28 },
+                    { symbol: "NVDA", price: 950.25, change: 2.5, iv: 45 },
+                    { symbol: "TSLA", price: 185.75, change: -1.2, iv: 52 },
+                    { symbol: "AMD", price: 165.30, change: 1.8, iv: 38 },
+                    { symbol: "MSTR", price: 1850.50, change: 3.5, iv: 65 }
+                ],
+                top_trades: [
+                    {
+                        symbol: "KC",
+                        type: "PUT",
+                        strike: 265.33,
+                        premium: 1683,
+                        probability: 82.5,
+                        description: "Coffee PUT - Weather risk premium"
+                    }
+                ],
+                weather_risk: [
+                    { commodity: "Coffee (KC)", risk: 8, reason: "Brazil frost concerns" },
+                    { commodity: "Orange Juice (OJ)", risk: 9, reason: "Florida drought" }
+                ],
+                iv_opportunities: [
+                    { symbol: "OJ", iv: 35, recommendation: "Premium selling" },
+                    { symbol: "KC", iv: 30, recommendation: "Weather plays" }
+                ]
+            };
+        }
+        
         // Fetch trading data from Cloudflare API
         async function fetchTradingData() {
             try {
@@ -451,87 +452,159 @@
         
         // Render data
         async function renderTradingData() {
-            const data = await fetchTradingData();
-            
-            // Update timestamp
-            updateTimeEl.textContent = new Date().toLocaleTimeString();
-            
-            // Market Stats
-            marketStatsEl.innerHTML = `
-                <div class="stat">
-                    <div class="stat-label">S&P 500</div>
-                    <div class="stat-value ${data.market.snp.change >= 0 ? 'positive' : 'negative'}">
-                        ${data.market.snp.price} (${data.market.snp.change >= 0 ? '+' : ''}${data.market.snp.change}%)
+            try {
+                const data = await fetchTradingData();
+                
+                // Hide loading, show content
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+                
+                // Update timestamp
+                updateTimeEl.textContent = new Date().toLocaleTimeString();
+                
+                // Market Stats
+                marketStatsEl.innerHTML = `
+                    <div class="stat">
+                        <div class="stat-label">S&P 500</div>
+                        <div class="stat-value ${data.market.snp.change >= 0 ? 'positive' : 'negative'}">
+                            ${data.market.snp.price} (${data.market.snp.change >= 0 ? '+' : ''}${data.market.snp.change}%)
+                        </div>
                     </div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">VIX</div>
-                    <div class="stat-value ${data.market.vix <= 20 ? 'positive' : 'negative'}">
-                        ${data.market.vix}
+                    <div class="stat">
+                        <div class="stat-label">VIX</div>
+                        <div class="stat-value ${data.market.vix <= 20 ? 'positive' : 'negative'}">
+                            ${data.market.vix}
+                        </div>
                     </div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Sentiment</div>
-                    <div class="stat-value ${data.market.sentiment === 'Bullish' ? 'positive' : 'negative'}">
-                        ${data.market.sentiment}
+                    <div class="stat">
+                        <div class="stat-label">Sentiment</div>
+                        <div class="stat-value ${data.market.sentiment === 'Bullish' ? 'positive' : 'negative'}">
+                            ${data.market.sentiment}
+                        </div>
                     </div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Theme</div>
-                    <div class="stat-value">${data.market.theme}</div>
-                </div>
-            `;
-            
-            // Top Trades
-            topTradesEl.innerHTML = data.top_trades.map(trade => `
-                <div class="trade ${trade.type === 'PUT' ? 'risk' : 'profit'}">
-                    <div class="trade-header">
-                        <div class="trade-symbol">${trade.symbol}</div>
-                        <div class="trade-type">${trade.type}</div>
+                    <div class="stat">
+                        <div class="stat-label">Theme</div>
+                        <div class="stat-value">${data.market.theme}</div>
                     </div>
-                    <div style="color: #cbd5e1; margin-bottom: 5px;">${trade.description}</div>
-                    <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.9rem;">
-                        <span>Premium: $${trade.premium}</span>
-                        <span>Probability: ${trade.probability}% OTM</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Commodities Table
-            commoditiesTableEl.innerHTML = data.commodities.map(commodity => `
-                <tr>
-                    <td><strong>${commodity.symbol}</strong></td>
-                    <td>$${commodity.price}</td>
-                    <td class="${commodity.change >= 0 ? 'trend-up' : 'trend-down'}">
-                        ${commodity.change >= 0 ? '+' : ''}${commodity.change}%
-                    </td>
-                    <td>
-                        <span style="color: ${commodity.weather_risk >= 7 ? '#ef4444' : commodity.weather_risk >= 4 ? '#f59e0b' : '#10b981'}">
-                            ${commodity.weather_risk}/10
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
-            
-            // Equities Table
-            equitiesTableEl.innerHTML = data.equities.map(equity => `
-                <tr>
-                    <td><strong>${equity.symbol}</strong></td>
-                    <td>$${equity.price}</td>
-                    <td class="${equity.change >= 0 ? 'trend-up' : 'trend-down'}">
-                        ${equity.change >= 0 ? '+' : ''}${equity.change}%
-                    </td>
-                    <td>
-                        <span style="color: ${equity.iv >= 40 ? '#ef4444' : equity.iv >= 30 ? '#f59e0b' : '#10b981'}">
-                            ${equity.iv}%
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
-            
-            // Weather Risk
-            weatherRiskEl.innerHTML = data.weather_risk.map(risk => `
-                <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span>${risk.commodity}</span>
-                        <span style="
+                `;
+                
+                // Top Trades
+                if (data.top_trades && data.top_trades.length > 0) {
+                    topTradesEl.innerHTML = data.top_trades.map(trade => `
+                        <div class="trade ${trade.type === 'PUT' ? 'risk' : 'profit'}">
+                            <div class="trade-header">
+                                <div class="trade-symbol">${trade.symbol}</div>
+                                <div class="trade-type">${trade.type}</div>
+                            </div>
+                            <div style="color: #cbd5e1; margin-bottom: 5px;">${trade.description}</div>
+                            <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.9rem;">
+                                <span>Premium: $${trade.premium}</span>
+                                <span>Probability: ${trade.probability}% OTM</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    topTradesEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No trade recommendations available.</p>';
+                }
+                
+                // Commodities Table
+                if (data.commodities && data.commodities.length > 0) {
+                    commoditiesTableEl.innerHTML = data.commodities.map(commodity => `
+                        <tr>
+                            <td><strong>${commodity.symbol}</strong></td>
+                            <td>$${commodity.price}</td>
+                            <td class="${commodity.change >= 0 ? 'trend-up' : 'trend-down'}">
+                                ${commodity.change >= 0 ? '+' : ''}${commodity.change}%
+                            </td>
+                            <td>
+                                <span style="color: ${commodity.weather_risk >= 7 ? '#ef4444' : commodity.weather_risk >= 4 ? '#f59e0b' : '#10b981'}">
+                                    ${commodity.weather_risk}/10
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    commoditiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No commodity data available.</td></tr>';
+                }
+                
+                // Equities Table
+                if (data.equities && data.equities.length > 0) {
+                    equitiesTableEl.innerHTML = data.equities.map(equity => `
+                        <tr>
+                            <td><strong>${equity.symbol}</strong></td>
+                            <td>$${equity.price}</td>
+                            <td class="${equity.change >= 0 ? 'trend-up' : 'trend-down'}">
+                                ${equity.change >= 0 ? '+' : ''}${equity.change}%
+                            </td>
+                            <td>
+                                <span style="color: ${equity.iv >= 40 ? '#ef4444' : equity.iv >= 30 ? '#f59e0b' : '#10b981'}">
+                                    ${equity.iv}%
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    equitiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No equity data available.</td></tr>';
+                }
+                
+                // Weather Risk
+                if (data.weather_risk && data.weather_risk.length > 0) {
+                    weatherRiskEl.innerHTML = data.weather_risk.map(risk => `
+                        <div style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>${risk.commodity}</span>
+                                <span style="color: ${risk.risk >= 7 ? '#ef4444' : risk.risk >= 4 ? '#f59e0b' : '#10b981'}">
+                                    ${risk.risk}/10
+                                </span>
+                            </div>
+                            <div style="color: #94a3b8; font-size: 0.9rem;">${risk.reason}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    weatherRiskEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No weather risk data available.</p>';
+                }
+                
+                // IV Opportunities
+                if (data.iv_opportunities && data.iv_opportunities.length > 0) {
+                    ivOpportunitiesEl.innerHTML = data.iv_opportunities.map(opp => `
+                        <div style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>${opp.symbol}</span>
+                                <span style="color: ${opp.iv >= 40 ? '#ef4444' : opp.iv >= 30 ? '#f59e0b' : '#10b981'}">
+                                    IV: ${opp.iv}%
+                                </span>
+                            </div>
+                            <div style="color: #94a3b8; font-size: 0.9rem;">${opp.recommendation}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    ivOpportunitiesEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No IV opportunities available.</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error rendering trading data:', error);
+                loadingEl.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error loading data. Please try again.</p>
+                    <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                `;
+            }
+        }
+        
+        // Refresh data
+        function refreshData() {
+            loadingEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            renderTradingData();
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', renderTradingData);
+        
+        // Auto-refresh every 60 seconds
+        setInterval(refreshData, 60000);
+    </script>
+</body>
+</html>
