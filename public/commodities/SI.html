@@ -578,10 +578,10 @@
                     premium_margin: "17.8%"
                 },
                 market_context: [
-                    "Solar panel manufacturing demand continues to grow",
-                    "Gold/silver ratio near 75:1 - silver historically cheap vs gold",
-                    "Industrial PMI data showing mixed manufacturing signals",
-                    "Silver ETF holdings stable with modest inflows"
+                    { text: "Solar panel manufacturing demand continues to grow", link: "https://www.iea.org/reports/solar-pv-global-supply-chains" },
+                    { text: "Gold/silver ratio near 75:1 - silver historically cheap vs gold", link: "https://www.macrotrends.net/1441/gold-silver-ratio-historical-chart" },
+                    { text: "Industrial PMI data showing mixed manufacturing signals", link: "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-report-on-business/pmi/" },
+                    { text: "Silver ETF holdings stable with modest inflows", link: "https://www.ishares.com/us/products/239855/ishares-silver-trust" }
                 ],
                 rationale: "Silver's dual role as monetary metal and industrial commodity creates volatility premium. Conservative parameters (10% OTM within 7-15% range, delta 0.08, 35 DTE) provide high probability of success with limited premium but minimal risk. Industrial demand supports floor while Fed policy creates uncertainty."
             };
@@ -650,12 +650,28 @@
                 premiumMarginEl.textContent = data.risk_metrics.premium_margin;
                 
                 // Market context
-                marketContextEl.innerHTML = data.market_context.map(context => `
-                    <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #c0c0c0;">
-                        <i class="fas fa-info-circle" style="color: #c0c0c0; margin-right: 8px;"></i>
-                        ${context}
-                    </div>
-                `).join('');
+                marketContextEl.innerHTML = data.market_context.map(context => {
+                    const text = context.text || context;
+                    const link = context.link;
+                    if (link) {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #c0c0c0;">
+                                <i class="fas fa-external-link-alt" style="color: #c0c0c0; margin-right: 8px;"></i>
+                                <a href="${link}" target="_blank" rel="noopener noreferrer" style="color: #c0c0c0; text-decoration: none;">
+                                    ${text}
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 6px;"></i>
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #c0c0c0;">
+                                <i class="fas fa-info-circle" style="color: #c0c0c0; margin-right: 8px;"></i>
+                                ${text}
+                            </div>
+                        `;
+                    }
+                }).join('');
                 
             } catch (error) {
                 console.error('Error rendering silver data:', error);

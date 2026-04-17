@@ -578,10 +578,10 @@
                     premium_margin: "16.2%"
                 },
                 market_context: [
-                    "Fed meeting minutes due next week - hawkish vs dovish signals",
-                    "CPI inflation data slightly above expectations",
-                    "Central bank gold reserves continue to increase",
-                    "Real yields remain supportive of gold"
+                    { text: "Fed meeting minutes due next week - hawkish vs dovish signals", link: "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" },
+                    { text: "CPI inflation data slightly above expectations", link: "https://www.bls.gov/cpi/" },
+                    { text: "Central bank gold reserves continue to increase", link: "https://www.gold.org/goldhub/data/gold-reserves-by-country" },
+                    { text: "Real yields remain supportive of gold", link: "https://fred.stlouisfed.org/series/DFII10" }
                 ],
                 rationale: "Range-bound gold market with Fed uncertainty suggests selling OTM puts. Conservative parameters (10% OTM within 7-15% range, delta 0.08, 35 DTE) provide high probability of success with limited premium but minimal risk. Gold's volatility offers reasonable premiums even at conservative strikes."
             };
@@ -650,12 +650,28 @@
                 premiumMarginEl.textContent = data.risk_metrics.premium_margin;
                 
                 // Market context
-                marketContextEl.innerHTML = data.market_context.map(context => `
-                    <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #fbbf24;">
-                        <i class="fas fa-info-circle" style="color: #fbbf24; margin-right: 8px;"></i>
-                        ${context}
-                    </div>
-                `).join('');
+                marketContextEl.innerHTML = data.market_context.map(context => {
+                    const text = context.text || context;
+                    const link = context.link;
+                    if (link) {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #fbbf24;">
+                                <i class="fas fa-external-link-alt" style="color: #fbbf24; margin-right: 8px;"></i>
+                                <a href="${link}" target="_blank" rel="noopener noreferrer" style="color: #fbbf24; text-decoration: none;">
+                                    ${text}
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 6px;"></i>
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #fbbf24;">
+                                <i class="fas fa-info-circle" style="color: #fbbf24; margin-right: 8px;"></i>
+                                ${text}
+                            </div>
+                        `;
+                    }
+                }).join('');
                 
             } catch (error) {
                 console.error('Error rendering gold data:', error);

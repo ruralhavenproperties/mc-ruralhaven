@@ -578,10 +578,10 @@
                     premium_margin: "19.2%"
                 },
                 market_context: [
-                    "South Africa produces ~70% of global platinum - ongoing mining challenges",
-                    "Auto catalyst demand stable despite EV transition",
-                    "Platinum trading at significant discount to gold (~50%)",
-                    "Industrial applications (chemical, glass) provide demand floor"
+                    { text: "South Africa produces ~70% of global platinum - ongoing mining challenges", link: "https://www.platinum.matthey.com/en/market-research/market-data-tables/platinum" },
+                    { text: "Auto catalyst demand stable despite EV transition", link: "https://www.spglobal.com/mobility/en/research-analysis/platinum-demand-in-auto-catalysts.html" },
+                    { text: "Platinum trading at significant discount to gold (~50%)", link: "https://www.macrotrends.net/2534/platinum-gold-ratio" },
+                    { text: "Industrial applications (chemical, glass) provide demand floor", link: "https://www.chemistryworld.com/news/platinum-demand-in-chemicals-set-to-grow/4016390.article" }
                 ],
                 rationale: "Platinum's industrial focus and South African supply constraints create volatility premium. Conservative parameters (10% OTM within 7-15% range, delta 0.08, 35 DTE) provide high probability of success with limited premium but minimal risk. Structural supply deficit supports floor while auto demand uncertainty creates volatility."
             };
@@ -650,12 +650,28 @@
                 premiumMarginEl.textContent = data.risk_metrics.premium_margin;
                 
                 // Market context
-                marketContextEl.innerHTML = data.market_context.map(context => `
-                    <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #a8d8ea;">
-                        <i class="fas fa-info-circle" style="color: #a8d8ea; margin-right: 8px;"></i>
-                        ${context}
-                    </div>
-                `).join('');
+                marketContextEl.innerHTML = data.market_context.map(context => {
+                    const text = context.text || context;
+                    const link = context.link;
+                    if (link) {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #a8d8ea;">
+                                <i class="fas fa-external-link-alt" style="color: #a8d8ea; margin-right: 8px;"></i>
+                                <a href="${link}" target="_blank" rel="noopener noreferrer" style="color: #a8d8ea; text-decoration: none;">
+                                    ${text}
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 6px;"></i>
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div style="margin-bottom: 10px; padding: 12px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #a8d8ea;">
+                                <i class="fas fa-info-circle" style="color: #a8d8ea; margin-right: 8px;"></i>
+                                ${text}
+                            </div>
+                        `;
+                    }
+                }).join('');
                 
             } catch (error) {
                 console.error('Error rendering platinum data:', error);
