@@ -132,16 +132,16 @@ async function fetchRealTradingData() {
       { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 }
     ],
     futures: [
-      { symbol: "CL", name: "WTI Crude Oil", price: 86.75, change: -0.5, weather_risk: 7 },
-      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 },
-      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
-      { symbol: "GC", name: "Gold", price: 2475.50, change: 0.3, weather_risk: 5 },
-      { symbol: "SI", name: "Silver", price: 33.25, change: 0.8, weather_risk: 4 },
-      { symbol: "PL", name: "Platinum", price: 1075.00, change: 0.2, weather_risk: 6 },
-      { symbol: "ES", name: "S&P 500 Futures", price: 7140.00, change: 0.4, weather_risk: 5 },
-      { symbol: "NQ", name: "NASDAQ Futures", price: 24500.00, change: 0.6, weather_risk: 5 },
-      { symbol: "YM", name: "Dow Futures", price: 39500.00, change: 0.3, weather_risk: 5 },
-      { symbol: "RTY", name: "Russell 2000 Futures", price: 2100.00, change: 0.2, weather_risk: 5 }
+      { symbol: "CL", name: "WTI Crude Oil (Jul 2026)", price: 86.75, change: -0.5, weather_risk: 7, volume: 1100000, contract_month: "Jul 2026" },
+      { symbol: "BZ", name: "Brent Crude Oil (Jul 2026)", price: 88.75, change: -0.3, weather_risk: 7, volume: 980000, contract_month: "Jul 2026" },
+      { symbol: "NG", name: "Natural Gas (Jul 2026)", price: 3.50, change: 0.5, weather_risk: 6, volume: 780000, contract_month: "Jul 2026" },
+      { symbol: "GC", name: "Gold (Aug 2026)", price: 2475.50, change: 0.3, weather_risk: 5, volume: 52000, contract_month: "Aug 2026" },
+      { symbol: "SI", name: "Silver (Jul 2026)", price: 33.25, change: 0.8, weather_risk: 4, volume: 62000, contract_month: "Jul 2026" },
+      { symbol: "PL", name: "Platinum (Jul 2026)", price: 1075.00, change: 0.2, weather_risk: 6, volume: 47000, contract_month: "Jul 2026" },
+      { symbol: "ES", name: "S&P 500 Futures (Jun 2026)", price: 7140.00, change: 0.4, weather_risk: 5, volume: 1600000, contract_month: "Jun 2026" },
+      { symbol: "NQ", name: "NASDAQ Futures (Jun 2026)", price: 24500.00, change: 0.6, weather_risk: 5, volume: 1300000, contract_month: "Jun 2026" },
+      { symbol: "YM", name: "Dow Futures (Jun 2026)", price: 39500.00, change: 0.3, weather_risk: 5, volume: 850000, contract_month: "Jun 2026" },
+      { symbol: "RTY", name: "Russell 2000 Futures (Jun 2026)", price: 2100.00, change: 0.2, weather_risk: 5, volume: 650000, contract_month: "Jun 2026" }
     ],
     equities: [
       { symbol: "AAPL", price: 218.25, change: 0.9, iv: 28 },
@@ -211,16 +211,16 @@ function getMockData() {
       { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 }
     ],
     futures: [
-      { symbol: "CL", name: "WTI Crude Oil", price: 85.50, change: -0.8, weather_risk: 7 },
-      { symbol: "BZ", name: "Brent Crude Oil", price: 88.75, change: -0.3, weather_risk: 7 },
-      { symbol: "NG", name: "Natural Gas", price: 3.50, change: 0.5, weather_risk: 6 },
-      { symbol: "GC", name: "Gold", price: 2450.00, change: 0.5, weather_risk: 5 },
-      { symbol: "SI", name: "Silver", price: 32.50, change: 1.2, weather_risk: 4 },
-      { symbol: "PL", name: "Platinum", price: 1050.00, change: 0.3, weather_risk: 6 },
-      { symbol: "ES", name: "S&P 500 Futures", price: 5255.00, change: 0.4, weather_risk: 5 },
-      { symbol: "NQ", name: "NASDAQ Futures", price: 18380.00, change: 0.6, weather_risk: 5 },
-      { symbol: "YM", name: "Dow Futures", price: 39500.00, change: 0.3, weather_risk: 5 },
-      { symbol: "RTY", name: "Russell 2000 Futures", price: 2100.00, change: 0.2, weather_risk: 5 }
+      { symbol: "CL", name: "WTI Crude Oil (Jul 2026)", price: 85.50, change: -0.8, weather_risk: 7, volume: 1000000, contract_month: "Jul 2026" },
+      { symbol: "BZ", name: "Brent Crude Oil (Jul 2026)", price: 88.75, change: -0.3, weather_risk: 7, volume: 950000, contract_month: "Jul 2026" },
+      { symbol: "NG", name: "Natural Gas (Jul 2026)", price: 3.50, change: 0.5, weather_risk: 6, volume: 750000, contract_month: "Jul 2026" },
+      { symbol: "GC", name: "Gold (Aug 2026)", price: 2450.00, change: 0.5, weather_risk: 5, volume: 50000, contract_month: "Aug 2026" },
+      { symbol: "SI", name: "Silver (Jul 2026)", price: 32.50, change: 1.2, weather_risk: 4, volume: 60000, contract_month: "Jul 2026" },
+      { symbol: "PL", name: "Platinum (Jul 2026)", price: 1050.00, change: 0.3, weather_risk: 6, volume: 45000, contract_month: "Jul 2026" },
+      { symbol: "ES", name: "S&P 500 Futures (Jun 2026)", price: 5255.00, change: 0.4, weather_risk: 5, volume: 1500000, contract_month: "Jun 2026" },
+      { symbol: "NQ", name: "NASDAQ Futures (Jun 2026)", price: 18380.00, change: 0.6, weather_risk: 5, volume: 1200000, contract_month: "Jun 2026" },
+      { symbol: "YM", name: "Dow Futures (Jun 2026)", price: 39500.00, change: 0.3, weather_risk: 5, volume: 800000, contract_month: "Jun 2026" },
+      { symbol: "RTY", name: "Russell 2000 Futures (Jun 2026)", price: 2100.00, change: 0.2, weather_risk: 5, volume: 600000, contract_month: "Jun 2026" }
     ],
     equities: [
       { symbol: "AAPL", price: 215.50, change: 0.75, iv: 28 },
