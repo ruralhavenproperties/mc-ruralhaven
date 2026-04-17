@@ -4,13 +4,13 @@ pages_build_output_dir = "./public"
 
 [[kv_namespaces]]
 binding = "TRADING_KV"
-id = "trading_kv_id"  # You'll need to create this in Cloudflare dashboard
+id = "7897be3dd02240bcb61bcccc33ad6ec1"
 
 [vars]
-API_KEY = "your-secure-api-key-here"  # Change this to a secure key
+API_KEY = "1ea53bef7ef3111c599fbbc0b853a25253ff057178cca0bc16015805b82ee34b"
 
 [env.production]
-zone_id = "your-zone-id-here"  # Your Cloudflare zone ID
+zone_id = "fd722b9209b4036080154dfc702d70b1"
 routes = [
   { pattern = "mc.ruralhaven.co", custom_domain = true }
 ]
