@@ -11,7 +11,8 @@ from datetime import datetime
 import sys
 
 # Configuration
-CLOUDFLARE_API_URL = "https://mc.ruralhaven.co/api/update"  # Your Cloudflare Worker URL
+# Use your Pages URL - update to mc.ruralhaven.co once custom domain is added
+CLOUDFLARE_API_URL = "https://mc-ruralhaven.pages.dev/api/update"  # Your Cloudflare Pages URL
 API_KEY = os.environ.get("CLOUDFLARE_API_KEY", "your-api-key-here")  # Set as environment variable
 
 def load_trading_brief():
