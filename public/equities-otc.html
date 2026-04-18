@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trading Dashboard - Equities & OTC Analysis</title>
+    <style>
+        :root {
+            --equities-color: #8b5cf6;
+            --otc-color: #f59e0b;
+            --dark: #0f172a;
+            --light: #e2e8f0;
+            --card-bg: #1e293b;
+            --border: #334155;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--equities-color) 0%, var(--otc-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px;
+        }
+        
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border);
+        }
+        
+        .card.equities {
+            border-top: 4px solid var(--equities-color);
+        }
+        
+        .card.otc {
+            border-top: 4px solid var(--otc-color);
+        }
+        
+        .card h3 { 
+            margin-top: 0; 
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card.equities h3 {
+            color: var(--equities-color);
+        }
+        
+        .card.otc h3 {
+            color: var(--otc-color);
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px;
+        }
+        
+        th, td { 
+            padding: 12px 15px; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border); 
+        }
+        
+        th { 
+            background: rgba(15, 23, 42, 0.5); 
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .symbol {
+            font-weight: 700;
+            font-family: monospace;
+        }
+        
+        .setup-strong { color: #10b981; font-weight: 600; }
+        .setup-moderate { color: #f59e0b; font-weight: 600; }
+        .setup-weak { color: #94a3b8; font-weight: 600; }
+        
+        .timeframe {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            background: rgba(148, 163, 184, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: var(--card-bg);
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--equities-color);
+        }
+        
+        .otc-details {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--otc-color);
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Equities & OTC Analysis</h1>
+            <p>Top 20 technical setups + Best OTC opportunity</p>
+        </div>
+        
+        <div class="nav">
+            <a href="http://45.32.195.189:8891/mission_control_index.html" class="nav-btn">
+                <i class="fas fa-home"></i> Mission Control
+            </a>
+            <a href="http://45.32.195.189:8891/mission_control_trading_updated.html" class="nav-btn">
+                <i class="fas fa-chart-line"></i> Trading Dashboard
+            </a>
+            <a href="#" class="nav-btn" style="background: rgba(139, 92, 246, 0.2); color: var(--equities-color);">
+                <i class="fas fa-star"></i> Equities & OTC
+            </a>
+        </div>
+        
+        <div class="grid">
+            <!-- Top 20 Equity Setups -->
+            <div class="card equities">
+                <h3><i class="fas fa-star"></i> Top 20 Equity Setups</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Best technical setups at key pivot points (Daily/Weekly/4H)</p>
+                <table>
+                    <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Pivot</th></tr>
+                    <tr><td class="symbol">NVDA</td><td>$945.50</td><td class="setup-strong">Weekly Breakout</td><td><span class="timeframe">W</span></td><td>$950</td></tr>
+                    <tr><td class="symbol">AAPL</td><td>$172.25</td><td class="setup-strong">Daily Support</td><td><span class="timeframe">D</span></td><td>$170</td></tr>
+                    <tr><td class="symbol">AMD</td><td>$185.75</td><td class="setup-strong">4H Bull Flag</td><td><span class="timeframe">4H</span></td><td>$180</td></tr>
+                    <tr><td class="symbol">MSTR</td><td>$1,450</td><td class="setup-strong">Weekly Momentum</td><td><span class="timeframe">W</span></td><td>BTC corr</td></tr>
+                    <tr><td class="symbol">TSLA</td><td>$175.50</td><td class="setup-moderate">Daily Reversal</td><td><span class="timeframe">D</span></td><td>$170</td></tr>
+                    <tr><td class="symbol">MSFT</td><td>$425.80</td><td class="setup-strong">4H Triangle</td><td><span class="timeframe">4H</span></td><td>$420</td></tr>
+                    <tr><td class="symbol">GOOGL</td><td>$155.25</td><td class="setup-moderate">Weekly Test</td><td><span class="timeframe">W</span></td><td>$150</td></tr>
+                    <tr><td class="symbol">META</td><td>$485.50</td><td class="setup-strong">Cup & Handle</td><td><span class="timeframe">D</span></td><td>$480</td></tr>
+                    <tr><td class="symbol">AMZN</td><td>$182.75</td><td class="setup-moderate">4H Support</td><td><span class="timeframe">4H</span></td><td>$180</td></tr>
+                    <tr><td class="symbol">AVGO</td><td>$1,350</td><td class="setup-strong">Weekly Uptrend</td><td><span class="timeframe">W</span></td><td>$1,300</td></tr>
+                    <tr><td class="symbol">LLY</td><td>$785.50</td><td class="setup-moderate">Consolidation</td><td><span class="timeframe">D</span></td><td>$780</td></tr>
+                    <tr><td class="symbol">BRK.B</td><td>$415.25</td><td class="setup-weak">Range Bound</td><td><span class="timeframe">D</span></td><td>$410-420</td></tr>
+                    <tr><td class="symbol">JPM</td><td>$195.80</td><td class="setup-moderate">4H Breakout</td><td><span class="timeframe">4H</span></td><td>$195</td></tr>
+                    <tr><td class="symbol">V</td><td>$275.50</td><td class="setup-weak">Testing Support</td><td><span class="timeframe">D</span></td><td>$270</td></tr>
+                    <tr><td class="symbol">MA</td><td>$465.25</td><td class="setup-moderate">Weekly Bounce</td><td><span class="timeframe">W</span></td><td>$460</td></tr>
+                    <tr><td class="symbol">UNH</td><td>$485.75</td><td class="setup-weak">Downtrend</td><td><span class="timeframe">D</span></td><td>$490</td></tr>
+                    <tr><td class="symbol">HD</td><td>$355.50</td><td class="setup-moderate">4H Reversal</td><td><span class="timeframe">4H</span></td><td>$350</td></tr>
+                    <tr><td class="symbol">BAC</td><td>$37.25</td><td class="setup-weak">Consolidation</td><td><span class="timeframe">D</span></td><td>$36-38</td></tr>
+                    <tr><td class="symbol">PFE</td><td>$27.50</td><td class="setup-strong">Weekly Bottom</td><td><span class="timeframe">W</span></td><td>$26</td></tr>
+                    <tr><td class="symbol">DIS</td><td>$102.75</td><td class="setup-moderate">Daily Breakout</td><td><span class="timeframe">D</span></td><td>$100</td></tr>
+                </table>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 15px;">
+                    <i class="fas fa-info-circle"></i> <strong>Strong:</strong> Clear pattern | 
+                    <strong>Moderate:</strong> Developing | 
+                    <strong>Weak:</strong> Watch for confirmation
+                </p>
+            </div>
+            
+            <!-- Best OTC Opportunity -->
+            <div class="card otc">
+                <h3><i class="fas fa-gem"></i> Best OTC Opportunity</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">CBDD - Based on fundamentals + technicals (Daily chart)</p>
+                
+                <div class="otc-details">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <h4 style="margin: 0; color: var(--otc-color);">CBDD - CBD of Denver</h4>
+                            <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 0.9rem;">OTC Pink Current | Cannabis Distribution</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--light);">$0.0225</div>
+                            <div style="color: #10b981; font-weight: 600;">+8.5% today</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div><div style="color: #94a3b8;">Entry</div><div style="font-weight: 600;">$0.0225</div></div>
+                        <div><div style="color: #94a3b8;">Stop Loss</div><div style="color: #ef4444; font-weight: 600;">$0.0169 (-25%)</div></div>
+                        <div><div style="color: #94a3b8;">Target 1</div><div style="color: #10b981; font-weight: 600;">$0.0320 (+42%)</div></div>
+                        <div><div style="color: #94a3b8;">Target 2</div><div style="color: #10b981; font-weight: 600;">$0.0450 (+100%)</div></div>
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--otc-color); margin-top: 20px;"><i class="fas fa-chart-line"></i> Technical Analysis (Daily)</h4>
+                <ul style="color: #cbd5e1; margin: 0 0 20px 0; padding-left: 20px;">
+                    <li>Breaking out of 6-month consolidation</li>
+                    <li>Volume: 3x average on breakout</li>
+                    <li>RSI: 65 (bullish, not overbought)</li>
+                    <li>MACD: Bullish crossover confirmed</li>
+                    <li>Support: $0.0200 (previous resistance)</li>
+                    <li>Resistance: $0.0320 (next major level)</li>
+                </ul>
+                
+                <h4 style="color: var(--otc-color);"><i class="fas fa-building"></i> Fundamental Analysis</h4>
+                <ul style="color: #cbd5e1; margin: 0 0 20px 0; padding-left: 20px;">
+                    <li><strong>Catalyst:</strong> EU distribution deal (April 15)</li>
+                    <li><strong>Revenue Growth:</strong> +45% YoY (Q4 2025)</li>
+                    <li><strong>Market Cap:</strong> $8.5M (undervalued)</li>
+                    <li><strong>Cash:</strong> $1.2M (no dilution risk)</li>
+                    <li><strong>Insider Buying:</strong> CEO bought 500k shares</li>
+                </ul>
+                
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 8px;">
+                    <h5 style="margin: 0 0 10px 0; color: #10b981;"><i class="fas fa-bullseye"></i> Trade Setup</h5>
+                    <p style="margin: 0; color: #cbd5e1;">
+                        <strong>Position:</strong> $800 (35,555 shares) | 
+                        <strong>R:R:</strong> 1:4 | 
+                        <strong>Timeframe:</strong> 2-8 weeks
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.9rem;">
+            <p><i class="fas fa-info-circle"></i> Data updates daily | Monitor for confirmation on setups</p>
+            <p><i class="fas fa-exclamation-triangle"></i> OTC stocks are high risk - position size accordingly</p>
+        </div>
+    </div>
+    
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal - Mission Control</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #475569;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --profit: #10b981;
+            --loss: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            padding: 30px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: #94a3b8;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn.primary {
+            background: var(--primary);
+        }
+        
+        .btn.success {
+            background: var(--success);
+        }
+        
+        .btn.danger {
+            background: var(--danger);
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 15px;
+        }
+        
+        .nav-btn {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-value.positive {
+            color: var(--profit);
+        }
+        
+        .stat-value.negative {
+            color: var(--loss);
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            color: var(--light);
+        }
+        
+        .trend-up {
+            color: var(--profit);
+        }
+        
+        .trend-down {
+            color: var(--loss);
+        }
+        
+        /* Trade Card */
+        .trade-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .trade-card.profit {
+            border-left-color: var(--profit);
+        }
+        
+        .trade-card.loss {
+            border-left-color: var(--loss);
+        }
+        
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .trade-symbol {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .trade-type {
+            background: var(--secondary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Charts */
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-right {
+                justify-content: center;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-book"></i> Trading Journal</h1>
+                <p>Track, analyze, and improve your trading performance</p>
+            </div>
+            <div class="header-right">
+                <button class="btn" onclick="window.location.href='/'">
+                    <i class="fas fa-home"></i> Mission Control
+                </button>
+                <button class="btn primary" onclick="showAddTradeModal()">
+                    <i class="fas fa-plus"></i> Add Trade
+                </button>
+                <button class="btn success" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="#" class="nav-btn active" onclick="showSection('overview')">Overview</a>
+            <a href="#" class="nav-btn" onclick="showSection('trades')">All Trades</a>
+            <a href="#" class="nav-btn" onclick="showSection('performance')">Performance</a>
+            <a href="#" class="nav-btn" onclick="showSection('emotions')">Emotional Tracking</a>
+            <a href="#" class="nav-btn" onclick="showSection('insights')">Insights</a>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p style="margin-top: 15px;">Loading trading journal data...</p>
+        </div>
+        
+        <!-- Content Sections -->
+        <div id="content" style="display: none;">
+            <!-- Overview Section -->
+            <div id="overview-section">
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Today's Performance</h3>
+                    <div class="stats-grid" id="today-stats">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Recent Trades -->
+                <div class="card">
+                    <h3><i class="fas fa-history"></i> Recent Trades</h3>
+                    <div id="recent-trades">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Grid: Performance & Emotions -->
+                <div class="grid">
+                    <!-- Performance Chart -->
+                    <div class="card">
+                        <h3><i class="fas fa-chart-bar"></i> P/L Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="pnlChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Emotions Chart -->
+                    <div class="card">
+                        <h3><i class="fas fa-brain"></i> Emotional State</h3>
+                        <div class="chart-container">
+                            <canvas id="emotionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- All Trades Section -->
+            <div id="trades-section" style="display: none;">
+                <div class="card">
+                    <h3><i class="fas fa-list"></i> All Trades</h3>
+                    <div style="margin-bottom: 20px;">
+                        <input type="text" id="search-trades" class="form-input" placeholder="Search trades by symbol, emotion, or notes..." onkeyup="filterTrades()">
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Symbol</th>
+                                <th>Action</th>
+                                <th>Qty</th>
+                                <th>Entry</th>
+                                <th>Exit</th>
+                                <th>P/L</th>
+                                <th>Emotion</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-trades-table">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Performance Section -->
+            <div id="performance-section" style="display: none;">
+                <div class="grid">
+                    <!-- Performance Metrics -->
+                    <div class="card">
+                        <h3><i class="fas fa-trophy"></i> Performance Metrics</h3>
+                        <div class="stats-grid" id="performance-metrics">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Win Rate Analysis -->
+                    <div class="card">
+                        <h3><i class="fas fa-percentage"></i> Win Rate Analysis</h3>
+                        <div class="chart-container">
+                            <canvas id="winRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Best/Worst Trades -->
+                <div class="card">
+                    <h3><i class="fas fa-star"></i> Best & Worst Trades</h3>
+                    <div class="grid">
+                        <div id="best-trades">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                        <div id="worst-trades">
+                            <!-- Filled by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Emotions Section -->
+            <div id="emotions-section" style="display: none;">
+                <div class="card">
+                    <h3><i class="fas fa-brain"></i> Emotional Tracking</h3>
+                    <p style="color: #94a3b8; margin-bottom: 20px;">
+                        Track how your emotions affect trading performance. Studies show emotional discipline is key to long-term success.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="emotionPerformanceChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-lightbulb"></i> Emotional Insights</h3>
+                    <div id="emotional-insights">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insights Section -->
+            <div id="insights-section" style="display: none;">
+                <div class="card">
+                    <h3><i class="fas fa-chart-pie"></i> Trading Insights</h3>
+                    <div id="ai-insights">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><i class="fas fa-graduation-cap"></i> Improvement Suggestions</h3>
+                    <div id="improvement-suggestions">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Trade Modal -->
+        <div id="add-trade-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+            <div style="background: var(--dark); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-plus"></i> Add New Trade</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Symbol</label>
+                    <input type="text" id="trade-symbol" class="form-input" placeholder="ES, NQ, KC, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Action</label>
+                    <select id="trade-action" class="form-input">
+                        <option value="BUY">BUY</option>
+                        <option value="SELL">SELL</option>
+                        <option value="BUY_TO_OPEN">BUY TO OPEN</option>
+                        <option value="SELL_TO_OPEN">SELL TO OPEN</option>
+                        <option value="BUY_TO_CLOSE">BUY TO CLOSE</option>
+                        <option value="SELL_TO_CLOSE">SELL TO CLOSE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" id="trade-quantity" class="form-input" placeholder="1" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Entry Price</label>
+                    <input type="number"
