@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deal Desk - Rural Haven</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.svg">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <a href="/" class="back-to-mc">&larr; Mission Control</a>
+          <p class="eyebrow">Property OS</p>
+          <h1>One operating system for your deals.</h1>
+          <p class="sidebar-copy">
+            Track pipeline, underwrite faster, compare opportunities, and keep
+            every note tied to the asset.
+          </p>
+        </div>
+
+        <section class="sidebar-panel">
+          <div class="panel-heading">
+            <p class="section-label">Access</p>
+            <button id="authToggleButton" class="ghost-button" type="button">Sign in</button>
+          </div>
+          <div id="authStatus" class="auth-status"></div>
+        </section>
+
+        <section class="sidebar-panel">
+          <div class="panel-heading">
+            <p class="section-label">Portfolio</p>
+            <button id="resetButton" class="ghost-button" type="button">Reset demo</button>
+          </div>
+          <div id="portfolioStats" class="stat-list"></div>
+        </section>
+
+        <section class="sidebar-panel">
+          <p class="section-label">Pipeline Filter</p>
+          <div id="stageFilters" class="filter-stack"></div>
+        </section>
+
+        <section class="sidebar-panel">
+          <p class="section-label">Action Queue</p>
+          <div id="urgentTasks" class="task-list"></div>
+        </section>
+
+        <section class="sidebar-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">Import Deal</p>
+              <h3>Listing URL, PDF, or raw text</h3>
+            </div>
+          </div>
+          <form id="importForm" class="import-form">
+            <label>
+              <span class="field-label">Listing URL</span>
+              <input id="importUrl" name="sourceUrl" type="url" placeholder="https://www.crexi.com/properties/... or any listing page" />
+            </label>
+            <label>
+              <span class="field-label">Raw listing text</span>
+              <textarea id="importText" name="rawText" rows="4" placeholder="Paste broker remarks, OM text, or deal notes here."></textarea>
+            </label>
+            <label>
+              <span class="field-label">PDF upload</span>
+              <input id="importFile" name="sourceFile" type="file" accept="application/pdf" />
+            </label>
+            <button id="importButton" class="primary-button" type="submit">Save import</button>
+          </form>
+          <div id="importStatus" class="import-status"></div>
+          <div id="importList" class="task-list"></div>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <section class="hero-strip">
+          <div>
+            <p class="section-label">Deal Desk</p>
+            <h2>Underwrite, compare, and manage live opportunities in one place.</h2>
+          </div>
+          <div class="hero-meta">
+            <div>
+              <span class="meta-label">Selected deal</span>
+              <strong id="selectedDealName">None</strong>
+            </div>
+            <div>
+              <span class="meta-label">Last updated</span>
+              <strong id="selectedDealUpdated">-</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="workspace-panel pipeline-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Pipeline</p>
+                <h3>Current deals</h3>
+              </div>
+              <button id="newDealButton" class="primary-button" type="button">New deal</button>
+            </div>
+            <div id="dealBoard" class="deal-board"></div>
+          </div>
+
+          <div class="workspace-panel detail-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Deal Analysis</p>
+                <h3>Underwriting model</h3>
+              </div>
+              <p class="panel-note">Hover the info dots to see what each input does.</p>
+            </div>
+
+            <form id="dealForm" class="deal-form">
+              <div class="form-grid">
+                <label>
+                  <span class="field-label">Property name</span>
+                  <input name="name" type="text" required />
+                </label>
+                <label>
+                  <span class="field-label">Market</span>
+                  <input name="market" type="text" required />
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label">Asset type</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Type of property. This helps frame how you compare the deal and which assumptions are most relevant.</span></span>
+                  </span>
+                  <select name="assetType">
+                    <option value="Multifamily">Multifamily</option>
+                    <option value="Single Family">Single Family</option>
+                    <option value="Mixed Use">Mixed Use</option>
+                    <option value="Storage">Storage</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Office">Office</option>
+                    <option value="Industrial">Industrial</option>
+                  </select>
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label">Stage</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Where the deal sits in your pipeline so you can filter and prioritize it.</span></span>
+                  </span>
+                  <select name="stage">
+                    <option value="Lead">Lead</option>
+                    <option value="Underwriting">Underwriting</option>
+                    <option value="LOI">LOI</option>
+                    <option value="Due Diligence">Due Diligence</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Dead">Dead</option>
+                  </select>
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label">Deal strategy</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Choose the business plan. Rental hold focuses on cash flow, slow flip focuses on installment-style resale, and flip focuses on quick resale margin.</span></span>
+                  </span>
+                  <select name="dealStrategy">
+                    <option value="Rental Hold">Rental Hold</option>
+                    <option value="Slow Flip">Slow Flip</option>
+                    <option value="Flip">Flip</option>
+                  </select>
+                </label>
+                <label class="strategy-field strategy-rental-hold strategy-flip">
+                  <span class="field-header">
+                    <span class="field-label">Financing</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Select the acquisition capital stack. You can use all cash, a bank loan, seller carry, or a split bank plus seller-finance structure.</span></span>
+                  </span>
+                  <select name="financingType">
+                    <option value="Bank Loan">Bank Loan</option>
+                    <option value="Cash">Cash</option>
+                    <option value="PML">PML</option>
+                    <option value="Seller Financing">Seller Financing</option>
+                    <option value="Bank + Seller Finance">Bank + Seller Finance</option>
+                  </select>
+                </label>
+                <label class="finance-field finance-bank">
+                  <span class="field-header">
+                    <span class="field-label">Bank LTV %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Percent of total basis funded by a conventional lender.</span></span>
+                  </span>
+                  <input name="bankLtvRate" type="number" min="0" max="100" step="0.5" />
+                </label>
+                <label class="finance-field finance-bank finance-pml">
+                  <span class="field-header">
+                    <span class="field-label">Loan amount</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Explicit acquisition loan amount. If you fill this in, the app will use it instead of deriving the debt from a percentage.</span></span>
+                  </span>
+                  <input name="loanAmount" type="number" min="0" step="1000" />
+                </label>
+                <label class="finance-field finance-seller">
+                  <span class="field-header">
+                    <span class="field-label">Seller carry %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Percent of total basis financed by the seller through a note or carryback.</span></span>
+                  </span>
+                  <input name="sellerCarryRate" type="number" min="0" max="100" step="0.5" />
+                </label>
+                <label class="finance-field finance-seller">
+                  <span class="field-header">
+                    <span class="field-label">Seller carry amount</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Explicit seller-finance amount. If entered, this overrides the seller carry percentage.</span></span>
+                  </span>
+                  <input name="sellerCarryAmount" type="number" min="0" step="1000" />
+                </label>
+                <label class="finance-field finance-pml">
+                  <span class="field-header">
+                    <span class="field-label">PML loan %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Percent of total basis funded by the private money lender.</span></span>
+                  </span>
+                  <input name="pmlLoanRate" type="number" min="0" max="100" step="0.5" />
+                </label>
+                <label class="finance-field finance-bank finance-pml finance-seller finance-cash">
+                  <span class="field-header">
+                    <span class="field-label">Acquisition down payment amount</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Cash advanced before acquisition to secure the deal. This is tracked separately as temporary capital that is credited or reimbursed at acquisition closing.</span></span>
+                  </span>
+                  <input name="acquisitionDownPaymentAmount" type="number" min="0" step="1000" />
+                </label>
+                <label class="asset-field not-single-family">
+                  <span class="field-header">
+                    <span class="field-label">Units</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Number of rentable units or doors. Used for price-per-unit and comp comparisons.</span></span>
+                  </span>
+                  <input name="units" type="number" min="1" step="1" />
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label">Purchase price</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Contract acquisition price before rehab and closing improvements.</span></span>
+                  </span>
+                  <input name="purchasePrice" type="number" min="0" step="1000" />
+                </label>
+                <label class="strategy-field strategy-rental-hold">
+                  <span class="field-header">
+                    <span class="field-label" id="monthlyRentLabel">Monthly rent</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Expected monthly rent at stabilization. Used mainly for rental holds.</span></span>
+                  </span>
+                  <input name="monthlyRent" type="number" min="0" step="0.01" />
+                </label>
+                <label class="strategy-field strategy-rental-hold">
+                  <span class="field-header">
+                    <span class="field-label">Other monthly income</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Laundry, parking, RUBS, pet fees, storage, or other recurring property income.</span></span>
+                  </span>
+                  <input name="otherIncome" type="number" min="0" step="0.01" />
+                </label>
+                <label class="strategy-field strategy-rental-hold">
+                  <span class="field-header">
+                    <span class="field-label">Expense ratio %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Percent of effective income consumed by operating expenses like taxes, insurance, repairs, management, and utilities.</span></span>
+                  </span>
+                  <input name="expenseRatio" type="number" min="0" max="100" step="0.5" />
+                </label>
+                <label class="strategy-field strategy-rental-hold">
+                  <span class="field-header">
+                    <span class="field-label">Vacancy %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Revenue loss assumed from physical vacancy and collection loss.</span></span>
+                  </span>
+                  <input name="vacancyRate" type="number" min="0" max="100" step="0.1" />
+                </label>
+                <label class="strategy-field strategy-rental-hold">
+                  <span class="field-header">
+                    <span class="field-label">Capex reserve %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Reserve set aside for longer-term capital items like roofs, HVAC, parking lots, and major turns.</span></span>
+                  </span>
+                  <input name="capexRate" type="number" min="0" max="100" step="0.1" />
+                </label>
+                <label class="strategy-field strategy-rental-hold strategy-flip">
+                  <span class="field-header">
+                    <span class="field-label">Rehab budget</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Capital needed to improve the property before stabilization or resale.</span></span>
+                  </span>
+                  <input name="rehabBudget" type="number" min="0" step="1000" />
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label">Closing costs</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Use a flat dollar amount or a percent of purchase price. Choose the mode that matches how you want to underwrite the deal.</span></span>
+                  </span>
+                  <div class="inline-field">
+                    <input name="closingCosts" type="number" step="0.01" />
+                    <select name="closingCostsMode">
+                      <option value="percent">%</option>
+                      <option value="amount">$</option>
+                    </select>
+                  </div>
+                </label>
+                <label class="finance-field finance-cash finance-pml">
+                  <span class="field-header">
+                    <span class="field-label">Cash to close %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Cash needed to close the acquisition after loan proceeds and credits are applied.</span></span>
+                  </span>
+                  <input name="downPaymentRate" type="number" min="0" max="100" step="0.5" />
+                </label>
+                <label class="finance-field finance-bank finance-seller finance-pml">
+                  <span class="field-header">
+                    <span class="field-label" id="interestRateLabel">Bank interest rate %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Annual rate on the active acquisition debt.</span></span>
+                  </span>
+                  <input name="interestRate" type="number" min="0" max="20" step="0.05" />
+                </label>
+                <label class="finance-field finance-seller">
+                  <span class="field-header">
+                    <span class="field-label">Seller note rate %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Annual rate on the seller-financed portion.</span></span>
+                  </span>
+                  <input name="sellerInterestRate" type="number" min="0" max="20" step="0.05" />
+                </label>
+                <label class="finance-field finance-bank finance-seller finance-pml">
+                  <span class="field-header">
+                    <span class="field-label" id="loanTermLabel">Bank term (years)</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">How long the active acquisition debt lasts before it is paid off.</span></span>
+                  </span>
+                  <input name="loanTermYears" type="number" min="1" max="40" step="1" />
+                </label>
+                <label class="finance-field finance-seller">
+                  <span class="field-header">
+                    <span class="field-label">Seller term (years)</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Amortization or payoff window for the seller note.</span></span>
+                  </span>
+                  <input name="sellerTermYears" type="number" min="1" max="40" step="1" />
+                </label>
+                <label>
+                  <span class="field-header">
+                    <span class="field-label" id="holdYearsLabel">Target hold (years)</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">How long you plan to hold before refinance, sale, or note payoff.</span></span>
+                  </span>
+                  <input name="holdYears" type="number" min="1" max="50" step="1" />
+                </label>
+                <label class="strategy-field strategy-flip strategy-slow-flip">
+                  <span class="field-header">
+                    <span class="field-label" id="salePriceLabel">After repair value</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Estimated stabilized value for flips, or agreed sale price to the end buyer on a slow flip.</span></span>
+                  </span>
+                  <input name="afterRepairValue" type="number" step="0.01" />
+                </label>
+                <label class="strategy-field strategy-slow-flip buyer-field">
+                  <span class="field-header">
+                    <span class="field-label">Monthly payment from buyer</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">For slow flips, this is the installment payment you expect to collect from your buyer each month.</span></span>
+                  </span>
+                  <input name="monthlyBuyerPayment" type="number" min="0" step="0.01" />
+                </label>
+                <label class="strategy-field strategy-slow-flip buyer-field">
+                  <span class="field-header">
+                    <span class="field-label">Buyer down payment at owner-finance sale</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Cash your end buyer puts down when you owner-finance the property to them.</span></span>
+                  </span>
+                  <input name="buyerDownPayment" type="number" min="0" step="1000" />
+                </label>
+                <label class="strategy-field strategy-slow-flip buyer-field">
+                  <span class="field-header">
+                    <span class="field-label">Balloon payment</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Lump sum expected at the end of the owner-finance note from your buyer or owed to the seller on acquisition.</span></span>
+                  </span>
+                  <input name="balloonPayment" type="number" min="0" step="1000" />
+                </label>
+                <label class="strategy-field strategy-rental-hold strategy-flip strategy-slow-flip">
+                  <span class="field-header">
+                    <span class="field-label">Disposition fee / sell costs %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Brokerage, closing, and disposition costs as a percent of exit value or resale price.</span></span>
+                  </span>
+                  <input name="saleCostsRate" type="number" min="0" max="20" step="0.1" />
+                </label>
+                <label class="strategy-field strategy-flip strategy-slow-flip">
+                  <span class="field-header">
+                    <span class="field-label">Annual taxes + insurance</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Base year property taxes and insurance. The app grows this over time for long holds and owner-finance deals.</span></span>
+                  </span>
+                  <input name="annualCarryCosts" type="number" min="0" step="500" />
+                </label>
+                <label class="strategy-field strategy-flip strategy-slow-flip">
+                  <span class="field-header">
+                    <span class="field-label">Taxes + insurance growth %</span>
+                    <span class="info-dot" tabindex="0">i<span class="tooltip">Annual growth rate for taxes and insurance. Defaults to 0.5% so long-hold projections don't assume flat carrying costs forever.</span></span>
+                  </span>
+                  <input name="carryCostGrowthRate" type="number" min="0" max="10" step="0.1" />
+                </label>
+                <label class="full-span">
+                  <span class="field-label">Notes</span>
+                  <textarea name="notes" rows="4"></textarea>
+                </label>
+                <label class="full-span">
+                  <span class="field-label">Next action</span>
+                  <input name="nextAction" type="text" />
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button class="primary-button" type="submit">Save deal</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="workspace-panel metrics-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Key Metrics</p>
+                <h3>What the numbers say</h3>
+              </div>
+            </div>
+            <div id="metricCards" class="metric-grid"></div>
+            <div class="scenario-panel">
+              <div>
+                <p class="section-label">Scenario</p>
+                <h4>Stress test</h4>
+              </div>
+              <label>
+                Rent growth %
+                <input id="rentGrowthInput" type="range" min="-10" max="15" step="1" value="3" />
+                <span id="rentGrowthValue" class="range-value">3%</span>
+              </label>
+              <label>
+                Exit cap %
+                <input id="exitCapInput" type="range" min="4" max="10" step="0.1" value="6" />
+                <span id="exitCapValue" class="range-value">6.0%</span>
+              </label>
+              <div id="scenarioSummary" class="scenario-summary"></div>
+            </div>
+          </div>
+
+          <div class="workspace-panel intel-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Deal Intel</p>
+                <h3>Comps and timeline</h3>
+              </div>
+            </div>
+            <div class="intel-grid">
+              <div>
+                <h4>Comparable sales</h4>
+                <div id="compList" class="comp-list"></div>
+              </div>
+              <div>
+                <h4>Recent activity</h4>
+                <div id="timelineList" class="timeline-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="authOverlay" class="auth-overlay" hidden>
+      <div class="auth-card">
+        <p class="section-label">Private Access</p>
+        <h2>Sign in to Property OS</h2>
+        <p class="panel-note">
+          This version uses your Supabase project so deals sync across devices and stay private to your account.
+        </p>
+        <form id="authForm" class="auth-form">
+          <label>
+            <span class="field-label">Email</span>
+            <input id="authEmail" name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span class="field-label">Password</span>
+            <input id="authPassword" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <div class="auth-actions">
+            <button id="signInButton" class="primary-button" type="submit">Sign in</button>
+            <button id="signUpButton" class="ghost-button light-ghost" type="button">Create account</button>
+          </div>
+        </form>
+        <div id="authMessage" class="auth-message"></div>
+      </div>
+    </div>
+
+    <template id="dealCardTemplate">
+      <button class="deal-card" type="button">
+        <span class="deal-stage"></span>
+        <strong class="deal-name"></strong>
+        <span class="deal-subtitle"></span>
+        <div class="deal-kpis"></div>
+      </button>
+    </template>
+
+    <script type="module" src="app.js"></script>
+    <script type="module" src="extractor.js"></script>
+  </body>
+</html>
