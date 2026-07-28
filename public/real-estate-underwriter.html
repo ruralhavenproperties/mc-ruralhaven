@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Estate Underwriter - Rural Haven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.svg">
+<style>
+  :root{
+    --paper:#F1ECE0;
+    --paper-line:#B9C7CE;
+    --ink:#1F3A52;
+    --ink-soft:#4C6478;
+    --blue:#2B5C7A;
+    --flag:#C1541C;
+    --flag-dark:#9A3F16;
+    --green:#3F6B4A;
+    --red:#A23B2E;
+    --panel:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
+      var(--paper);
+    background-blend-mode:multiply;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink);
+    min-height:100vh;
+    padding:18px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  .titleblock{
+    border:2px solid var(--ink);
+    background:var(--panel);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    padding:14px 18px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .titleblock h1{
+    font-family:'Zilla Slab', serif;
+    font-weight:700;
+    font-size:clamp(20px,4vw,30px);
+    margin:0 0 2px 0;
+    letter-spacing:0.3px;
+  }
+  .titleblock .sub{font-size:11px;color:var(--ink-soft);letter-spacing:1.5px;text-transform:uppercase;}
+  .titleblock .back{display:inline-block;margin-bottom:6px;font-size:11px;color:var(--blue);text-decoration:none;letter-spacing:0.5px;}
+  .titleblock .back:hover{text-decoration:underline;}
+  .stamp{
+    border:2px solid var(--flag);
+    color:var(--flag-dark);
+    padding:6px 12px;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    font-weight:600;
+    transform:rotate(-2deg);
+    white-space:nowrap;
+  }
+
+  .modetabs{display:flex;gap:8px;margin-bottom:16px;}
+  .modetabs button{
+    flex:1;
+    font-family:'Zilla Slab',serif;font-weight:600;font-size:15px;
+    border:2px solid var(--ink);background:var(--panel);color:var(--ink);
+    padding:12px 10px;cursor:pointer;letter-spacing:0.3px;
+  }
+  .modetabs button.active{background:var(--ink);color:var(--paper);}
+
+  .mode{display:none;}
+  .mode.active{display:block;}
+
+  .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;}
+  @media (max-width:860px){ .grid{grid-template-columns:1fr;} }
+
+  .card{border:1.5px solid var(--ink);background:var(--panel);padding:18px 20px;margin-bottom:18px;}
+  .card h2{
+    font-family:'Zilla Slab', serif;font-size:15px;text-transform:uppercase;letter-spacing:1.5px;
+    margin:0 0 14px 0;padding-bottom:8px;border-bottom:1px dashed var(--paper-line);color:var(--blue);
+  }
+
+  .field{margin-bottom:13px;}
+  .field label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:11.5px;color:var(--ink-soft);letter-spacing:0.4px;margin-bottom:5px;text-transform:uppercase;
+  }
+  .field label .val{color:var(--flag-dark);font-weight:600;font-size:12px;}
+  .field input[type=range]{width:100%;accent-color:var(--flag);height:4px;}
+  .field .numrow{display:flex;align-items:center;gap:8px;}
+  .field input[type=number], .field input[type=text]{
+    width:100%;font-family:'IBM Plex Mono', monospace;font-size:14px;padding:7px 8px;
+    border:1px solid var(--ink);background:#fff;color:var(--ink);
+  }
+  .field .prefix{color:var(--ink-soft);font-size:13px;}
+
+  .unit-toggle{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .unit-toggle button{
+    flex:1;min-width:70px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;
+    border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:8px 6px;cursor:pointer;
+  }
+  .unit-toggle button.active{background:var(--ink);color:var(--paper);}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  @media (max-width:600px){ .row3{grid-template-columns:1fr;} }
+
+  .results{position:sticky;top:18px;}
+  .lineitem{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted var(--paper-line);font-size:13px;}
+  .lineitem .k{color:var(--ink-soft);}
+  .lineitem .v{font-weight:600;}
+  .lineitem.total{border-bottom:2px solid var(--ink);font-size:14px;padding-top:8px;}
+
+  .headline{
+    text-align:center;padding:16px 8px 18px 8px;margin-bottom:14px;border:2px solid var(--flag);
+    background:repeating-linear-gradient(135deg, rgba(193,84,28,0.05) 0 10px, transparent 10px 20px);
+  }
+  .headline .label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--flag-dark);}
+  .headline .num{font-family:'Zilla Slab',serif;font-weight:700;font-size:clamp(26px,5vw,38px);color:var(--ink);margin-top:2px;}
+  .headline .num.neg{color:var(--red);}
+  .headline .sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+
+  .verdict{
+    text-align:center;font-family:'Zilla Slab',serif;font-weight:700;font-size:15px;
+    letter-spacing:1px;padding:6px;margin-top:8px;border:1.5px solid var(--ink);
+  }
+  .verdict.deal{background:var(--green);color:#fff;border-color:var(--green);}
+  .verdict.nodeal{background:var(--red);color:#fff;border-color:var(--red);}
+
+  .section-gap{margin-top:16px;}
+  .footnote{font-size:10.5px;color:var(--ink-soft);line-height:1.5;margin-top:14px;padding-top:10px;border-top:1px dashed var(--paper-line);}
+  .badge-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  .badge{flex:1;min-width:110px;border:1px solid var(--ink);padding:8px 10px;text-align:center;background:#fff;}
+  .badge .bk{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);}
+  .badge .bv{font-family:'Zilla Slab',serif;font-weight:700;font-size:16px;margin-top:2px;}
+
+  /* Comps table */
+  table.comps{width:100%;border-collapse:collapse;font-size:11.5px;}
+  table.comps th{
+    text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-soft);
+    border-bottom:1px solid var(--ink);padding:5px 4px;
+  }
+  table.comps td{padding:4px 4px;border-bottom:1px dotted var(--paper-line);}
+  table.comps input{
+    width:100%;font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:4px;
+    border:1px solid var(--paper-line);background:#fff;color:var(--ink);
+  }
+  .comps-note{font-size:10.5px;color:var(--ink-soft);margin-bottom:10px;line-height:1.5;}
+  .comps-avg{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;padding-top:8px;margin-top:6px;border-top:1.5px solid var(--ink);}
+  .comps-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:860px){ .comps-cols{grid-template-columns:1fr;} }
+  .comps-cols h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--flag-dark);margin:0 0 6px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div>
+      <a href="/" class="back">&larr; Mission Control</a><br>
+      <h1>Real Estate Underwriter</h1>
+      <div class="sub">Ground-up multifamily · single-family flip / reno</div>
+    </div>
+    <div class="stamp">Not Financial Advice</div>
+  </div>
+
+  <div class="modetabs">
+    <button id="btnMulti" class="active">New Build (Multifamily)</button>
+    <button id="btnFlip">Flip / Renovation</button>
+  </div>
+
+  <!-- ============ MULTIFAMILY MODE ============ -->
+  <div class="mode active" id="mode-multi">
+  <div class="grid">
+    <div>
+    <div class="card">
+      <h2>Project Assumptions</h2>
+      <div class="unit-toggle" id="unitToggle">
+        <button data-units="4">4-plex</button>
+        <button data-units="8" class="active">8-plex</button>
+        <button data-units="12">12-plex</button>
+        <button data-units="custom">custom</button>
+      </div>
+      <div class="field">
+        <label>Number of units <span class="val" id="unitsVal">8</span></label>
+        <input type="range" id="units" min="2" max="40" step="1" value="8">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Avg unit size (sf) <span class="val" id="sfVal">1,000</span></label>
+          <input type="range" id="sf" min="500" max="1800" step="25" value="1000">
+        </div>
+        <div class="field">
+          <label>Common area / circulation <span class="val" id="commonVal">15%</span></label>
+          <input type="range" id="common" min="0" max="40" step="1" value="15">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Monthly rent / unit</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="rent" value="1750" step="25"></div>
+        </div>
+        <div class="field">
+          <label>Cost to build ($/sf, all-in)</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="costsf" value="185" step="5"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Land cost (total)</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="land" value="200000" step="5000"></div>
+        </div>
+        <div class="field">
+          <label>Vacancy rate <span class="val" id="vacVal">5%</span></label>
+          <input type="range" id="vac" min="0" max="20" step="1" value="5">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Operating expense ratio <span class="val" id="expVal">20%</span></label>
+          <input type="range" id="exp" min="5" max="45" step="1" value="20">
+        </div>
+        <div class="field">
+          <label>Exit cap rate <span class="val" id="capVal">5.0%</span></label>
+          <input type="range" id="cap" min="3" max="10" step="0.1" value="5.0">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Construction loan rate <span class="val" id="rateVal">9.0%</span></label>
+          <input type="range" id="rate" min="4" max="14" step="0.25" value="9.0">
+        </div>
+        <div class="field">
+          <label>Avg draw factor <span class="val" id="drawVal">30%</span></label>
+          <input type="range" id="draw" min="10" max="60" step="1" value="30">
+        </div>
+      </div>
+      <div class="footnote">
+        <strong>Draw factor</strong> — construction loans fund in draws, not lump sum, so interest is only charged on the portion actually drawn. ~30% of a fully-annualized interest figure approximates real carry cost over a typical build cycle.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Bank Financing — the "two spreadsheet" method</h2>
+      <div class="row2">
+        <div class="field">
+          <label>Retail markup on execution budget <span class="val" id="markupVal">18%</span></label>
+          <input type="range" id="markup" min="0" max="35" step="1" value="18">
+        </div>
+        <div class="field">
+          <label>Bank loan-to-cost (LTC) <span class="val" id="ltcVal">80%</span></label>
+          <input type="range" id="ltc" min="50" max="100" step="1" value="80">
+        </div>
+      </div>
+      <div class="footnote">
+        You budget this project twice. <strong>Execution budget</strong> is what you actually pay subs/suppliers. <strong>Retail (bank) budget</strong> marks every line item up, and it's what the bank underwrites against. The spread between the two is the equity the bank sees on day one.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>If you plan to sell instead of hold</h2>
+      <div class="field">
+        <label>Selling / closing costs (commissions + escrow) <span class="val" id="sellVal">6%</span></label>
+        <input type="range" id="sellcost" min="0" max="12" step="0.5" value="6">
+      </div>
+    </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results">
+      <div class="headline">
+        <div class="label">Est. equity created (12 mo. hold)</div>
+        <div class="num" id="equityBig">$0</div>
+        <div class="sub" id="equitySub">Stabilized value minus all-in cost</div>
+      </div>
+
+      <div class="card">
+        <h2>Income</h2>
+        <div class="lineitem"><span class="k">Gross potential rent / yr</span><span class="v" id="gpr">$0</span></div>
+        <div class="lineitem"><span class="k">Less vacancy</span><span class="v" id="vacLine">$0</span></div>
+        <div class="lineitem total"><span class="k">Effective gross income</span><span class="v" id="egi">$0</span></div>
+        <div class="lineitem"><span class="k">Operating expenses</span><span class="v" id="opex">$0</span></div>
+        <div class="lineitem total"><span class="k">Net operating income (NOI)</span><span class="v" id="noi">$0</span></div>
+
+        <h2 class="section-gap">Value</h2>
+        <div class="lineitem"><span class="k">NOI ÷ cap rate</span><span class="v" id="capline">—</span></div>
+        <div class="lineitem total"><span class="k">Stabilized value</span><span class="v" id="value">$0</span></div>
+
+        <h2 class="section-gap">Cost to build</h2>
+        <div class="lineitem"><span class="k">Building sf (incl. common area)</span><span class="v" id="totalsf">0 sf</span></div>
+        <div class="lineitem"><span class="k">Hard + soft cost</span><span class="v" id="buildcost">$0</span></div>
+        <div class="lineitem"><span class="k">Land</span><span class="v" id="landline">$0</span></div>
+        <div class="lineitem"><span class="k">Construction interest carry</span><span class="v" id="carry">$0</span></div>
+        <div class="lineitem total"><span class="k">Total project cost</span><span class="v" id="totalcost">$0</span></div>
+
+        <div class="badge-row">
+          <div class="badge"><div class="bk">$ / door value</div><div class="bv" id="perDoorValue">$0</div></div>
+          <div class="badge"><div class="bk">$ / door cost</div><div class="bv" id="perDoorCost">$0</div></div>
+          <div class="badge"><div class="bk">Yield on cost</div><div class="bv" id="yieldOnCost">0%</div></div>
+        </div>
+
+        <h2 class="section-gap">Bank Financing</h2>
+        <div class="lineitem"><span class="k">Execution budget (your real cost)</span><span class="v" id="execBudget">$0</span></div>
+        <div class="lineitem"><span class="k">Retail (bank) budget</span><span class="v" id="retailBudget">$0</span></div>
+        <div class="lineitem total"><span class="k">Bank loan (LTC × retail budget)</span><span class="v" id="bankLoan">$0</span></div>
+        <div class="lineitem"><span class="k">Equity bank sees at closing</span><span class="v" id="bankEquity">$0</span></div>
+        <div class="lineitem total"><span class="k">Cash needed out of pocket</span><span class="v" id="cashNeeded">$0</span></div>
+
+        <h2 class="section-gap">If Sold (net of closing costs)</h2>
+        <div class="lineitem"><span class="k">Stabilized value</span><span class="v" id="saleValue">$0</span></div>
+        <div class="lineitem"><span class="k">Less selling / closing costs</span><span class="v" id="sellCostLine">$0</span></div>
+        <div class="lineitem"><span class="k">Less execution cost</span><span class="v" id="saleCostLine">$0</span></div>
+        <div class="lineitem total"><span class="k">Net profit if sold</span><span class="v" id="netProfitSold">$0</span></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ============ FLIP MODE ============ -->
+  <div class="mode" id="mode-flip">
+  <div class="grid">
+    <div>
+    <div class="card">
+      <h2>Subject Property</h2>
+      <div class="field">
+        <label>Property address</label>
+        <input type="text" id="fAddress" value="2015 NW 20th St, OKC, OK 73106">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Subject size (sf)</label>
+          <div class="numrow"><input type="number" id="fSf" value="1580" step="10"></div>
+        </div>
+        <div class="field">
+          <label>Project length (months)</label>
+          <div class="numrow"><input type="number" id="fMonths" value="4" step="1"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Purchase price</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="fPurchase" value="210000" step="1000"></div>
+        </div>
+        <div class="field">
+          <label>Rehab budget</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="fRehab" value="68000" step="1000"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>EMD / other upfront cost</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="fEmd" value="0" step="500"></div>
+        </div>
+        <div class="field">
+          <label>Monthly holding cost (tax/ins/util/lawn)</label>
+          <div class="numrow"><span class="prefix">$</span><input type="number" id="fHoldMo" value="600" step="50"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Comps → ARV</h2>
+      <div class="comps-note">Enter recently <strong>sold</strong> comps to set ARV (after-repair value), and active/on-market listings as a sanity check on where the market's heading. Ask me to pull comps for a specific address and I'll search and fill these in for you.</div>
+      <div class="comps-cols">
+        <div>
+          <h3>Sold comps</h3>
+          <table class="comps" id="soldTable">
+            <thead><tr><th>Sold price</th><th>SF</th><th>$/sf</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="comps-avg"><span>Avg $/sf (sold)</span><span id="avgSoldSf">$0</span></div>
+        </div>
+        <div>
+          <h3>Active / on-market</h3>
+          <table class="comps" id="activeTable">
+            <thead><tr><th>List price</th><th>SF</th><th>$/sf</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="comps-avg"><span>Avg $/sf (active)</span><span id="avgActiveSf">$0</span></div>
+        </div>
+      </div>
+      <div class="field section-gap">
+        <label>ARV override (blank = use sold-comp avg × subject sf)</label>
+        <div class="numrow"><span class="prefix">$</span><input type="number" id="fArvOverride" placeholder="auto from comps"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Hard Money Financing</h2>
+      <div class="row3">
+        <div class="field">
+          <label>HML LTV (of ARV) <span class="val" id="fLtvVal">70%</span></label>
+          <input type="range" id="fLtv" min="50" max="90" step="1" value="70">
+        </div>
+        <div class="field">
+          <label>HML points <span class="val" id="fPointsVal">2.5%</span></label>
+          <input type="range" id="fPoints" min="0" max="6" step="0.25" value="2.5">
+        </div>
+        <div class="field">
+          <label>HML annual rate <span class="val" id="fRateVal">12.0%</span></label>
+          <input type="range" id="fRate" min="6" max="18" step="0.25" value="12.0">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Sale commission <span class="val" id="fCommVal">2.5%</span></label>
+          <input type="range" id="fComm" min="0" max="6" step="0.25" value="2.5">
+        </div>
+        <div class="field">
+          <label>Resale closing costs <span class="val" id="fClosingVal">1.5%</span></label>
+          <input type="range" id="fClosing" min="0" max="4" step="0.25" value="1.5">
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- FLIP RESULTS -->
+    <div class="results">
+      <div class="headline">
+        <div class="label" id="fProfitLabel">Est. net profit at ARV</div>
+        <div class="num" id="fProfitBig">$0</div>
+        <div class="sub" id="fProfitSub">Resale price minus all-in cost and selling costs</div>
+        <div class="verdict" id="fVerdict">—</div>
+      </div>
+
+      <div class="card">
+        <h2>70% Rule Check</h2>
+        <div class="lineitem"><span class="k">ARV</span><span class="v" id="fArv">$0</span></div>
+        <div class="lineitem"><span class="k">ARV × 70%</span><span class="v" id="f70">$0</span></div>
+        <div class="lineitem"><span class="k">Less rehab budget</span><span class="v" id="f70Rehab">$0</span></div>
+        <div class="lineitem total"><span class="k">Max allowable offer</span><span class="v" id="fMao">$0</span></div>
+        <div class="lineitem"><span class="k">Your purchase price</span><span class="v" id="fPurchLine">$0</span></div>
+        <div class="lineitem total"><span class="k">Room under/over MAO</span><span class="v" id="fMaoDelta">$0</span></div>
+
+        <h2 class="section-gap">Total Project Cost</h2>
+        <div class="lineitem"><span class="k">Purchase price</span><span class="v" id="fCostPurchase">$0</span></div>
+        <div class="lineitem"><span class="k">Rehab budget</span><span class="v" id="fCostRehab">$0</span></div>
+        <div class="lineitem"><span class="k">EMD / other</span><span class="v" id="fCostEmd">$0</span></div>
+        <div class="lineitem"><span class="k">Holding costs (monthly × months)</span><span class="v" id="fCostHold">$0</span></div>
+        <div class="lineitem"><span class="k">HML points + interest</span><span class="v" id="fCostFinance">$0</span></div>
+        <div class="lineitem total"><span class="k">Total project cost</span><span class="v" id="fTotalCost">$0</span></div>
+
+        <h2 class="section-gap">Financing</h2>
+        <div class="lineitem"><span class="k">HML loan amount (LTV × ARV)</span><span class="v" id="fLoanAmt">$0</span></div>
+        <div class="lineitem"><span class="k">HML points cost</span><span class="v" id="fPointsCost">$0</span></div>
+        <div class="lineitem"><span class="k">HML interest cost (term)</span><span class="v" id="fInterestCost">$0</span></div>
+        <div class="lineitem total"><span class="k">Cash needed to close</span><span class="v" id="fCashToClose">$0</span></div>
+
+        <h2 class="section-gap">Exit</h2>
+        <div class="lineitem"><span class="k">Resale price (ARV)</span><span class="v" id="fExitArv">$0</span></div>
+        <div class="lineitem"><span class="k">Less commission + closing</span><span class="v" id="fExitCosts">$0</span></div>
+        <div class="lineitem total"><span class="k">Net proceeds</span><span class="v" id="fExitNet">$0</span></div>
+
+        <div class="badge-row">
+          <div class="badge"><div class="bk">Profit as % of cost</div><div class="bv" id="fRoi">0%</div></div>
+          <div class="badge"><div class="bk">$/sf all-in</div><div class="bv" id="fCostPerSf">$0</div></div>
+          <div class="badge"><div class="bk">$/sf ARV</div><div class="bv" id="fArvPerSf">$0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => (n<0?'−':'') + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+const fmtSf = n => Math.round(n).toLocaleString('en-US') + ' sf';
+
+/* ---------- MODE SWITCH ---------- */
+const btnMulti = $('btnMulti'), btnFlip = $('btnFlip');
+const modeMulti = $('mode-multi'), modeFlip = $('mode-flip');
+btnMulti.addEventListener('click', ()=>{
+  btnMulti.classList.add('active'); btnFlip.classList.remove('active');
+  modeMulti.classList.add('active'); modeFlip.classList.remove('active');
+});
+btnFlip.addEventListener('click', ()=>{
+  btnFlip.classList.add('active'); btnMulti.classList.remove('active');
+  modeFlip.classList.add('active'); modeMulti.classList.remove('active');
+  calcFlip();
+});
+
+/* ==================================================================
+   MULTIFAMILY MODE
+   ================================================================== */
+const units = $('units'), sf = $('sf'), common = $('common'), rent = $('rent'),
+      costsf = $('costsf'), land = $('land'), vac = $('vac'), exp = $('exp'),
+      cap = $('cap'), rate = $('rate'), draw = $('draw'),
+      markup = $('markup'), ltc = $('ltc'), sellcost = $('sellcost');
+
+const toggleBtns = document.querySelectorAll('#unitToggle button');
+toggleBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    toggleBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const u = btn.dataset.units;
+    if(u !== 'custom'){ units.value = u; }
+    calc();
+  });
+});
+function syncCustomToggle(){
+  const match = [...toggleBtns].find(b => b.dataset.units === units.value);
+  toggleBtns.forEach(b=>b.classList.remove('active'));
+  if(match){ match.classList.add('active'); }
+  else { document.querySelector('[data-units="custom"]').classList.add('active'); }
+}
+[units, sf, common, vac, exp, cap, rate, draw, markup, ltc, sellcost].forEach(el=>{
+  el.addEventListener('input', ()=>{ if(el===units) syncCustomToggle(); calc(); });
+});
+[rent, costsf, land].forEach(el=> el.addEventListener('input', calc));
+
+function calc(){
+  const nUnits = parseInt(units.value);
+  const unitSf = parseFloat(sf.value);
+  const commonPct = parseFloat(common.value)/100;
+  const monthlyRent = parseFloat(rent.value) || 0;
+  const costPerSf = parseFloat(costsf.value) || 0;
+  const landCost = parseFloat(land.value) || 0;
+  const vacPct = parseFloat(vac.value)/100;
+  const expPct = parseFloat(exp.value)/100;
+  const capRate = parseFloat(cap.value)/100;
+  const loanRate = parseFloat(rate.value)/100;
+  const drawFactor = parseFloat(draw.value)/100;
+
+  $('unitsVal').textContent = nUnits;
+  $('sfVal').textContent = unitSf.toLocaleString('en-US');
+  $('commonVal').textContent = Math.round(commonPct*100)+'%';
+  $('vacVal').textContent = Math.round(vacPct*100)+'%';
+  $('expVal').textContent = Math.round(expPct*100)+'%';
+  $('capVal').textContent = (capRate*100).toFixed(1)+'%';
+  $('rateVal').textContent = (loanRate*100).toFixed(2)+'%';
+  $('drawVal').textContent = Math.round(drawFactor*100)+'%';
+
+  const markupPct = parseFloat(markup.value)/100;
+  const ltcPct = parseFloat(ltc.value)/100;
+  const sellPct = parseFloat(sellcost.value)/100;
+  $('markupVal').textContent = Math.round(markupPct*100)+'%';
+  $('ltcVal').textContent = Math.round(ltcPct*100)+'%';
+  $('sellVal').textContent = (sellPct*100)+'%';
+
+  const gpr = nUnits * monthlyRent * 12;
+  const vacLoss = gpr * vacPct;
+  const egi = gpr - vacLoss;
+  const opex = egi * expPct;
+  const noi = egi - opex;
+  const value = capRate > 0 ? noi / capRate : 0;
+
+  const totalSf = nUnits * unitSf * (1 + commonPct);
+  const buildCost = totalSf * costPerSf;
+  const loanAmount = buildCost + landCost;
+  const carry = loanAmount * loanRate * drawFactor;
+  const totalCost = buildCost + landCost + carry;
+
+  const equity = value - totalCost;
+  const perDoorValue = value / nUnits;
+  const perDoorCost = totalCost / nUnits;
+  const yieldOnCost = totalCost > 0 ? (noi/totalCost)*100 : 0;
+
+  $('gpr').textContent = fmt(gpr);
+  $('vacLine').textContent = '−' + fmt(vacLoss);
+  $('egi').textContent = fmt(egi);
+  $('opex').textContent = '−' + fmt(opex);
+  $('noi').textContent = fmt(noi);
+  $('capline').textContent = fmt(noi) + ' ÷ ' + (capRate*100).toFixed(1) + '%';
+  $('value').textContent = fmt(value);
+  $('totalsf').textContent = fmtSf(totalSf);
+  $('buildcost').textContent = fmt(buildCost);
+  $('landline').textContent = fmt(landCost);
+  $('carry').textContent = fmt(carry);
+  $('totalcost').textContent = fmt(totalCost);
+  $('perDoorValue').textContent = fmt(perDoorValue);
+  $('perDoorCost').textContent = fmt(perDoorCost);
+  $('yieldOnCost').textContent = yieldOnCost.toFixed(1)+'%';
+
+  const retailBudget = totalCost * (1 + markupPct);
+  const bankLoan = retailBudget * ltcPct;
+  const bankEquity = retailBudget - bankLoan;
+  const cashNeeded = Math.max(0, totalCost - bankLoan);
+  $('execBudget').textContent = fmt(totalCost);
+  $('retailBudget').textContent = fmt(retailBudget);
+  $('bankLoan').textContent = fmt(bankLoan);
+  $('bankEquity').textContent = fmt(bankEquity);
+  $('cashNeeded').textContent = fmt(cashNeeded);
+
+  const sellCosts = value * sellPct;
+  const netProfitSold = value - sellCosts - totalCost;
+  $('saleValue').textContent = fmt(value);
+  $('sellCostLine').textContent = '−' + fmt(sellCosts);
+  $('saleCostLine').textContent = '−' + fmt(totalCost);
+  const netProfitEl = $('netProfitSold');
+  netProfitEl.textContent = fmt(netProfitSold);
+  netProfitEl.style.color = netProfitSold < 0 ? 'var(--red)' : 'var(--green)';
+
+  const equityBig = $('equityBig');
+  equityBig.textContent = fmt(equity);
+  equityBig.classList.toggle('neg', equity < 0);
+  $('equitySub').textContent = `${fmt(value)} value − ${fmt(totalCost)} cost, ${nUnits}-unit build`;
+}
+calc();
+
+/* ==================================================================
+   FLIP / RENOVATION MODE  (based on uploaded Flip Secrets tracker)
+   ================================================================== */
+function buildCompsTable(tbodyId, rows){
+  const tbody = document.querySelector('#'+tbodyId+' tbody');
+  tbody.innerHTML = '';
+  for(let i=0;i<rows;i++){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="number" class="c-price" step="1000" placeholder="0"></td>
+      <td><input type="number" class="c-sf" step="10" placeholder="0"></td>
+      <td class="c-ppsf">—</td>`;
+    tbody.appendChild(tr);
+  }
+}
+buildCompsTable('soldTable', 5);
+buildCompsTable('activeTable', 5);
+
+function wireCompsTable(tableId, avgElId){
+  const table = $(tableId);
+  table.addEventListener('input', ()=>{
+    let sum=0, count=0;
+    table.querySelectorAll('tbody tr').forEach(tr=>{
+      const price = parseFloat(tr.querySelector('.c-price').value)||0;
+      const sfv = parseFloat(tr.querySelector('.c-sf').value)||0;
+      const ppsfCell = tr.querySelector('.c-ppsf');
+      if(price>0 && sfv>0){
+        const ppsf = price/sfv;
+        ppsfCell.textContent = '$'+ppsf.toFixed(0);
+        sum += ppsf; count++;
+      } else {
+        ppsfCell.textContent = '—';
+      }
+    });
+    const avg = count>0 ? sum/count : 0;
+    $(avgElId).textContent = '$'+avg.toFixed(0);
+    calcFlip();
+  });
+}
+wireCompsTable('soldTable','avgSoldSf');
+wireCompsTable('activeTable','avgActiveSf');
+
+const fSf=$('fSf'), fMonths=$('fMonths'), fPurchase=$('fPurchase'), fRehab=$('fRehab'),
+      fEmd=$('fEmd'), fHoldMo=$('fHoldMo'), fArvOverride=$('fArvOverride'),
+      fLtv=$('fLtv'), fPoints=$('fPoints'), fRate=$('fRate'), fComm=$('fComm'), fClosing=$('fClosing');
+
+[fSf,fMonths,fPurchase,fRehab,fEmd,fHoldMo,fArvOverride,fLtv,fPoints,fRate,fComm,fClosing].forEach(el=>{
+  el.addEventListener('input', calcFlip);
+});
+
+function avgPpsf(tableId){
+  let sum=0, count=0;
+  document.querySelectorAll('#'+tableId+' tbody tr').forEach(tr=>{
+    const price = parseFloat(tr.querySelector('.c-price').value)||0;
+    const sfv = parseFloat(tr.querySelector('.c-sf').value)||0;
+    if(price>0 && sfv>0){ sum += price/sfv; count++; }
+  });
+  return count>0 ? sum/count : 0;
+}
+
+function calcFlip(){
+  const subjectSf = parseFloat(fSf.value)||0;
+  const months = parseFloat(fMonths.value)||0;
+  const purchase = parseFloat(fPurchase.value)||0;
+  const rehab = parseFloat(fRehab.value)||0;
+  const emd = parseFloat(fEmd.value)||0;
+  const holdMo = parseFloat(fHoldMo.value)||0;
+
+  const ltvPct = parseFloat(fLtv.value)/100;
+  const pointsPct = parseFloat(fPoints.value)/100;
+  const ratePct = parseFloat(fRate.value)/100;
+  const commPct = parseFloat(fComm.value)/100;
+  const closingPct = parseFloat(fClosing.value)/100;
+
+  $('fLtvVal').textContent = Math.round(ltvPct*100)+'%';
+  $('fPointsVal').textContent = (pointsPct*100).toFixed(2)+'%';
+  $('fRateVal').textContent = (ratePct*100).toFixed(1)+'%';
+  $('fCommVal').textContent = (commPct*100).toFixed(1)+'%';
+  $('fClosingVal').textContent = (closingPct*100).toFixed(1)+'%';
+
+  const soldAvg = avgPpsf('soldTable');
+  const overrideVal = parseFloat(fArvOverride.value);
+  const arv = (!isNaN(overrideVal) && overrideVal>0) ? overrideVal : (soldAvg * subjectSf);
+
+  // 70% rule
+  const seventy = arv * 0.70;
+  const mao = seventy - rehab;
+  const maoDelta = mao - purchase;
+
+  // Holding + financing
+  const holdingCost = holdMo * months;
+  const loanAmount = arv * ltvPct;
+  const pointsCost = loanAmount * pointsPct;
+  const interestCost = loanAmount * ratePct * (months/12);
+  const financeCost = pointsCost + interestCost;
+
+  const totalCost = purchase + rehab + emd + holdingCost + financeCost;
+  const cashToClose = Math.max(0, totalCost - loanAmount);
+
+  const exitCosts = arv * (commPct + closingPct);
+  const exitNet = arv - exitCosts;
+  const profit = exitNet - totalCost;
+  const roi = totalCost>0 ? (profit/totalCost)*100 : 0;
+  const costPerSf = subjectSf>0 ? totalCost/subjectSf : 0;
+  const arvPerSf = subjectSf>0 ? arv/subjectSf : 0;
+
+  $('fArv').textContent = fmt(arv);
+  $('f70').textContent = fmt(seventy);
+  $('f70Rehab').textContent = '−'+fmt(rehab);
+  $('fMao').textContent = fmt(mao);
+  $('fPurchLine').textContent = fmt(purchase);
+  const maoDeltaEl = $('fMaoDelta');
+  maoDeltaEl.textContent = fmt(maoDelta);
+  maoDeltaEl.style.color = maoDelta < 0 ? 'var(--red)' : 'var(--green)';
+
+  $('fCostPurchase').textContent = fmt(purchase);
+  $('fCostRehab').textContent = fmt(rehab);
+  $('fCostEmd').textContent = fmt(emd);
+  $('fCostHold').textContent = fmt(holdingCost);
+  $('fCostFinance').textContent = fmt(financeCost);
+  $('fTotalCost').textContent = fmt(totalCost);
+
+  $('fLoanAmt').textContent = fmt(loanAmount);
+  $('fPointsCost').textContent = fmt(pointsCost);
+  $('fInterestCost').textContent = fmt(interestCost);
+  $('fCashToClose').textContent = fmt(cashToClose);
+
+  $('fExitArv').textContent = fmt(arv);
+  $('fExitCosts').textContent = '−'+fmt(exitCosts);
+  $('fExitNet').textContent = fmt(exitNet);
+
+  $('fRoi').textContent = roi.toFixed(1)+'%';
+  $('fCostPerSf').textContent = '$'+costPerSf.toFixed(0);
+  $('fArvPerSf').textContent = '$'+arvPerSf.toFixed(0);
+
+  const profitBig = $('fProfitBig');
+  profitBig.textContent = fmt(profit);
+  profitBig.classList.toggle('neg', profit<0);
+  $('fProfitSub').textContent = `${fmt(arv)} ARV − ${fmt(exitCosts)} selling costs − ${fmt(totalCost)} total cost`;
+
+  const verdict = $('fVerdict');
+  if(purchase <= mao && profit > 0){
+    verdict.textContent = 'DEAL — under 70% rule MAO';
+    verdict.className = 'verdict deal';
+  } else {
+    verdict.textContent = 'NO DEAL — over 70% rule MAO';
+    verdict.className = 'verdict nodeal';
+  }
+}
+calcFlip();
+</script>
+</body>
+</html>
