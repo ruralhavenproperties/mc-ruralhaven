@@ -1,0 +1,190 @@
+<!-- Global Toolbar for all pages -->
+<div class="global-toolbar">
+    <div class="toolbar-content">
+        <div class="toolbar-left">
+            <a href="/" class="toolbar-btn">
+                <i class="bi bi-house"></i> Home
+            </a>
+            <a href="/trading/" class="toolbar-btn">
+                <i class="bi bi-speedometer2"></i> Trading
+            </a>
+            <a href="/trading/trading-live.html" class="toolbar-btn">
+                <i class="bi bi-lightning-charge"></i> Trading Live
+            </a>
+            <a href="/trading/options-calculator-original.html" class="toolbar-btn">
+                <i class="bi bi-calculator"></i> Options Calc
+            </a>
+            <a href="/trading/trade-upload.html" class="toolbar-btn">
+                <i class="bi bi-cloud-arrow-up"></i> Trade Upload
+            </a>
+            <a href="/stock-tracker.html" class="toolbar-btn">
+                <i class="bi bi-graph-up-arrow"></i> Stock Tracker
+            </a>
+            <a href="/mission-control-dynamic.html" class="toolbar-btn">
+                <i class="bi bi-activity"></i> Mission Control
+            </a>
+            <a href="/flip-projects-dynamic.html" class="toolbar-btn">
+                <i class="bi bi-building"></i> Flip Projects
+            </a>
+            <a href="/expense-categories.html" class="toolbar-btn">
+                <i class="bi bi-tags"></i> Expenses
+            </a>
+            <a href="/real-estate-underwriter.html" class="toolbar-btn">
+                <i class="bi bi-calculator"></i> Underwriter
+            </a>
+        </div>
+        <div class="toolbar-right">
+            <span class="toolbar-clock" id="toolbar-clock">
+                <i class="bi bi-clock"></i> Loading...
+            </span>
+            <a href="http://45.32.195.189:18789/?token=6048e5067e47e87fc39a3ec41e6887653daa499a5ed767ce" target="_blank" class="toolbar-btn">
+                <i class="bi bi-plug"></i> OpenClaw
+            </a>
+            <a href="https://supabase.com/dashboard/project/zqmeamjwzqqvstxjxtv" target="_blank" class="toolbar-btn">
+                <i class="bi bi-cloud"></i> Supabase
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .global-toolbar {
+        background: rgba(15, 23, 42, 0.95);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 10px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+    
+    .toolbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    .toolbar-left, .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .toolbar-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        text-decoration: none;
+    }
+    
+    .toolbar-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        color: #e2e8f0;
+        text-decoration: none;
+    }
+    
+    .toolbar-btn.active {
+        background: rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+        border-color: #3b82f6;
+    }
+    
+    .toolbar-btn i {
+        font-size: 0.9rem;
+    }
+    
+    .toolbar-clock {
+        font-size: 0.85rem;
+        font-family: 'Courier New', monospace;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        color: #e2e8f0;
+    }
+    
+    @media (max-width: 1200px) {
+        .toolbar-content {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .toolbar-left, .toolbar-right {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .toolbar-btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .toolbar-btn span {
+            display: none;
+        }
+        
+        .toolbar-btn i {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    // Update toolbar clock
+    function updateToolbarClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour12: true,
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        const dateString = now.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        const clockElement = document.getElementById('toolbar-clock');
+        if (clockElement) {
+            clockElement.innerHTML = `<i class="bi bi-clock"></i> ${dateString} ${timeString}`;
+        }
+    }
+    
+    // Highlight current page
+    function highlightCurrentPage() {
+        const currentPath = window.location.pathname;
+        const toolbarButtons = document.querySelectorAll('.toolbar-btn');
+        
+        toolbarButtons.forEach(btn => {
+            const href = btn.getAttribute('href');
+            if (href && currentPath.includes(href.replace('/', ''))) {
+                btn.classList.add('active');
+            }
+        });
+    }
+    
+    // Initialize
+    updateToolbarClock();
+    setInterval(updateToolbarClock, 60000);
+    highlightCurrentPage();
+    
+    // Add body padding for toolbar
+    document.body.style.paddingTop = '60px';
+</script>
