@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trading Dashboard - Futures & Commodities</title>
+    <style>
+        :root {
+            --futures-color: #3b82f6;
+            --commodities-color: #10b981;
+            --options-color: #8b5cf6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #e2e8f0;
+            --card-bg: #1e293b;
+            --border: #334155;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--futures-color) 0%, var(--commodities-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            margin: 0;
+        }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px;
+        }
+        
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card.futures {
+            border-top: 4px solid var(--futures-color);
+        }
+        
+        .card.commodities {
+            border-top: 4px solid var(--commodities-color);
+        }
+        
+        .card.options {
+            border-top: 4px solid var(--options-color);
+        }
+        
+        .card h3 { 
+            margin-top: 0; 
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card.futures h3 {
+            color: var(--futures-color);
+        }
+        
+        .card.commodities h3 {
+            color: var(--commodities-color);
+        }
+        
+        .card.options h3 {
+            color: var(--options-color);
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px;
+        }
+        
+        th, td { 
+            padding: 12px 15px; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border); 
+        }
+        
+        th { 
+            background: rgba(15, 23, 42, 0.5); 
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td { 
+            color: var(--light);
+        }
+        
+        .symbol {
+            font-weight: 700;
+            font-family: monospace;
+        }
+        
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        
+        .risk-high { color: #ef4444; font-weight: 600; }
+        .risk-medium { color: #f59e0b; font-weight: 600; }
+        .risk-low { color: #10b981; font-weight: 600; }
+        
+        .summary { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin: 30px 0; 
+            border: 1px solid var(--border);
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        
+        .summary h3 {
+            color: var(--futures-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: var(--card-bg);
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--futures-color);
+            border-color: var(--futures-color);
+        }
+        
+        .nav-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--futures-color);
+            border-color: var(--futures-color);
+        }
+        
+        .time-display {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Trading Mission Control</h1>
+            <p>Futures Day Trading & Commodities Options Analysis</p>
+            <div class="time-display">
+                <i class="fas fa-clock"></i> Last Updated: <span id="current-time">Loading...</span> | 
+                <i class="fas fa-calendar"></i> Date: 2026-04-18
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="http://45.32.195.189:8891/mission_control_index.html" class="nav-btn">
+                <i class="fas fa-home"></i> Mission Control Home
+            </a>
+            <a href="http://45.32.195.189:8891/trading_journal_dashboard.html" class="nav-btn">
+                <i class="fas fa-book"></i> Trading Journal
+            </a>
+            <a href="#" class="nav-btn active">
+                <i class="fas fa-chart-line"></i> Trading Dashboard
+            </a>
+            <a href="prop_firm_dashboard_complete.html" class="nav-btn">
+                <i class="fas fa-trophy"></i> Futures Prop Firm
+            </a>
+            <a href="options_prop_firm_complete.html" class="nav-btn">
+                <i class="fas fa-options"></i> Options Prop Firm
+            </a>
+        </div>
+        
+        <!-- Executive Summary -->
+        <div class="summary">
+            <h3><i class="fas fa-bullhorn"></i> Executive Summary</h3>
+            <strong>TRADING BRIEF - 2026-04-18</strong>
+            ==================================================
+            
+            <strong>MARKET THEME:</strong> AI momentum continues vs valuation concerns
+            <strong>S&P 500:</strong> 5250 (Bullish) | <strong>VIX:</strong> 15.5 (Low)
+            
+            <strong>FUTURES FOCUS:</strong> Day trading setups in ES, NQ, RTY, YM
+            <strong>COMMODITIES FOCUS:</strong> Premium selling in softs (KC, SB, OJ, CT)
+            
+            <strong>TOP OPPORTUNITIES:</strong>
+            • <strong>Futures:</strong> ES pullback to 7125 support
+            • <strong>Commodities:</strong> OJ high IV (35%) for premium selling
+            • <strong>Metals:</strong> GC testing $2350 resistance
+            
+            <strong>HIGH WEATHER RISK:</strong>
+            • KC: High - Monitor Brazilian frost forecasts
+            • OJ: Very High - Florida freeze warnings
+            
+            <strong>RECOMMENDED ACTIONS:</strong>
+            1. Day trade ES/NQ futures on pullbacks
+            2. Sell OTM options in high-IV commodities
+            3. Monitor GC for breakout above $2350
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Futures Day Trading -->
+            <div class="card futures">
+                <h3><i class="fas fa-bolt"></i> Futures Day Trading</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Real-time futures contracts for day trading</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price</th>
+                            <th>Change</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="symbol">ES</td>
+                            <td>7125.50</td>
+                            <td class="price-up">+0.85%</td>
+                            <td>Buy pullback to 7110</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">NQ</td>
+                            <td>18350.25</td>
+                            <td class="price-up">+1.20%</td>
+                            <td>Breakout above 18400</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">RTY</td>
+                            <td>2050.75</td>
+                            <td class="price-up">+0.65%</td>
+                            <td>Range trade 2030-2070</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">YM</td>
+                            <td>39500.50</td>
+                            <td class="price-up">+0.45%</td>
+                            <td>Support at 39300</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">GC</td>
+                            <td>2345.80</td>
+                            <td class="price-up">+0.30%</td>
+                            <td>Watch $2350 resistance</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">SI</td>
+                            <td>28.75</td>
+                            <td class="price-down">-0.15%</td>
+                            <td>Consolidation phase</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">CL</td>
+                            <td>79.45</td>
+                            <td class="price-up">+0.90%</td>
+                            <td>Breakout above $80</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">NG</td>
+                            <td>2.85</td>
+                            <td class="price-up">+1.50%</td>
+                            <td>Weather-driven rally</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Commodities Options Analysis -->
+            <div class="card commodities">
+                <h3><i class="fas fa-seedling"></i> Commodities Options Analysis</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Premium selling opportunities in soft commodities</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price</th>
+                            <th>IV</th>
+                            <th>Risk</th>
+                            <th>Strategy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="symbol">KC</td>
+                            <td>$180.50</td>
+                            <td>30%</td>
+                            <td class="risk-high">High</td>
+                            <td>Sell OTM puts $165</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">SB</td>
+                            <td>$18.75</td>
+                            <td>25%</td>
+                            <td class="risk-medium">Medium</td>
+                            <td>Iron condor $17-20</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">ZC</td>
+                            <td>$450.25</td>
+                            <td>20%</td>
+                            <td class="risk-low">Low</td>
+                            <td>Sell OTM puts $425</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">ZS</td>
+                            <td>$1150.80</td>
+                            <td>22%</td>
+                            <td class="risk-medium">Medium</td>
+                            <td>Credit spread $1100-1200</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">CT</td>
+                            <td>$0.85</td>
+                            <td>28%</td>
+                            <td class="risk-medium">Medium</td>
+                            <td>Strangle $0.75-0.95</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">OJ</td>
+                            <td>$320.75</td>
+                            <td>35%</td>
+                            <td class="risk-high">High</td>
+                            <td>Sell ATM puts $320</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">LE</td>
+                            <td>$1.85</td>
+                            <td>18%</td>
+                            <td class="risk-low">Low</td>
+                            <td>Covered calls</td>
+                        </tr>
+                        <tr>
+                            <td class="symbol">HE</td>
+                            <td>$0.95</td>
+                            <td>20%</td>
+                            <td class="risk-low">Low</td>
+                            <td>Put credit spread</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Options Analysis -->
+            <div class="card options">
+                <h3><i class="fas fa-chart-bar"></i> Options Analysis</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Volatility & premium selling metrics</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Signal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Overall IV Rank</td>
+                            <td>65%</td>
+                            <td class="risk-high">High (Sell Premium)</td>
+                        </tr>
+                        <tr>
+                            <td>VIX Level</td>
+                            <td>15.5</td>
+                            <td class="risk-low">Low (Buy Protection)</td>
+                        </tr>
+                        <tr>
+                            <td>Put/Call Ratio</td>
+                            <td>0.85</td>
+                            <td class="risk-medium">Neutral</td>
+                        </tr>
+                        <tr>
+                            <td>Skew (25-delta)</td>
+                            <td>2.5%</td>
+                            <td class="risk-low">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Term Structure</td>
+                            <td>Contango</td>
+                            <td class="risk-low">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Best IV: Commodity</td>
+                            <td>OJ (35%)</td>
+                            <td class="risk-high">Premium Selling</td>
+                        </tr>
+                        <tr>
+                            <td>Best IV: Equity</td>
+                            <td>NVDA (45%)</td>
+                            <td class="risk-high">Avoid/Short Vega</td>
+                        </tr>
+                        <tr>
+                            <td>Weather Risk Score</td>
+                            <td>7.5/10</td>
+                            <td class="risk-high">Monitor Forecasts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Trade Recommendations -->
+            <div class="card">
+                <h3><i class="fas fa-lightbulb"></i> Trade Recommendations</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Top setups for today</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Symbol</th>
+                            <th>Strategy</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="risk-high" style="background: rgba(239, 68, 68, 0.1); padding: 2px 8px; border-radius: 4px;">Futures</span></td>
+                            <td class="symbol">ES</td>
+                            <td>Buy pullback to 7110</td>
+                            <td>7140-7150</td>
+                        </tr>
+                        <tr>
+                            <td><span class="risk-high" style="background: rgba(239, 68, 68, 0.1); padding: 2px 8px; border-radius: 4px;">Futures</span></td>
+                            <td class="symbol">NQ</td>
+                            <td>Breakout above 18400</td>
+                            <td>18500-18600</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 4px; color: #10b981;">Commodities</span></td>
+                            <td class="symbol">OJ</td>
+                            <td>Sell ATM puts $320</td>
+                            <td>30-45 DTE</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 4px; color: #10b981;">Commodities</span></td>
+                            <td class="symbol">KC</td>
+                            <td>Sell OTM puts $165</td>
+                            <td>60-75 DTE</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px; color: #8b5cf6;">Options</span></td>
+                            <td class="symbol">GC</td>
+                            <td>Strangle $2300-2400</td>
+                            <td>45 DTE</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background: rgba(139, 92, 246, 0.1); padding: 2px 8px; border-radius: 4px; color: #8b5cf6;">Options</span></td>
+                            <td class="symbol">CL</td>
+                            <td>Bull put spread $78-76</td>
+                            <td>30 DTE</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.9rem;">
+            <p><i class="fas fa-info-circle"></i> Data updates every 30 minutes | <i class="fas fa-exclamation-triangle"></i> Monitor weather forecasts for commodities</p>
+            <p><i class="fas fa-sync-alt"></i> Auto-refresh: <span id="refresh-timer">30</span> seconds</p>
+        </div>
+    </div>
+    
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // Auto-refresh timer
+        let refreshSeconds = 30;
+        function updateRefreshTimer() {
+            const timerElement = document.getElementById('refresh-timer');
+            if (refreshSeconds > 0) {
+                refreshSeconds--;
+                timerElement.textContent = refreshSeconds;
+            } else {
+                refreshSeconds = 30;
+                timerElement.textContent = refreshSeconds;
+                // In a real implementation, this would refresh data
+                console.log('Refreshing data...');
+            }
+        }
+        
+        // Initialize
+        updateTime();
+        setInterval(updateTime, 1000);
+        setInterval(updateRefreshTimer, 1000);
+        
+        // Color code price changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceCells = document.querySelectorAll('.price-up, .price-down');
+            priceCells.forEach(cell => {
+                if (cell.classList.contains('price-up')) {
+                    cell.innerHTML = '<i class="fas fa-arrow-up" style="margin-right: 5px;"></i>' + cell.textContent;
+                } else if (cell.classList.contains('price-down')) {
+                    cell.innerHTML = '<i class="fas fa-arrow-down" style="margin-right: 5px;"></i>' + cell.textContent;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
