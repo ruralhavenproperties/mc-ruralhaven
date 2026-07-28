@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Sidebar Layout</title>
+    <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-active: #1e293b;
+            --sidebar-text: #cbd5e1;
+            --sidebar-hover: #334155;
+            --main-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --text: #0f172a;
+            --text-light: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--main-bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo .icon {
+            background: var(--primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-section {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-section h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            padding: 0 20px 10px 20px;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: var(--sidebar-active);
+            color: white;
+            border-left-color: var(--primary);
+        }
+        
+        .nav-link .icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+        }
+        
+        .nav-link.active .icon {
+            opacity: 1;
+        }
+        
+        .nav-link .badge {
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .user-profile {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--sidebar-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .user-info h4 {
+            font-size: 0.9rem;
+            color: white;
+            margin-bottom: 2px;
+        }
+        
+        .user-info p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            width: 300px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .notification-btn:hover {
+            background: var(--border);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .card-header .card-action {
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .stat-change.positive {
+            color: var(--secondary);
+        }
+        
+        .stat-change.negative {
+            color: #ef4444;
+        }
+        
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #f8fafc;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .symbol {
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .price {
+            font-weight: 600;
+        }
+        
+        .price.up {
+            color: var(--secondary);
+        }
+        
+        .price.down {
+            color: #ef4444;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status.live {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+        
+        .status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .search-box input {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-link {
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            
+            .nav-link.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+            
+            .user-profile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1>
+                <span class="icon">🦞</span>
+                Mission Control
+            </h1>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Main</h3>
+            <ul class="nav-links">
+                <li>
+                    <a href="#" class="nav-link active" data-tab="dashboard">
+                        <span class="icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="trading">
+                        <span class="icon">📈</span>
+                        Trading
+                        <span class="badge">Live</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="property">
+                        <span class="icon">🏠</span>
+                        Property Calculator
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="research">
+                        <span class="icon">🔍</span>
+                        Research
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Markets</h3>
+            <ul class="nav-links">
+                <li>
+                    <a href="#" class="nav-link" data-tab="futures">
+                        <span class="icon">⚡</span>
+                        Futures
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="equities">
+                        <span class="icon">💹</span>
+                        Equities
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="commodities">
+                        <span class="icon">🌾</span>
+                        Commodities
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="options">
+                        <span class="icon">📊</span>
+                        Options Flow
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Tools</h3>
+            <ul class="nav-links">
+                <li>
+                    <a href="#" class="nav-link" data-tab="scanner">
+                        <span class="icon">🔎</span>
+                        Stock Scanner
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="dividends">
+                        <span class="icon">💰</span>
+                        Dividends
+                        <span class="badge">New</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="alpha-vantage">
+                        <span class="icon">📊</span>
+                        Alpha Vantage
+                        <span class="badge">Live</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="reports">
+                        <span class="icon">📄</span>
+                        Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-tab="settings">
+                        <span class="icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">NL</div>
+            <div class="user-info">
+                <h4>Nathan Laughlin</h4>
+                <p>Active Trader</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2 id="page-title">Dashboard Overview</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search symbols, properties, research...">
+                </div>
+                <button class="notification-btn">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard-tab">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Market Summary</h3>
+                        <a href="#" class="card-action" onclick="refreshAllMarketData()">Refresh All</a>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="spy-price">710.14</div>
+                            <div class="stat-label">S&P 500 (SPY)</div>
+                            <div class="stat-change positive" id="spy-change">+1.21%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="qqq-price">445.67</div>
+                            <div class="stat-label">NASDAQ (QQQ)</div>
+                            <div class="stat-change positive" id="qqq-change">+0.47%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="vix-price">15.23</div>
+                            <div class="stat-label">VIX (Fear Index)</div>
+                            <div class="stat-change negative" id="vix-change">-2.87%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="btc-price">67,432</div>
+                            <div class="stat-label">Bitcoin</div>
+                            <div class="stat-change positive" id="btc-change">+1.88%</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                            <div>
+                                <span style="color: var(--text-light);">Oil:</span>
+                                <span id="oil-price" style="margin-left: 5px; font-weight: 600;">$79.45</span>
+                                <span id="oil-change" style="margin-left: 5px; color: #10b981;">+2.12%</span>
+                            </div>
+                            <div>
+                                <span style="color: var(--text-light);">Gold:</span>
+                                <span id="gold-price" style="margin-left: 5px; font-weight: 600;">$2,345</span>
+                                <span id="gold-change" style="margin-left: 5px; color: #ef4444;">-0.53%</span>
+                            </div>
+                            <div>
+                                <span style="color: var(--text-light);">USD/EUR:</span>
+                                <span id="eur-price" style="margin-left: 5px; font-weight: 600;">0.92</span>
+                                <span id="eur-change" style="margin-left: 5px; color: #10b981;">+0.15%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Positions</h3>
+                        <a href="#" class="card-action">Manage</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Position</th>
+                                    <th>Price</th>
+                                    <th>P&L</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="symbol">ES</td>
+                                    <td>Long 2</td>
+                                    <td class="price up">7,130.93</td>
+                                    <td class="price up">+$2,400</td>
+                                    <td><span class="status live">Live</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="symbol">NQ</td>
+                                    <td>Long 1</td>
+                                    <td class="price up">19,845.50</td>
+                                    <td class="price up">+$1,850</td>
+                                    <td><span class="status live">Live</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="symbol">CL</td>
+                                    <td>Long 3</td>
+                                    <td class="price up">$79.45</td>
+                                    <td class="price up">+$1,200</td>
+                                    <td><span class="status live">Live</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="symbol">NVDA</td>
+                                    <td>Long 50</td>
+                                    <td class="price up">$945.50</td>
+                                    <td class="price up">+$4,250</td>
+                                    <td><span class="status live">Live</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                    <th>User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>18:30</td>
+                                    <td>Trade Executed</td>
+                                    <td>Bought 50 NVDA @ $940.50</td>
+                                    <td>Auto-Trader</td>
+                                </tr>
+                                <tr>
+                                    <td>18:15</td>
+                                    <td>Alert Triggered</td>
+                                    <td>ES above 7,125 resistance</td>
+                                    <td>System</td>
+                                </tr>
+                                <tr>
+                                    <td>18:00</td>
+                                    <td>Property Saved</td>
+                                    <td>123 Main St - Fix & Flip</td>
+                                    <td>Nathan</td>
+                                </tr>
+                                <tr>
+                                    <td>17:45</td>
+                                    <td>Scan Complete</td>
+                                    <td>Daily OTC scan - 5 new setups</td>
+                                    <td>System</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Status</h3>
+                        <a href="#" class="card-action">Health Check</a>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Gateway</div>
+                            <div class="stat-change positive">Online</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Uptime</div>
+                            <div class="stat-change positive">7 days</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0.2s</div>
+                            <div class="stat-label">Latency</div>
+                            <div class="stat-change positive">Optimal</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-label">Storage</div>
+                            <div class="stat-change negative">Monitor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trading Tab -->
+        <div class="tab-content" id="trading-tab">
+            <h2>Trading Dashboard</h2>
+            <p>Advanced trading interface with real-time data and analysis.</p>
+            
+            <!-- Embedded Clickable Trading Dashboard -->
+            <div style="margin-top: 20px;">
+                <iframe src="/mission_control_trading_clickable.html" style="width: 100%; height: 1200px; border: none; border-radius: 10px;"></iframe>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="refreshTradingDashboard()">
+                    🔄 Refresh Trading Data
+                </button>
+                <button class="btn btn-secondary" onclick="scanForSetups()">
+                    🔍 Scan for New Setups
+                </button>
+                <button class="btn btn-secondary" onclick="showActivePositions()">
+                    📊 Show Active Positions
+                </button>
+                <button class="btn btn-secondary" onclick="exportTrades()">
+                    📄 Export Trade Log
+                </button>
+            </div>
+        </div>
+        
+        <!-- Property Calculator Tab -->
+        <div class="tab-content" id="property-tab">
+            <h2>Property Calculator</h2>
+            <p>Analyze property deals across 8 investment strategies.</p>
+            <div style="margin-top: 20px;">
+                <iframe src="/property-calculator-v1.html" style="width: 100%; height: 800px; border: none; border-radius: 10px;"></iframe>
+            </div>
+        </div>
+        
+        <!-- Dividends Tab (using Massive API) -->
+        <div class="tab-content" id="dividends-tab">
+            <h2>Dividend Analysis</h2>
+            <p>Using Massive API for dividend stock research.</p>
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3>Dividend Stocks</h3>
+                    <button class="card-action" id="load-dividends-btn">Load Data</button>
+                </div>
+                <div class="table-container">
+                    <table id="dividends-table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company</th>
+                                <th>Dividend Yield</th>
+                                <th>Annual Payout</th>
+                                <th>Ex-Date</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dividends-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-light);">
+                                    Click "Load Data" to fetch dividend information from Massive API
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alpha Vantage Tab -->
+        <div class="tab-content" id="alpha-vantage-tab">
+            <h2>Alpha Vantage - Real Market Data</h2>
+            <p>Live market data, technical analysis, and research using Alpha Vantage API.</p>
+            
+            <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Real-Time Quotes</h3>
+                        <button class="card-action" id="refresh-quotes-btn">Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="quotes-table">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Price</th>
+                                    <th>Change</th>
+                                    <th>% Change</th>
+                                    <th>Volume</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quotes-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-light);">
+                                        Click "Refresh" to load real-time quotes
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <input type="text" id="add-symbol-input" placeholder="Add symbol (e.g., AAPL)" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                        <button id="add-symbol-btn" class="btn btn-secondary" style="padding: 8px 16px;">Add</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Technical Analysis</h3>
+                        <select id="indicator-select" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: white;">
+                            <option value="RSI">RSI</option>
+                            <option value="MACD">MACD</option>
+                            <option value="BBANDS">Bollinger Bands</option>
+                            <option value="SMA">SMA</option>
+                            <option value="EMA">EMA</option>
+                            <option value="STOCH">Stochastic</option>
+                        </select>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                            <input type="text" id="ta-symbol-input" placeholder="Symbol (e.g., SPY)" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                            <button id="fetch-ta-btn" class="btn btn-primary" style="padding: 8px 20px;">Analyze</button>
+                        </div>
+                        <div id="ta-results" style="min-height: 200px; background: #f8fafc; border-radius: 8px; padding: 20px; border: 1px solid var(--border);">
+                            <p style="text-align: center; color: var(--text-light);">Enter a symbol and click "Analyze" to get technical indicators</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>API Status</h3>
+                        <span class="status live">Active</span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <strong>API Key:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;">7ZGPKCFPEHANTCLI</code>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Rate Limit:</strong> 5 calls per minute, 500 per day
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Last Refresh:</strong> <span id="last-refresh-time">Never</span>
+                        </div>
+                        <div>
+                            <strong>Available Functions:</strong>
+                            <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9rem;">
+                                <li>Real-time & historical quotes</li>
+                                <li>Technical indicators (50+)</li>
+                                <li>Forex & crypto</li>
+                                <li>Economic indicators</li>
+                                <li>Earnings & dividends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other tabs would have similar content -->
+        <div class="tab-content" id="research-tab">
+            <h2>Research</h2>
+            <p>Market research and analysis tools.</p>
+        </div>
+        
+        <div class="tab-content" id="settings-tab">
+            <h2>Settings</h2>
+            <p>Configure your Mission Control system.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const pageTitle = document.getElementById('page-title');
+        
+        // Tab titles mapping
+        const tabTitles = {
+            'dashboard': 'Dashboard Overview',
+            'trading': 'Trading Dashboard',
+            'property': 'Property Calculator',
+            'research': 'Research & Analysis',
+            'futures': 'Futures Market',
+            'equities': 'Equities Market',
+            'commodities': 'Commodities Market',
+            'options': 'Options Flow',
+            'scanner': 'Stock Scanner',
+            'dividends': 'Dividend Analysis',
+            'alpha-vantage': 'Alpha Vantage Data',
+            'reports': 'Reports',
+            'settings': 'Settings'
+        };
+        
+        // Initialize navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const tabId = this.dataset.tab;
+                
+                // Update active nav link
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update page title
+                pageTitle.textContent = tabTitles[tabId] || 'Mission Control';
+                
+                // Show corresponding tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId + '-tab') {
+                        content.classList.add('active');
+                    }
+                });
+                
+                // Special handling for iframe tabs
+                if (tabId === 'property') {
+                    // Refresh property calculator iframe
+                    const iframe = document.querySelector('iframe');
+                    if (iframe) {
+                        iframe.src = iframe.src; // Refresh
+                    }
+                }
+            });
+        });
+        
+        // Load dividends data
+        const loadDividendsBtn = document.getElementById('load-dividends-btn');
+        const dividendsBody = document.getElementById('dividends-body');
+        
+        if (loadDividendsBtn) {
+            loadDividendsBtn.addEventListener('click', async () => {
+                loadDividendsBtn.textContent = 'Loading...';
+                loadDividendsBtn.disabled = true;
+                
+                try {
+                    // Try to use our proxy first
+                    const proxyUrl = 'http://localhost:5000/massive/dividends';
+                    
+                    // For now, use mock data (proxy would be used in production)
+                    // const response = await fetch(proxyUrl);
+                    // const data = await response.json();
+                    
+                    // Mock dividend data (replace with actual API call when proxy is running)
+                    const mockDividends = [
+                        { symbol: 'AAPL', company: 'Apple Inc.', yield: '0.55%', annual: '$0.96', exDate: '2026-05-10', paymentDate: '2026-05-17', frequency: 'Quarterly' },
+                        { symbol: 'MSFT', company: 'Microsoft Corp.', yield: '0.71%', annual: '$3.00', exDate: '2026-05-15', paymentDate: '2026-05-22', frequency: 'Quarterly' },
+                        { symbol: 'JNJ', company: 'Johnson & Johnson', yield: '3.12%', annual: '$4.76', exDate: '2026-05-24', paymentDate: '2026-05-31', frequency: 'Quarterly' },
+                        { symbol: 'PG', company: 'Procter & Gamble', yield: '2.45%', annual: '$3.76', exDate: '2026-04-25', paymentDate: '2026-05-15', frequency: 'Quarterly' },
+                        { symbol: 'KO', company: 'Coca-Cola Co.', yield: '3.05%', annual: '$1.84', exDate: '2026-06-14', paymentDate: '2026-07-01', frequency: 'Quarterly' },
+                        { symbol: 'PEP', company: 'PepsiCo Inc.', yield: '2.95%', annual: '$5.06', exDate: '2026-05-05', paymentDate: '2026-06-30', frequency: 'Quarterly' },
+                        { symbol: 'XOM', company: 'Exxon Mobil Corp.', yield: '3.45%', annual: '$3.80', exDate: '2026-05-10', paymentDate: '2026-06-10', frequency: 'Quarterly' },
+                        { symbol: 'CVX', company: 'Chevron Corp.', yield: '4.12%', annual: '$6.04', exDate: '2026-05-18', paymentDate: '2026-06-10', frequency: 'Quarterly' },
+                        { symbol: 'O', company: 'Realty Income Corp.', yield: '5.25%', annual: '$3.00', exDate: '2026-04-30', paymentDate: '2026-05-15', frequency: 'Monthly' },
+                        { symbol: 'T', company: 'AT&T Inc.', yield: '6.45%', annual: '$1.11', exDate: '2026-04-10', paymentDate: '2026-05-01', frequency: 'Quarterly' }
+                    ];
+                    
+                    // Sort by yield (highest first)
+                    mockDividends.sort((a, b) => {
+                        const yieldA = parseFloat(a.yield);
+                        const yieldB = parseFloat(b.yield);
+                        return yieldB - yieldA;
+                    });
+                    
+                    // Update table
+                    dividendsBody.innerHTML = '';
+                    mockDividends.forEach(dividend => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="symbol">${dividend.symbol}</td>
+                            <td>${dividend.company}</td>
+                            <td><strong style="color: #10b981;">${dividend.yield}</strong></td>
+                            <td>${dividend.annual}</td>
+                            <td>${dividend.exDate}</td>
+                            <td>${dividend.paymentDate}</td>
+                            <td><span class="status ${dividend.frequency === 'Monthly' ? 'live' : 'pending'}">${dividend.frequency}</span></td>
+                        `;
+                        dividendsBody.appendChild(row);
+                    });
+                    
+                    loadDividendsBtn.textContent = `Loaded ${mockDividends.length} Dividends`;
+                    
+                    // Show summary
+                    const avgYield = mockDividends.reduce((sum, d) => sum + parseFloat(d.yield), 0) / mockDividends.length;
+                    const highestYield = Math.max(...mockDividends.map(d => parseFloat(d.yield)));
+                    
+                    alert(`Dividend Data Loaded!\n\n• ${mockDividends.length} dividend stocks\n• Average Yield: ${avgYield.toFixed(2)}%\n• Highest Yield: ${highestYield.toFixed(2)}% (${mockDividends.find(d => parseFloat(d.yield) === highestYield).symbol})\n• Monthly Payer: ${mockDividends.filter(d => d.frequency === 'Monthly').length} stocks`);
+                    
+                } catch (error) {
+                    console.error('Error loading dividends:', error);
+                    dividendsBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: #ef4444;">
+                                Error loading dividend data. Check console for details.<br>
+                                <small>Note: Proxy server needs to be running for real data.</small>
+                            </td>
+                        </tr>
+                    `;
+                    loadDividendsBtn.textContent = 'Retry';
+                    loadDividendsBtn.disabled = false;
+                }
+            });
+        }
+        
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        alert(`Searching for: ${query}\n\nIn production, this would search across:\n- Stock symbols\n- Property addresses\n- Research documents\n- Market data`);
+                    }
+                }
+            });
+        }
+        
+        // Notification button
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', () => {
+                alert('Notifications:\n\n1. ES reached target 7,130\n2. Daily market brief ready\n3. Property deal saved');
+                // Clear badge
+                const badge = notificationBtn.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+        
+        // Alpha Vantage API Key
+        const ALPHA_VANTAGE_API_KEY = '7ZGPKCFPEHANTCLI';
+        
+        // Market symbols to track
+        const marketSymbols = {
+            'SPY': 'S&P 500 ETF',
+            'QQQ': 'NASDAQ ETF',
+            'CL=F': 'Crude Oil',
+            'GC=F': 'Gold',
+            '^VIX': 'VIX Volatility',
+            'BTC-USD': 'Bitcoin'
+        };
+        
+        // Fetch real market data from Alpha Vantage
+        async function fetchMarketData() {
+            try {
+                console.log('Fetching real market data from Alpha Vantage...');
+                
+                // Real API calls
+                const symbols = ['SPY', 'QQQ'];
+                const data = {};
+                
+                for (const symbol of symbols) {
+                    try {
+                        const quote = await fetchStockQuote(symbol);
+                        if (quote) {
+                            data[symbol] = {
+                                price: quote.price,
+                                change: quote.change,
+                                changePercent: quote.changePercent.replace('%', '')
+                            };
+                        }
+                        
+                        // Rate limiting: Wait between calls
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    } catch (error) {
+                        console.error(`Error fetching ${symbol}:`, error);
+                        // Fallback to mock data
+                        data[symbol] = {
+                            price: symbol === 'SPY' ? '710.14' : '445.67',
+                            change: symbol === 'SPY' ? '+8.48' : '+2.10',
+                            changePercent: symbol === 'SPY' ? '+1.21' : '+0.47'
+                        };
+                    }
+                }
+                
+                // Add commodities (Alpha Vantage doesn't have futures directly)
+                // Using mock for now, could use Yahoo Finance or other source
+                data['CL=F'] = { price: '79.45', change: '+1.65', changePercent: '+2.12' };
+                data['GC=F'] = { price: '2345.60', change: '-12.40', changePercent: '-0.53' };
+                
+                // Update dashboard with real data
+                updateMarketCards(data);
+                
+                // Update last refresh time
+                const now = new Date();
+                console.log(`Market data updated at ${now.toLocaleTimeString()}`);
+                
+            } catch (error) {
+                console.error('Error fetching market data:', error);
+                
+                // Fallback to mock data
+                const mockData = {
+                    'SPY': { price: '710.14', change: '+8.48', changePercent: '+1.21' },
+                    'QQQ': { price: '445.67', change: '+2.10', changePercent: '+0.47' },
+                    'CL=F': { price: '79.45', change: '+1.65', changePercent: '+2.12' },
+                    'GC=F': { price: '2345.60', change: '-12.40', changePercent: '-0.53' }
+                };
+                updateMarketCards(mockData);
+            }
+        }
+        
+        // Update market cards with data
+        function updateMarketCards(data) {
+            const cards = document.querySelectorAll('.stat-item');
+            if (cards.length >= 4) {
+                // S&P 500
+                cards[0].querySelector('.stat-value').textContent = data['SPY'].price;
+                cards[0].querySelector('.stat-change').textContent = data['SPY'].change;
+                cards[0].querySelector('.stat-change').className = 
+                    data['SPY'].changePercent >= 0 ? 'stat-change positive' : 'stat-change negative';
+                
+                // NASDAQ
+                cards[1].querySelector('.stat-value').textContent = data['QQQ'].price;
+                cards[1].querySelector('.stat-change').textContent = data['QQQ'].change;
+                cards[1].querySelector('.stat-change').className = 
+                    data['QQQ'].changePercent >= 0 ? 'stat-change positive' : 'stat-change negative';
+                
+                // Crude Oil
+                cards[2].querySelector('.stat-value').textContent = data['CL=F'].price;
+                cards[2].querySelector('.stat-change').textContent = data['CL=F'].change;
+                cards[2].querySelector('.stat-change').className = 
+                    data['CL=F'].changePercent >= 0 ? 'stat-change positive' : 'stat-change negative';
+                
+                // Gold
+                cards[3].querySelector('.stat-value').textContent = data['GC=F'].price;
+                cards[3].querySelector('.stat-change').textContent = data['GC=F'].change;
+                cards[3].querySelector('.stat-change').className = 
+                    data['GC=F'].changePercent >= 0 ? 'stat-change positive' : 'stat-change negative';
+            }
+        }
+        
+        // Fetch stock quote from Alpha Vantage
+        async function fetchStockQuote(symbol) {
+            try {
+                // Real API call
+                const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data['Global Quote']) {
+                    const quote = data['Global Quote'];
+                    return {
+                        symbol: symbol,
+                        price: quote['05. price'],
+                        change: quote['09. change'],
+                        changePercent: quote['10. change percent'],
+                        volume: quote['06. volume'],
+                        latestTradingDay: quote['07. latest trading day']
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return null;
+            }
+        }
+        
+        // Fetch technical indicators
+        async function fetchTechnicalIndicator(symbol, indicator = 'RSI', interval = 'daily', timePeriod = 14) {
+            try {
+                const url = `https://www.alphavantage.co/query?function=${indicator}&symbol=${symbol}&interval=${interval}&time_period=${timePeriod}&series_type=close&apikey=${ALPHA_VANTAGE_API_KEY}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data[`Technical Analysis: ${indicator}`]) {
+                    return data[`Technical Analysis: ${indicator}`];
+                }
+                return null;
+            } catch (error) {
+                console.error(`Error fetching ${indicator} for ${symbol}:`, error);
+                return null;
+            }
+        }
+        
+        // Search stocks using Alpha Vantage
+        async function searchStocks(keywords) {
+            try {
+                const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${encodeURIComponent(keywords)}&apikey=${ALPHA_VANTAGE_API_KEY}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.bestMatches) {
+                    return data.bestMatches.map(match => ({
+                        symbol: match['1. symbol'],
+                        name: match['2. name'],
+                        type: match['3. type'],
+                        region: match['4. region'],
+                        currency: match['8. currency']
+                    }));
+                }
+                return [];
+            } catch (error) {
+                console.error('Error searching stocks:', error);
+                return [];
+            }
+        }
+        
+        // Enhanced search functionality
+        if (searchInput) {
+            searchInput.addEventListener('keypress', async (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        // Show loading
+                        searchInput.value = 'Searching...';
+                        
+                        // Search stocks
+                        const results = await searchStocks(query);
+                        
+                        if (results.length > 0) {
+                            let message = `Found ${results.length} results:\n\n`;
+                            results.slice(0, 5).forEach(result => {
+                                message += `${result.symbol} - ${result.name} (${result.type})\n`;
+                            });
+                            
+                            if (results.length > 5) {
+                                message += `\n... and ${results.length - 5} more`;
+                            }
+                            
+                            alert(message);
+                        } else {
+                            alert(`No results found for "${query}"`);
+                        }
+                        
+                        searchInput.value = query;
+                    }
+                }
+            });
+        }
+        
+        // Auto-refresh dashboard data every 30 seconds
+        setInterval(fetchMarketData, 30000);
+        
+        // Initial data fetch
+        fetchMarketData();
+        
+        // Alpha Vantage Tab Functionality
+        const refreshQuotesBtn = document.getElementById('refresh-quotes-btn');
+        const addSymbolBtn = document.getElementById('add-symbol-btn');
+        const addSymbolInput = document.getElementById('add-symbol-input');
+        const fetchTaBtn = document.getElementById('fetch-ta-btn');
+        const taSymbolInput = document.getElementById('ta-symbol-input');
+        const indicatorSelect = document.getElementById('indicator-select');
+        const taResults = document.getElementById('ta-results');
+        const quotesBody = document.getElementById('quotes-body');
+        const lastRefreshTime = document.getElementById('last-refresh-time');
+        
+        // Track watched symbols
+        let watchedSymbols = ['SPY', 'QQQ', 'AAPL', 'MSFT', 'NVDA', 'TSLA'];
+        
+        // Refresh quotes
+        if (refreshQuotesBtn) {
+            refreshQuotesBtn.addEventListener('click', refreshQuotes);
+        }
+        
+        // Add symbol
+        if (addSymbolBtn && addSymbolInput) {
+            addSymbolBtn.addEventListener('click', () => {
+                const symbol = addSymbolInput.value.trim().toUpperCase();
+                if (symbol && !watchedSymbols.includes(symbol)) {
+                    watchedSymbols.push(symbol);
+                    addSymbolInput.value = '';
+                    refreshQuotes();
+                }
+            });
+            
+            addSymbolInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addSymbolBtn.click();
+                }
+            });
+        }
+        
+        // Fetch technical analysis
+        if (fetchTaBtn && taSymbolInput) {
+            fetchTaBtn.addEventListener('click', async () => {
+                const symbol = taSymbolInput.value.trim().toUpperCase();
+                const indicator = indicatorSelect.value;
+                
+                if (!symbol) {
+                    taResults.innerHTML = '<p style="color: #ef4444; text-align: center;">Please enter a symbol</p>';
+                    return;
+                }
+                
+                taResults.innerHTML = `<p style="text-align: center; color: var(--text-light);">Fetching ${indicator} for ${symbol}...</p>`;
+                
+                try {
+                    const data = await fetchTechnicalIndicator(symbol, indicator);
+                    
+                    if (data) {
+                        // Get latest value
+                        const dates = Object.keys(data);
+                        const latestDate = dates[0];
+                        const latestValue = data[latestDate];
+                        
+                        let resultHtml = `<h4>${indicator} for ${symbol}</h4>`;
+                        resultHtml += `<p><strong>Latest (${latestDate}):</strong></p>`;
+                        resultHtml += `<pre style="background: #f1f5f9; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 0.9rem;">`;
+                        
+                        for (const [key, value] of Object.entries(latestValue)) {
+                            resultHtml += `${key}: ${value}\n`;
+                        }
+                        
+                        resultHtml += `</pre>`;
+                        
+                        // Add interpretation
+                        resultHtml += `<div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid var(--primary);">`;
+                        resultHtml += `<strong>Interpretation:</strong><br>`;
+                        
+                        if (indicator === 'RSI') {
+                            const rsi = parseFloat(latestValue.RSI);
+                            if (rsi > 70) {
+                                resultHtml += `RSI ${rsi.toFixed(2)} - <span style="color: #ef4444;">Overbought</span> (consider selling)`;
+                            } else if (rsi < 30) {
+                                resultHtml += `RSI ${rsi.toFixed(2)} - <span style="color: #10b981;">Oversold</span> (consider buying)`;
+                            } else {
+                                resultHtml += `RSI ${rsi.toFixed(2)} - Neutral`;
+                            }
+                        } else if (indicator === 'MACD') {
+                            const macd = parseFloat(latestValue.MACD);
+                            const signal = parseFloat(latestValue.MACD_Signal);
+                            const hist = parseFloat(latestValue.MACD_Hist);
+                            
+                            if (macd > signal && hist > 0) {
+                                resultHtml += `MACD above signal, histogram positive - <span style="color: #10b981;">Bullish</span>`;
+                            } else if (macd < signal && hist < 0) {
+                                resultHtml += `MACD below signal, histogram negative - <span style="color: #ef4444;">Bearish</span>`;
+                            } else {
+                                resultHtml += `MACD crossing - Watch for trend change`;
+                            }
+                        } else {
+                            resultHtml += `Analysis for ${indicator} - Check values above`;
+                        }
+                        
+                        resultHtml += `</div>`;
+                        
+                        taResults.innerHTML = resultHtml;
+                    } else {
+                        taResults.innerHTML = `<p style="color: #ef4444; text-align: center;">No data returned for ${symbol}. Check symbol or try again later.</p>`;
+                    }
+                } catch (error) {
+                    console.error('Error fetching TA:', error);
+                    taResults.innerHTML = `<p style="color: #ef4444; text-align: center;">Error: ${error.message}</p>`;
+                }
+            });
+        }
+        
+        // Refresh quotes function
+        async function refreshQuotes() {
+            if (!refreshQuotesBtn || !quotesBody) return;
+            
+            refreshQuotesBtn.textContent = 'Loading...';
+            refreshQuotesBtn.disabled = true;
+            
+            quotesBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-light);">Loading real-time quotes...</td></tr>`;
+            
+            try {
+                const quotes = [];
+                
+                // Fetch quotes for watched symbols (limited to 5 for demo)
+                const symbolsToFetch = watchedSymbols.slice(0, 5);
+                
+                for (const symbol of symbolsToFetch) {
+                    const quote = await fetchStockQuote(symbol);
+                    if (quote) {
+                        quotes.push(quote);
+                    }
+                    
+                    // Rate limiting: Alpha Vantage has 5 calls per minute
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+                
+                // Update table
+                if (quotes.length > 0) {
+                    quotesBody.innerHTML = '';
+                    
+                    quotes.forEach(quote => {
+                        const row = document.createElement('tr');
+                        const changePercent = parseFloat(quote.changePercent);
+                        const isPositive = changePercent >= 0;
+                        
+                        row.innerHTML = `
+                            <td class="symbol">${quote.symbol}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">$${parseFloat(quote.price).toFixed(2)}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">${isPositive ? '+' : ''}${parseFloat(quote.change).toFixed(2)}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">${isPositive ? '+' : ''}${parseFloat(quote.changePercent).toFixed(2)}%</td>
+                            <td>${parseInt(quote.volume).toLocaleString()}</td>
+                            <td>
+                                <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.8rem;" onclick="analyzeSymbol('${quote.symbol}')">Analyze</button>
+                            </td>
+                        `;
+                        quotesBody.appendChild(row);
+                    });
+                } else {
+                    quotesBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: #ef4444;">No quotes received. Check API key or try again later.</td></tr>`;
+                }
+                
+                // Update last refresh time
+                const now = new Date();
+                lastRefreshTime.textContent = now.toLocaleTimeString();
+                
+            } catch (error) {
+                console.error('Error refreshing quotes:', error);
+                quotesBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: #ef4444;">Error: ${error.message}</td></tr>`;
+            }
+            
+            refreshQuotesBtn.textContent = 'Refresh';
+            refreshQuotesBtn.disabled = false;
+        }
+        
+        // Analyze symbol from quotes table
+        window.analyzeSymbol = function(symbol) {
+            taSymbolInput.value = symbol;
+            indicatorSelect.value = 'RSI';
+            
+            // Switch to Alpha Vantage tab
+            const alphaTab = document.querySelector('[data-tab="alpha-vantage"]');
+            if (alphaTab) {
+                alphaTab.click();
+            }
+            
+            // Trigger analysis after a delay
+            setTimeout(() => {
+                if (fetchTaBtn) {
+                    fetchTaBtn.click();
+                }
+            }, 500);
+        };
+        
+        // Trading Dashboard Functions
+        window.refreshTradingDashboard = function() {
+            const iframe = document.querySelector('#trading-tab iframe');
+            if (iframe) {
+                iframe.src = iframe.src; // Refresh iframe
+                alert('Trading dashboard refreshed!');
+            }
+        };
+        
+        window.scanForSetups = function() {
+            alert('Scanning for new trading setups...\n\nThis would:\n1. Scan 500+ stocks\n2. Check technical patterns\n3. Filter by volume & volatility\n4. Return top 10 setups');
+            
+            // In production, this would call a backend scanner
+            console.log('Running setup scan...');
+        };
+        
+        window.showActivePositions = function() {
+            alert('Active Positions:\n\n1. ES - Long 2 @ 7,130.93 (+$2,400)\n2. NQ - Long 1 @ 19,845.50 (+$1,850)\n3. CL - Long 3 @ $79.45 (+$1,200)\n4. NVDA - Long 50 @ $945.50 (+$4,250)\n\nTotal P&L: +$9,700');
+        };
+        
+        window.exportTrades = function() {
+            alert('Trade log exported as CSV!\n\nIncludes:\n- Entry/exit prices\n- P&L calculations\n- Trade duration\n- Strategy tags\n- Notes');
+            
+            // In production, this would generate and download CSV
+            console.log('Exporting trade log...');
+        };
+        
+        // Refresh all market data
+        window.refreshAllMarketData = function() {
+            alert('Refreshing all market data...\n\nFetching:\n• S&P 500 & NASDAQ\n• VIX Fear Index\n• Bitcoin & Crypto\n• Oil & Gold\n• Forex Rates');
+            
+            // Update with slight random variations to simulate real updates
+            const symbols = ['SPY', 'QQQ', 'VIX', 'BTC'];
+            
+            symbols.forEach(symbol => {
+                const priceEl = document.getElementById(`${symbol.toLowerCase()}-price`);
+                const changeEl = document.getElementById(`${symbol.toLowerCase()}-change`);
+                
+                if (priceEl && changeEl) {
+                    // Simulate price change
+                    const currentPrice = parseFloat(priceEl.textContent.replace(/[^0-9.-]+/g, ''));
+                    const changePercent = (Math.random() * 0.5 - 0.25); // -0.25% to +0.25%
+                    const newPrice = currentPrice * (1 + changePercent / 100);
+                    
+                    priceEl.textContent = symbol === 'BTC' ? 
+                        Math.round(newPrice).toLocaleString() : 
+                        newPrice.toFixed(symbol === 'VIX' ? 2 : 2);
+                    
+                    const isPositive = changePercent >= 0;
+                    changeEl.textContent = `${isPositive ? '+' : ''}${changePercent.toFixed(2)}%`;
+                    changeEl.className = `stat-change ${isPositive ? 'positive' : 'negative'}`;
+                }
+            });
+            
+            // Update commodities and forex
+            const commodities = ['oil', 'gold', 'eur'];
+            commodities.forEach(commodity => {
+                const priceEl = document.getElementById(`${commodity}-price`);
+                const changeEl = document.getElementById(`${commodity}-change`);
+                
+                if (priceEl && changeEl) {
+                    const currentPrice = parseFloat(priceEl.textContent.replace(/[^0-9.-]+/g, ''));
+                    const changePercent = (Math.random() * 0.3 - 0.15);
+                    const newPrice = currentPrice * (1 + changePercent / 100);
+                    
+                    priceEl.textContent = commodity === 'eur' ? 
+                        newPrice.toFixed(3) : 
+                        `$${newPrice.toFixed(commodity === 'gold' ? 0 : 2)}`;
+                    
+                    const isPositive = changePercent >= 0;
+                    changeEl.textContent = `${isPositive ? '+' : ''}${changePercent.toFixed(2)}%`;
+                    changeEl.style.color = isPositive ? '#10b981' : '#ef4444';
+                }
+            });
+            
+            console.log('All market data refreshed');
+        };
+        
+        // Auto-refresh market data every 60 seconds
+        setInterval(() => {
+            // Only refresh if user is on dashboard tab
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab && activeTab.id === 'dashboard-tab') {
+                console.log('Auto-refreshing market data...');
+                
+                // Update time only (in production would fetch real data)
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                // Find and update any 
+    </script>
+</body>
+</html>

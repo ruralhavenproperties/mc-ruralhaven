@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trading Dashboard - Enhanced with Clickable Symbols</title>
+    <style>
+        :root {
+            --futures-color: #3b82f6;
+            --commodities-color: #10b981;
+            --equities-color: #8b5cf6;
+            --otc-color: #f59e0b;
+            --options-color: #ec4899;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #e2e8f0;
+            --card-bg: #1e293b;
+            --border: #334155;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }
+        
+        .header { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--futures-color) 0%, var(--equities-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            margin: 0;
+        }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px;
+        }
+        
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card.futures {
+            border-top: 4px solid var(--futures-color);
+        }
+        
+        .card.commodities {
+            border-top: 4px solid var(--commodities-color);
+        }
+        
+        .card.equities {
+            border-top: 4px solid var(--equities-color);
+        }
+        
+        .card.otc {
+            border-top: 4px solid var(--otc-color);
+        }
+        
+        .card.options {
+            border-top: 4px solid var(--options-color);
+        }
+        
+        .card h3 { 
+            margin-top: 0; 
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h3 .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .futures .icon { background: var(--futures-color); }
+        .commodities .icon { background: var(--commodities-color); }
+        .equities .icon { background: var(--equities-color); }
+        .otc .icon { background: var(--otc-color); }
+        .options .icon { background: var(--options-color); }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px;
+        }
+        
+        th { 
+            text-align: left; 
+            padding: 12px 8px; 
+            border-bottom: 1px solid var(--border);
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        td { 
+            padding: 12px 8px; 
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .symbol {
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .symbol:hover {
+            color: var(--futures-color);
+            text-decoration: underline;
+        }
+        
+        .setup-strong { color: #10b981; font-weight: 600; }
+        .setup-moderate { color: #f59e0b; font-weight: 600; }
+        .setup-weak { color: #ef4444; font-weight: 600; }
+        
+        .timeframe {
+            background: var(--border);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        
+        .status { 
+            display: inline-block; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 500;
+        }
+        
+        .status.live { background: #10b98120; color: #10b981; }
+        .status.pending { background: #f59e0b20; color: #f59e0b; }
+        .status.closed { background: #ef444420; color: #ef4444; }
+        
+        .price { font-weight: 600; }
+        .price.up { color: #10b981; }
+        .price.down { color: #ef4444; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .close-modal:hover {
+            color: var(--light);
+            background: var(--border);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .analysis-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .analysis-card p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .chart-placeholder {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border);
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .news-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .news-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .news-date {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .news-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .news-source {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Trading Dashboard</h1>
+            <p>Real-time market analysis with clickable symbols for detailed insights</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Click any symbol for detailed analysis</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Futures Card -->
+            <div class="card futures">
+                <h3><span class="icon">F</span> Futures</h3>
+                <table>
+                    <thead>
+                        <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Key Level</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><a href="#" class="symbol" data-symbol="ES" data-type="futures">ES</a></td><td class="price up">7,130.93</td><td><span class="setup-strong">Daily Uptrend</span></td><td><span class="timeframe">DAILY</span></td><td>7,100 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="NQ" data-type="futures">NQ</a></td><td class="price up">19,845.50</td><td><span class="setup-strong">4H Bull Flag</span></td><td><span class="timeframe">4H</span></td><td>19,800 breakout</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="YM" data-type="futures">YM</a></td><td class="price down">39,450.25</td><td><span class="setup-moderate">Daily Test</span></td><td><span class="timeframe">DAILY</span></td><td>39,500 resistance</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="RTY" data-type="futures">RTY</a></td><td class="price up">2,045.75</td><td><span class="setup-weak">Range Bound</span></td><td><span class="timeframe">DAILY</span></td><td>2,040-2,060</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Commodities Card -->
+            <div class="card commodities">
+                <h3><span class="icon">C</span> Commodities</h3>
+                <table>
+                    <thead>
+                        <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Key Level</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><a href="#" class="symbol" data-symbol="CL" data-type="commodities">CL</a></td><td class="price up">$79.45</td><td><span class="setup-strong">Weekly Breakout</span></td><td><span class="timeframe">WEEKLY</span></td><td>$78 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="GC" data-type="commodities">GC</a></td><td class="price down">$2,345.60</td><td><span class="setup-moderate">Daily Pullback</span></td><td><span class="timeframe">DAILY</span></td><td>$2,340 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="SI" data-type="commodities">SI</a></td><td class="price up">$28.75</td><td><span class="setup-strong">4H Uptrend</span></td><td><span class="timeframe">4H</span></td><td>$28.50 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="KC" data-type="commodities">KC</a></td><td class="price up">$285.60</td><td><span class="setup-strong">Weather Risk</span></td><td><span class="timeframe">WEEKLY</span></td><td>$280 breakout</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Equities Card -->
+            <div class="card equities">
+                <h3><span class="icon">E</span> Equities</h3>
+                <table>
+                    <thead>
+                        <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Key Level</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><a href="#" class="symbol" data-symbol="NVDA" data-type="equities">NVDA</a></td><td class="price up">$945.50</td><td><span class="setup-strong">Weekly Breakout</span></td><td><span class="timeframe">WEEKLY</span></td><td>$950 resistance</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="AAPL" data-type="equities">AAPL</a></td><td class="price up">$172.25</td><td><span class="setup-strong">Daily Support</span></td><td><span class="timeframe">DAILY</span></td><td>$170 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="AMD" data-type="equities">AMD</a></td><td class="price up">$185.75</td><td><span class="setup-strong">4H Bull Flag</span></td><td><span class="timeframe">4H</span></td><td>$180 breakout</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="TSLA" data-type="equities">TSLA</a></td><td class="price down">$175.50</td><td><span class="setup-moderate">Daily Reversal</span></td><td><span class="timeframe">DAILY</span></td><td>$170 support</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="MSFT" data-type="equities">MSFT</a></td><td class="price up">$425.80</td><td><span class="setup-strong">4H Ascending Triangle</span></td><td><span class="timeframe">4H</span></td><td>$420 support</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- OTC Card -->
+            <div class="card otc">
+                <h3><span class="icon">O</span> OTC / Low Float</h3>
+                <table>
+                    <thead>
+                        <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Catalyst</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><a href="#" class="symbol" data-symbol="CBDD" data-type="otc">CBDD</a></td><td>$0.0015</td><td><span class="setup-strong">News Catalyst</span></td><td><span class="timeframe">DAILY</span></td><td>EU distribution deal</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="HCMC" data-type="otc">HCMC</a></td><td>$0.0002</td><td><span class="setup-moderate">Consolidation</span></td><td><span class="timeframe">DAILY</span></td><td>Patent news pending</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="TLRY" data-type="otc">TLRY</a></td><td>$2.15</td><td><span class="setup-weak">Downtrend</span></td><td><span class="timeframe">WEEKLY</span></td><td>Sector weakness</td></tr>
+                        <tr><td><a href="#" class="symbol" data-symbol="SNDL" data-type="otc">SNDL</a></td><td>$1.85</td><td><span class="setup-moderate">Support Test</span></td><td><span class="timeframe">DAILY</span></td><td>$1.80 support</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- More equities table -->
+        <div class="card equities">
+            <h3><span class="icon">E</span> More Equity Setups</h3>
+            <table>
+                <thead>
+                    <tr><th>Symbol</th><th>Price</th><th>Setup</th><th>TF</th><th>Key Level</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="#" class="symbol" data-symbol="GOOGL" data-type="equities">GOOGL</a></td><td>$155.25</td><td><span class="setup-moderate">Weekly Test</span></td><td><span class="timeframe">WEEKLY</span></td><td>$150 support</td></tr>
+                    <tr><td><a href="#" class="symbol" data-symbol="META" data-type="equities">META</a></td><td>$485.50</td><td><span class="setup-strong">Daily Cup & Handle</span></td><td><span class="timeframe">DAILY</span></td><td>$480 breakout</td></tr>
+                    <tr><td><a href="#" class="symbol" data-symbol="AMZN" data-type="equities">AMZN</a></td><td>$182.75</td><td><span class="setup-moderate">4H Support</span></td><td><span class="timeframe">4H</span></td><td>$180 pivot</td></tr>
+                    <tr><td><a href="#" class="symbol" data-symbol="AVGO" data-type="equities">AVGO</a></td><td>$1,350</td><td><span class="setup-strong">Weekly Uptrend</span></td><td><span class="timeframe">WEEKLY</span></td><td>$1,300 support</td></tr>
+                    <tr><td><a href="#" class="symbol" data-symbol="LLY" data-type="equities">LLY</a></td><td>$785.50</td><td><span class="setup-moderate">Daily Consolidation</span></td><td><span class="timeframe">DAILY</span></td><td>$780 pivot</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>Last updated: <span id="update-time">Loading...</span> | Data source: Yahoo Finance + Open-Meteo</p>
+            <p>Click any symbol for detailed analysis including technicals, fundamentals, and news</p>
+        </div>
+    </div>
+    
+    <!-- Modal for detailed analysis -->
+    <div id="analysis-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="modal-symbol">SYMBOL</span> <span id="modal-type" class="timeframe">TYPE</span></h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-loading" class="loading">
+                    Loading analysis for <span id="loading-symbol">SYMBOL</span>...
+                </div>
+                <div id="modal-content" style="display: none;">
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h4>Current Price</h4>
+                            <p id="modal-price">$0.00</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>Change Today</h4>
+                            <p id="modal-change">+0.00%</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>Market Cap</h4>
+                            <p id="modal-cap">$0.00B</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>Volume</h4>
+                            <p id="modal-volume">0.00M</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-placeholder">
+                        Chart: <span id="modal-chart-title">SYMBOL Price Chart</span>
+                    </div>
+                    
+                    <h3>Technical Analysis</h3>
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h4>Trend</h4>
+                            <p id="modal-trend">Neutral</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>Support</h4>
+                            <p id="modal-support">$0.00</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>Resistance</h4>
+                            <p id="modal-resistance">$0.00</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>RSI</h4>
+                            <p id="modal-rsi">50.0</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Setup Analysis</h3>
+                    <p id="modal-setup">No setup analysis available.</p>
+                    
+                    <h3>Recent News</h3>
+                    <ul id="modal-news" class="news-list">
+                        <li>
+                            <div class="news-date">Loading...</div>
+                            <div class="news-title">Fetching news...</div>
+                            <div class="news-source">Source</div>
+                        </li>
+                    </ul>
+                    
+                    <h3>Trading Recommendation</h3>
+                    <p id="modal-recommendation">No recommendation available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Analysis data for each symbol
+        const analysisData = {
+            "ES": {
+                name: "E-Mini S&P 500",
+                price: "7,130.93",
+                change: "+1.30%",
+                trend: "Bullish",
+                support: "7,100",
+                resistance: "7,150",
+                rsi: "62.5",
+                setup: "ES is in a strong daily uptrend, trading above all major moving averages. The 7,100 level has held as support multiple times. Next target is 7,150 resistance.",
+                recommendation: "Buy dips to 7,110-7,120 with stop at 7,090. Target 7,150."
+            },
+            "NQ": {
+                name: "E-Mini NASDAQ 100",
+                price: "19,845.50",
+                change: "+1.80%",
+                trend: "Bullish",
+                support: "19,800",
+                resistance: "19,900",
+                rsi: "65.2",
+                setup: "NQ showing strong momentum with tech sector leadership. Bull flag pattern on 4H chart suggests continuation higher.",
+                recommendation: "Long above 19,800. Target 19,900-19,950."
+            },
+            "CL": {
+                name: "Crude Oil",
+                price: "$79.45",
+                change: "+2.10%",
+                trend: "Bullish",
+                support: "$78.00",
+                resistance: "$80.50",
+                rsi: "58.7",
+                setup: "Weekly breakout above $78 resistance. Geopolitical tensions supporting prices. Inventory data bullish.",
+                recommendation: "Long with stop at $77.50. Target $80.50-81.00."
+            },
+            "GC": {
+                name: "Gold",
+                price: "$2,345.60",
+                change: "-0.50%",
+                trend: "Neutral",
+                support: "$2,340",
+                resistance: "$2,360",
+                rsi: "48.3",
+                setup: "Daily pullback after testing $2,360 resistance. Fed policy uncertainty creating range-bound action.",
+                recommendation: "Wait for break above $2,360 or below $2,340 for direction."
+            },
+            "NVDA": {
+                name: "NVIDIA Corporation",
+                price: "$945.50",
+                change: "+3.20%",
+                marketCap: "$2.35T",
+                volume: "45.2M",
+                trend: "Strong Bullish",
+                support: "$920",
+                resistance: "$950",
+                rsi: "68.5",
+                setup: "Weekly breakout to new highs. AI demand driving exceptional earnings growth. Options flow shows institutional accumulation.",
+                recommendation: "Hold existing positions. New entries on pullbacks to $920-930."
+            },
+            "AAPL": {
+                name: "Apple Inc.",
+                price: "$172.25",
+                change: "+1.50%",
+                marketCap: "$2.65T",
+                volume: "52.8M",
+                trend: "Bullish",
+                support: "$170",
+                resistance: "$175",
+                rsi: "55.2",
+                setup: "Daily support holding at $170. iPhone sales better than expected. Services growth accelerating.",
+                recommendation: "Long with stop at $168. Target $175-180."
+            },
+            "AMD": {
+                name: "Advanced Micro Devices",
+                price: "$185.75",
+                change: "+4.20%",
+                marketCap: "$300.4B",
+                volume: "68.3M",
+                trend: "Bullish",
+                support: "$180",
+                resistance: "$190",
+                rsi: "66.8",
+                setup: "4H bull flag pattern. AI chip competition with NVDA driving interest. MI300 demand strong.",
+                recommendation: "Breakout above $186 could target $190-195."
+            },
+            "CBDD": {
+                name: "CBD of Denver Inc.",
+                price: "$0.0015",
+                change: "+25.00%",
+                marketCap: "$4.2M",
+                volume: "125.4M",
+                trend: "Bullish",
+                support: "$0.0012",
+                resistance: "$0.0018",
+                rsi: "72.5",
+                setup: "News catalyst: EU distribution deal announced. High volume breakout. OTC momentum play.",
+                recommendation: "High risk. Only for speculative accounts. Stop at $0.0012."
+            }
+        };
+        
+        // Default analysis for unknown symbols
+        const defaultAnalysis = {
+            name: "Unknown Symbol",
+            price: "$0.00",
+            change: "+0.00%",
+            marketCap: "$0.00B",
+            volume: "0.00M",
+            trend: "Neutral",
+            support: "$0.00",
+            resistance: "$0.00",
+            rsi: "50.0",
+            setup: "No analysis available for this symbol.",
+            recommendation: "No recommendation available."
+        };
+        
+        // Modal elements
+        const modal = document.getElementById('analysis-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const modalSymbol = document.getElementById('modal-symbol');
+        const modalType = document.getElementById('modal-type');
+        const modalLoading = document.getElementById('modal-loading');
+        const modalContent = document.getElementById('modal-content');
+        const loadingSymbol = document.getElementById('loading-symbol');
+        
+        // Content elements
+        const modalPrice = document.getElementById('modal-price');
+        const modalChange = document.getElementById('modal-change');
+        const modalCap = document.getElementById('modal-cap');
+        const modalVolume = document.getElementById('modal-volume');
+        const modalChartTitle = document.getElementById('modal-chart-title');
+        const modalTrend = document.getElementById('modal-trend');
+        const modalSupport = document.getElementById('modal-support');
+        const modalResistance = document.getElementById('modal-resistance');
+        const modalRsi = document.getElementById('modal-rsi');
+        const modalSetup = document.getElementById('modal-setup');
+        const modalNews = document.getElementById('modal-news');
+        const modalRecommendation = document.getElementById('modal-recommendation');
+        
+        // Symbol click handler
+        document.querySelectorAll('.symbol').forEach(symbol => {
+            symbol.addEventListener('click', function(e) {
+                e.preventDefault();
+                const symbol = this.getAttribute('data-symbol');
+                const type = this.getAttribute('data-type');
+                showAnalysis(symbol, type);
+            });
+        });
+        
+        // Close modal handlers
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Show analysis function
+        function showAnalysis(symbol, type) {
+            // Update modal header
+            modalSymbol.textContent = symbol;
+            modalType.textContent = type.toUpperCase();
+            loadingSymbol.textContent = symbol;
+            
+            // Show loading, hide content
+            modalLoading.style.display = 'block';
+            modalContent.style.display = 'none';
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Simulate loading delay (in real app, this would fetch from API)
+            setTimeout(() => {
+                loadAnalysisData(symbol, type);
+            }, 500);
+        }
+        
+        // Load analysis data
+        function loadAnalysisData(symbol, type) {
+            const analysis = analysisData[symbol] || defaultAnalysis;
+            
+            // Update content
+            modalPrice.textContent = analysis.price;
+            modalChange.textContent = analysis.change;
+            modalCap.textContent = analysis.marketCap || '$0.00B';
+            modalVolume.textContent = analysis.volume || '0.00M';
+            modalChartTitle.textContent = `${symbol} Price Chart`;
+            modalTrend.textContent = analysis.trend;
+            modalSupport.textContent = analysis.support;
+            modalResistance.textContent = analysis.resistance;
+            modalRsi.textContent = analysis.rsi;
+            modalSetup.textContent = analysis.setup;
+            modalRecommendation.textContent = analysis.recommendation;
+            
+            // Generate mock news
+            updateNews(symbol, type);
+            
+            // Hide loading, show content
+            modalLoading.style.display = 'none';
+            modalContent.style.display = 'block';
+        }
+        
+        // Update news section
+        function updateNews(symbol, type) {
+            const newsItems = [
+                { date: '2026-04-18', title: `${symbol} reports stronger than expected earnings`, source: 'Financial Times' },
+                { date: '2026-04-17', title: `Analysts raise price target for ${symbol}`, source: 'Bloomberg' },
+                { date: '2026-04-16', title: `${symbol} sector shows strength amid market rally`, source: 'Reuters' },
+                { date: '2026-04-15', title: `Institutional buying detected in ${symbol} options`, source: 'SpotGamma' }
+            ];
+            
+            modalNews.innerHTML = '';
+            newsItems.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="news-date">${item.date}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-source">${item.source}</div>
+                `;
+                modalNews.appendChild(li);
+            });
+        }
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-US', { 
+                timeZone: 'America/Chicago',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('update-time').textContent = timeString + ' CT';
+        }
+        
+        // Initialize
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Add some sample data for other symbols
+        Object.keys(analysisData).forEach(symbol => {
+            // Already have data
+        });
+        
+        // Add default data for common symbols not in analysisData
+        const commonSymbols = ['MSFT', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AVGO', 'LLY', 'HCMC', 'TLRY', 'SNDL'];
+        commonSymbols.forEach(symbol => {
+            if (!analysisData[symbol]) {
+                analysisData[symbol] = {
+                    name: symbol + ' Inc.',
+                    price: '$0.00',
+                    change: '+0.00%',
+                    marketCap: '$0.00B',
+                    volume: '0.00M',
+                    trend: 'Neutral',
+                    support: '$0.00',
+                    resistance: '$0.00',
+                    rsi: '50.0',
+                    setup: `Analysis for ${symbol} will be loaded from real-time data sources.`, 
+                    recommendation: 'Wait for confirmation before trading.'
+                };
+            }
+        });
+    </script>
+</body>
+</html>

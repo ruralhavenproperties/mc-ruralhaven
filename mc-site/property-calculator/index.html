@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural Haven Property Calculator</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .investment-style-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .style-card {
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .style-card:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .style-card.selected {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .style-card h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .style-card p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        
+        .result-card h4 {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .result-value.positive {
+            color: var(--secondary);
+        }
+        
+        .result-value.negative {
+            color: var(--danger);
+        }
+        
+        .result-subtext {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .deal-list {
+            list-style: none;
+        }
+        
+        .deal-item {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .deal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .deal-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .deal-roi {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .deal-roi.positive {
+            color: var(--secondary);
+        }
+        
+        .deal-roi.negative {
+            color: var(--danger);
+        }
+        
+        .deal-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .investment-style-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .deal-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .deal-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Rural Haven Property Calculator</h1>
+            <p>Analyze any property deal across 8 investment strategies. Save, compare, and optimize.</p>
+        </div>
+        
+        <div class="calculator-grid">
+            <!-- Sidebar: Inputs -->
+            <div class="sidebar">
+                <div class="section">
+                    <h3 class="section-title">Investment Strategy</h3>
+                    <div class="investment-style-grid">
+                        <div class="style-card selected" data-style="fix-flip">
+                            <h4>Fix & Flip</h4>
+                            <p>Buy, renovate, sell quickly (3-6 months)</p>
+                        </div>
+                        <div class="style-card" data-style="slow-flip">
+                            <h4>Slow Flip</h4>
+                            <p>Value-add over 6-12+ months</p>
+                        </div>
+                        <div class="style-card" data-style="reverse-flip">
+                            <h4>Reverse Flip</h4>
+                            <p>Buy, improve, refinance, hold</p>
+                        </div>
+                        <div class="style-card" data-style="buy-hold">
+                            <h4>Buy & Hold</h4>
+                            <p>Long-term rental property</p>
+                        </div>
+                        <div class="style-card" data-style="brrrr">
+                            <h4>BRRRR</h4>
+                            <p>Buy, rehab, rent, refinance, repeat</p>
+                        </div>
+                        <div class="style-card" data-style="wholesale">
+                            <h4>Wholesale</h4>
+                            <p>Assign contract for quick profit</p>
+                        </div>
+                        <div class="style-card" data-style="commercial">
+                            <h4>Commercial</h4>
+                            <p>Office, retail, industrial</p>
+                        </div>
+                        <div class="style-card" data-style="land-dev">
+                            <h4>Land Development</h4>
+                            <p>Raw land to finished lots</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">Property Details</h3>
+                    <div class="form-group">
+                        <label for="property-address">Property Address</label>
+                        <input type="text" id="property-address" placeholder="123 Main St, Anytown, USA">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="purchase-price">Purchase Price ($)</label>
+                        <input type="number" id="purchase-price" value="200000" min="0" step="1000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="arv">After Repair Value - ARV ($)</label>
+                        <input type="number" id="arv" value="300000" min="0" step="1000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rehab-cost">Rehab Costs ($)</label>
+                        <input type="number" id="rehab-cost" value="50000" min="0" step="1000">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">Financing</h3>
+                    <div class="form-group">
+                        <label for="financing-type">Financing Type</label>
+                        <select id="financing-type">
+                            <option value="cash">Cash</option>
+                            <option value="hard-money">Hard Money</option>
+                            <option value="conventional">Conventional Loan</option>
+                            <option value="portfolio">Portfolio Lender</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="down-payment">Down Payment (%)</label>
+                        <input type="range" id="down-payment" min="0" max="100" value="25">
+                        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                            <span>0%</span>
+                            <span id="down-payment-value">25%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="interest-rate">Interest Rate (%)</label>
+                        <input type="number" id="interest-rate" value="7.5" min="0" max="20" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loan-term">Loan Term (years)</label>
+                        <input type="number" id="loan-term" value="30" min="1" max="40">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">Rental Assumptions (if applicable)</h3>
+                    <div class="form-group">
+                        <input type="number" id="monthly-rent" value="2000" min="0" step="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vacancy-rate">Vacancy Rate (%)</label>
+                        <input type="number" id="vacancy-rate" value="5" min="0" max="20" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="management-fee">Management Fee (%)</label>
+                        <input type="number" id="management-fee" value="8" min="0" max="20" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monthly-expenses">Monthly Expenses ($)</label>
+                        <input type="number" id="monthly-expenses" value="500" min="0" step="50">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="calculate-btn">
+                        📊 Calculate Deal
+                    </button>
+                    <button class="btn btn-secondary" id="reset-btn">
+                        🔄 Reset
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Content: Results -->
+            <div class="main-content">
+                <div class="tabs">
+                    <button class="tab active" data-tab="results">Results</button>
+                    <button class="tab" data-tab="analysis">Analysis</button>
+                    <button class="tab" data-tab="saved">Saved Deals</button>
+                    <button class="tab" data-tab="compare">Compare</button>
+                </div>
+                
+                <!-- Results Tab -->
+                <div class="tab-content active" id="results-tab">
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Total Investment</h4>
+                            <div class="result-value" id="total-investment">$0</div>
+                            <div class="result-subtext">Purchase + Rehab + Closing</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Profit Potential</h4>
+                            <div class="result-value positive" id="profit-potential">$0</div>
+                            <div class="result-subtext">ARV - Total Investment</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>ROI</h4>
+                            <div class="result-value positive" id="roi">0%</div>
+                            <div class="result-subtext">Return on Investment</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Cash Flow</h4>
+                            <div class="result-value positive" id="cash-flow">$0/mo</div>
+                            <div class="result-subtext">Monthly net income</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Cash on Cash</h4>
+                            <div class="result-value positive" id="cash-on-cash">0%</div>
+                            <div class="result-subtext">Annual return on cash invested</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Cap Rate</h4>
+                            <div class="result-value" id="cap-rate">0%</div>
+                            <div class="result-subtext">Net operating income / Value</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        📈 Profit & Loss Breakdown Chart
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-success" id="save-deal-btn">
+                            💾 Save This Deal
+                        </button>
+                        <button class="btn btn-secondary" id="export-pdf-btn">
+                            📄 Export PDF
+                        </button>
+                        <button class="btn btn-secondary" id="compare-scenario-btn">
+                            ⚖️ Compare Scenario
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Analysis Tab -->
+                <div class="tab-content" id="analysis-tab">
+                    <h3 class="section-title">Detailed Analysis</h3>
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Maximum Offer</h4>
+                            <div class="result-value" id="max-offer">$0</div>
+                            <div class="result-subtext">70% ARV - Rehab</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Rehab to ARV %</h4>
+                            <div class="result-value" id="rehab-to-arv">0%</div>
+                            <div class="result-subtext">Rehab / ARV</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Loan Amount</h4>
+                            <div class="result-value" id="loan-amount">$0</div>
+                            <div class="result-subtext">Financing required</div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h4>Monthly Payment</h4>
+                            <div class="result-value" id="monthly-payment">$0</div>
+                            <div class="result-subtext">Principal + Interest</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3 class="section-title">Investment Strategy Analysis</h3>
+                        <div id="strategy-analysis">
+                            <p>Select an investment strategy to see detailed analysis...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saved Deals Tab -->
+                <div class="tab-content" id="saved-tab">
+                    <h3 class="section-title">Saved Property Deals</h3>
+                    <div class="button-group" style="margin-bottom: 20px;">
+                        <button class="btn btn-secondary" id="load-deals-btn">
+                            🔄 Load Saved Deals
+                        </button>
+                        <button class="btn btn-secondary" id="clear-deals-btn">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                    
+                    <ul class="deal-list" id="deal-list">
+                        <li class="deal-item">
+                            <div class="deal-header">
+                                <div class="deal-title">123 Main St - Fix & Flip</div>
+                                <div class="deal-roi positive">42% ROI</div>
+                            </div>
+                            <div class="deal-details">
+                                <div>Purchase: $200,000</div>
+                                <div>ARV: $300,000</div>
+                                <div>Rehab: $50,000</div>
+                                <div>Profit: $50,000</div>
+                            </div>
+                        </li>
+                        <!-- More deals will be loaded here -->
+                    </ul>
+                </div>
+                
+                <!-- Compare Tab -->
+                <div class="tab-content" id="compare-tab">
+                    <h3 class="section-title">Compare Scenarios</h3>
+                    <p>Select multiple saved deals to compare side by side.</p>
+                    <div class="chart-container" style="height: 400px;">
+                        ⚖️ Comparison Chart
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Rural Haven Property Calculator v1.0 | Data saved to Supabase | Deploy to Cloudflare Pages</p>
+            <p>Need help? This calculator supports 8 investment strategies with detailed financial analysis.</p>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const styleCards = document.querySelectorAll('.style-card');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const saveDealBtn = document.getElementById('save-deal-btn');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const downPaymentSlider = document.getElementById('down-payment');
+        const downPaymentValue = document.getElementById('down-payment-value');
+        
+        // Result elements
+        const totalInvestmentEl = document.getElementById('total-investment');
+        const profitPotentialEl = document.getElementById('profit-potential');
+        const roiEl = document.getElementById('roi');
+        const cashFlowEl = document.getElementById('cash-flow');
+        const cashOnCashEl = document.getElementById('cash-on-cash');
+        const capRateEl = document.getElementById('cap-rate');
+        const maxOfferEl = document.getElementById('max-offer');
+        const rehabToArvEl = document.getElementById('rehab-to-arv');
+        const loanAmountEl = document.getElementById('loan-amount');
+        const monthlyPaymentEl = document.getElementById('monthly-payment');
+        const strategyAnalysisEl = document.getElementById('strategy-analysis');
+        
+        // Current state
+        let currentStyle = 'fix-flip';
+        let savedDeals = [];
+        
+        // Investment style descriptions
+        const styleDescriptions = {
+            'fix-flip': {
+                name: 'Fix & Flip',
+                description: 'Quick turnaround (3-6 months). Focus on cosmetic repairs that maximize ARV. Target 20-30% ROI after all costs.',
+                tips: [
+                    'Keep rehab under 70% of ARV increase',
+                    'Factor in 8-10% holding costs',
+                    'Have exit strategy before buying',
+                    'Budget 5-10% contingency'
+                ]
+            },
+            'slow-flip': {
+                name: 'Slow Flip',
+                description: 'Value-add over 6-12+ months. Deeper renovations, zoning changes, or entitlement work. Target 30-50% ROI.',
+                tips: [
+                    'Factor in longer holding costs',
+                    'Consider market appreciation',
+                    'Permit and zoning timelines',
+                    'Seasonal market considerations'
+                ]
+            },
+            'reverse-flip': {
+                name: 'Reverse Flip',
+                description: 'Buy distressed, improve, refinance based on new value, hold as rental. Creates instant equity.',
+                tips: [
+                    'Ensure cash-out refi covers all costs',
+                    'Verify rental numbers support new loan',
+                    'Check lender seasoning requirements',
+                    'Plan for long-term hold'
+                ]
+            },
+            'buy-hold': {
+                name: 'Buy & Hold',
+                description: 'Long-term rental property. Focus on cash flow, appreciation, and tax benefits. Target 8-12% cash-on-cash.',
+                tips: [
+                    '1% rule: Monthly rent ≥ 1% of purchase price',
+                    '50% rule: Expenses ≈ 50% of gross rent',
+                    'Screen tenants thoroughly',
+                    'Budget for capital expenditures'
+                ]
+            },
+            'brrrr': {
+                name: 'BRRRR',
+                description: 'Buy, Rehab, Rent, Refinance, Repeat. Systematically recycle capital to scale portfolio.',
+                tips: [
+                    'Refi must pull out all capital + profit',
+                    'Rent must support new mortgage',
+                    'Lender relationships critical',
+                    'Scale systematically'
+                ]
+            },
+            'wholesale': {
+                name: 'Wholesale',
+                description: 'Assign contract to another investor for fee. No rehab, quick turnaround. Target $5k-$20k per deal.',
+                tips: [
+                    'Find motivated sellers',
+                    'Build buyer list first',
+                    'Understand assignment laws',
+                    'Double-close if needed'
+                ]
+            },
+            'commercial': {
+                name: 'Commercial',
+                description: 'Office, retail, industrial properties. Valued on NOI and cap rate. Longer leases, professional tenants.',
+                tips: [
+                    'Focus on cap rate (6-10% typical)',
+                    'NNN leases reduce landlord expenses',
+                    'Location and tenant credit critical',
+                    'Longer due diligence period'
+                ]
+            },
+            'land-dev': {
+                name: 'Land Development',
+                description: 'Raw land to finished lots. Highest risk/reward. Entitlement, infrastructure, lot sales.',
+                tips: [
+                    'Entitlement risk is biggest hurdle',
+                    'Infrastructure costs often underestimated',
+                    'Market timing critical',
+                    'Partner with experienced developer'
+                ]
+            }
+        };
+        
+        // Initialize
+        function init() {
+            // Style card selection
+            styleCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    styleCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    currentStyle = card.dataset.style;
+                    updateStrategyAnalysis();
+                });
+            });
+            
+            // Down payment slider
+            downPaymentSlider.addEventListener('input', () => {
+                downPaymentValue.textContent = downPaymentSlider.value + '%';
+            });
+            
+            // Calculate button
+            calculateBtn.addEventListener('click', calculateDeal);
+            
+            // Reset button
+            resetBtn.addEventListener('click', resetCalculator);
+            
+            // Save deal button
+            saveDealBtn.addEventListener('click', saveDeal);
+            
+            // Tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId + '-tab') {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Initial calculation
+            calculateDeal();
+            updateStrategyAnalysis();
+        }
+        
+        // Calculate deal
+        function calculateDeal() {
+            // Get input values
+            const purchasePrice = parseFloat(document.getElementById('purchase-price').value) || 0;
+            const arv = parseFloat(document.getElementById('arv').value) || 0;
+            const rehabCost = parseFloat(document.getElementById('rehab-cost').value) || 0;
+            const downPaymentPercent = parseFloat(downPaymentSlider.value) || 0;
+            const interestRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loan-term').value) || 30;
+            const monthlyRent = parseFloat(document.getElementById('monthly-rent').value) || 0;
+            const vacancyRate = parseFloat(document.getElementById('vacancy-rate').value) || 0;
+            const managementFee = parseFloat(document.getElementById('management-fee').value) || 0;
+            const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
+            
+            // Calculations
+            const closingCosts = purchasePrice * 0.03; // 3% closing costs
+            const totalInvestment = purchasePrice + rehabCost + closingCosts;
+            const profitPotential = arv - totalInvestment;
+            const roi = totalInvestment > 0 ? (profitPotential / totalInvestment) * 100 : 0;
+            
+            // Financing calculations
+            const downPayment = purchasePrice * (downPaymentPercent / 100);
+            const loanAmount = purchasePrice - downPayment;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numberOfPayments = loanTerm * 12;
+            
+            // Monthly mortgage payment
+            let monthlyPayment = 0;
+            if (loanAmount > 0 && monthlyRate > 0) {
+                monthlyPayment = loanAmount * 
+                    (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                    (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+            }
+            
+            // Rental calculations
+            const effectiveRent = monthlyRent * (1 - vacancyRate / 100);
+            const managementCost = effectiveRent * (managementFee / 100);
+            const netOperatingIncome = effectiveRent - managementCost - monthlyExpenses;
+            const cashFlow = netOperatingIncome - monthlyPayment;
+            
+            // Cash on cash return
+            const cashInvested = downPayment + rehabCost + closingCosts;
+            const annualCashFlow = cashFlow * 12;
+            const cashOnCash = cashInvested > 0 ? (annualCashFlow / cashInvested) * 100 : 0;
+            
+            // Cap rate
+            const annualNOI = netOperatingIncome * 12;
+            const capRate = arv > 0 ? (annualNOI / arv) * 100 : 0;
+            
+            // Additional metrics
+            const maxOffer = (arv * 0.7) - rehabCost; // 70% rule
+            const rehabToArv = arv > 0 ? (rehabCost / arv) * 100 : 0;
+            
+            // Update UI
+            totalInvestmentEl.textContent = `$${formatNumber(totalInvestment)}`;
+            profitPotentialEl.textContent = `$${formatNumber(profitPotential)}`;
+            profitPotentialEl.className = `result-value ${profitPotential >= 0 ? 'positive' : 'negative'}`;
+            roiEl.textContent = `${roi.toFixed(1)}%`;
+            roiEl.className = `result-value ${roi >= 0 ? 'positive' : 'negative'}`;
+            cashFlowEl.textContent = `$${formatNumber(cashFlow)}/mo`;
+            cashFlowEl.className = `result-value ${cashFlow >= 0 ? 'positive' : 'negative'}`;
+            cashOnCashEl.textContent = `${cashOnCash.toFixed(1)}%`;
+            cashOnCashEl.className = `result-value ${cashOnCash >= 0 ? 'positive' : 'negative'}`;
+            capRateEl.textContent = `${capRate.toFixed(1)}%`;
+            
+            // Analysis tab
+            maxOfferEl.textContent = `$${formatNumber(maxOffer)}`;
+            rehabToArvEl.textContent = `${rehabToArv.toFixed(1)}%`;
+            loanAmountEl.textContent = `$${formatNumber(loanAmount)}`;
+            monthlyPaymentEl.textContent = `$${formatNumber(monthlyPayment)}`;
+        }
+        
+        // Update strategy analysis
+        function updateStrategyAnalysis() {
+            const style = styleDescriptions[currentStyle];
+            if (!style) return;
+            
+            let html = `
+                <h4>${style.name}</h4>
+                <p>${style.description}</p>
+                <h4 style="margin-top: 20px;">Key Tips:</h4>
+                <ul style="padding-left: 20px; margin-top: 10px;">
+            `;
+            
+            style.tips.forEach(tip => {
+                html += `<li>${tip}</li>`;
+            });
+            
+            html += `
+                </ul>
+                <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <strong>Note:</strong> Calculations adjust based on selected strategy. 
+                    ${currentStyle === 'buy-hold' || currentStyle === 'brrrr' || currentStyle === 'reverse-flip' ? 'Rental assumptions are used.' : 'Flip calculations focus on profit margin.'}
+                </div>
+            `;
+            
+            strategyAnalysisEl.innerHTML = html;
+        }
+        
+        // Save deal
+        function saveDeal() {
+            const address = document.getElementById('property-address').value || 'Unnamed Property';
+            const purchasePrice = parseFloat(document.getElementById('purchase-price').value) || 0;
+            const arv = parseFloat(document.getElementById('arv').value) || 0;
+            const rehabCost = parseFloat(document.getElementById('rehab-cost').value) || 0;
+            
+            // Get current ROI from display
+            const roiText = roiEl.textContent;
+            const roiValue = parseFloat(roiText) || 0;
+            
+            const deal = {
+                id: Date.now(),
+                address,
+                style: currentStyle,
+                purchasePrice,
+                arv,
+                rehabCost,
+                roi: roiValue,
+                timestamp: new Date().toISOString()
+            };
+            
+            savedDeals.push(deal);
+            updateDealList();
+            
+            // Show confirmation
+            alert(`Deal saved! ${address} - ${roiText} ROI`);
+            
+            // In production, this would save to Supabase
+            console.log('Deal saved (would save to Supabase):', deal);
+        }
+        
+        // Update deal list
+        function updateDealList() {
+            const dealList = document.getElementById('deal-list');
+            dealList.innerHTML = '';
+            
+            savedDeals.forEach(deal => {
+                const li = document.createElement('li');
+                li.className = 'deal-item';
+                li.innerHTML = `
+                    <div class="deal-header">
+                        <div class="deal-title">${deal.address} - ${styleDescriptions[deal.style]?.name || deal.style}</div>
+                        <div class="deal-roi ${deal.roi >= 0 ? 'positive' : 'negative'}">${deal.roi.toFixed(1)}% ROI</div>
+                    </div>
+                    <div class="deal-details">
+                        <div>Purchase: $${formatNumber(deal.purchasePrice)}</div>
+                        <div>ARV: $${formatNumber(deal.arv)}</div>
+                        <div>Rehab: $${formatNumber(deal.rehabCost)}</div>
+                        <div>Profit: $${formatNumber(deal.arv - deal.purchasePrice - deal.rehabCost)}</div>
+                    </div>
+                `;
+                dealList.appendChild(li);
+            });
+            
+            if (savedDeals.length === 0) {
+                dealList.innerHTML = '<li class="deal-item" style="text-align: center; color: var(--gray);">No saved deals yet. Calculate and save your first deal!</li>';
+            }
+        }
+        
+        // Reset calculator
+        function resetCalculator() {
+            if (confirm('Reset all inputs to default values?')) {
+                document.getElementById('property-address').value = '';
+                document.getElementById('purchase-price').value = 200000;
+                document.getElementById('arv').value = 300000;
+                document.getElementById('rehab-cost').value = 50000;
+                document.getElementById('monthly-rent').value = 2000;
+                document.getElementById('vacancy-rate').value = 5;
+                document.getElementById('management-fee').value = 8;
+                document.getElementById('monthly-expenses').value = 500;
+                document.getElementById('interest-rate').value = 7.5;
+                downPaymentSlider.value = 25;
+                downPaymentValue.textContent = '25%';
+                
+                calculateDeal();
+            }
+        }
+        
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

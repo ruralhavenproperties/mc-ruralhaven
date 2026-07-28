@@ -1,0 +1,19 @@
+name = "mc-ruralhaven-co"
+compatibility_date = "2024-04-18"
+pages_build_output_dir = "."
+
+[[env]]
+name = "production"
+
+[vars]
+SITE_NAME = "Mission Control - Rural Haven"
+SITE_DESCRIPTION = "Professional trading & property analysis dashboard"
+CONTACT_EMAIL = "nathan@ruralhaven.co"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+API_BASE_URL = "https://mc.ruralhaven.co/api"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+API_BASE_URL = "https://<branch>.<project>.pages.dev/api"

@@ -1,0 +1,12 @@
+{
+  "name": "mc-ruralhaven-co",
+  "version": "1.0.0",
+  "description": "Mission Control Dashboard for Rural Haven",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy . --project-name=mc-ruralhaven-co"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

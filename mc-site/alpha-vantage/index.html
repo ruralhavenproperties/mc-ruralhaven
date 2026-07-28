@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Vantage Market Data - Mission Control</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .card-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .symbol {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .price.up {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .price.down {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        input, select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .results {
+            min-height: 200px;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+        }
+        
+        .api-status {
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-top: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Alpha Vantage Market Data</h1>
+            <p>Real-time stock quotes, technical analysis, and market research using Alpha Vantage API</p>
+            <a href="/" class="back-link">← Back to Mission Control</a>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- Real-Time Quotes -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Real-Time Quotes</h2>
+                    <button class="btn" id="refresh-quotes-btn">Refresh Quotes</button>
+                </div>
+                <div class="table-container">
+                    <table id="quotes-table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Price</th>
+                                <th>Change</th>
+                                <th>% Change</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotes-body">
+                            <tr>
+                                <td colspan="5" class="loading">Loading real-time quotes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div class="input-group">
+                        <input type="text" id="add-symbol-input" placeholder="Add symbol (e.g., AAPL, TSLA, MSFT)">
+                        <button class="btn btn-secondary" id="add-symbol-btn">Add Symbol</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Technical Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Technical Analysis</h2>
+                    <select id="indicator-select">
+                        <option value="RSI">RSI</option>
+                        <option value="MACD">MACD</option>
+                        <option value="BBANDS">Bollinger Bands</option>
+                        <option value="SMA">SMA</option>
+                        <option value="EMA">EMA</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <input type="text" id="ta-symbol-input" placeholder="Enter symbol (e.g., SPY, AAPL)">
+                        <button class="btn" id="fetch-ta-btn">Analyze</button>
+                    </div>
+                    <div id="ta-results" class="results">
+                        <p style="text-align: center; color: #64748b;">Enter a symbol and click "Analyze" to get technical indicators</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Status -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>API Status</h2>
+                    <span class="status-badge">Active</span>
+                </div>
+                <div class="api-status">
+                    <p><strong>API Key:</strong> <code>7ZGPKCFPEHANTCLI</code></p>
+                    <p><strong>Rate Limit:</strong> 5 calls per minute, 500 calls per day</p>
+                    <p><strong>Last Refresh:</strong> <span id="last-refresh-time">Never</span></p>
+                    <p><strong>Available Functions:</strong></p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Real-time & historical quotes</li>
+                        <li>50+ technical indicators</li>
+                        <li>Forex & cryptocurrency data</li>
+                        <li>Economic indicators</li>
+                        <li>Earnings & dividend data</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Symbol Search -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Symbol Search</h2>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <input type="text" id="search-input" placeholder="Search companies or symbols...">
+                        <button class="btn" id="search-btn">Search</button>
+                    </div>
+                    <div id="search-results" class="results">
+                        <p style="text-align: center; color: #64748b;">Enter search terms to find stocks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const ALPHA_VANTAGE_API_KEY = '7ZGPKCFPEHANTCLI';
+        const API_BASE_URL = 'https://www.alphavantage.co/query';
+        
+        // DOM Elements
+        const refreshQuotesBtn = document.getElementById('refresh-quotes-btn');
+        const addSymbolBtn = document.getElementById('add-symbol-btn');
+        const addSymbolInput = document.getElementById('add-symbol-input');
+        const fetchTaBtn = document.getElementById('fetch-ta-btn');
+        const taSymbolInput = document.getElementById('ta-symbol-input');
+        const indicatorSelect = document.getElementById('indicator-select');
+        const taResults = document.getElementById('ta-results');
+        const quotesBody = document.getElementById('quotes-body');
+        const lastRefreshTime = document.getElementById('last-refresh-time');
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        
+        // Track watched symbols
+        let watchedSymbols = ['SPY', 'QQQ', 'AAPL', 'MSFT', 'NVDA'];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshQuotes();
+            
+            // Event listeners
+            if (refreshQuotesBtn) {
+                refreshQuotesBtn.addEventListener('click', refreshQuotes);
+            }
+            
+            if (addSymbolBtn && addSymbolInput) {
+                addSymbolBtn.addEventListener('click', addSymbol);
+                addSymbolInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') addSymbol();
+                });
+            }
+            
+            if (fetchTaBtn && taSymbolInput) {
+                fetchTaBtn.addEventListener('click', fetchTechnicalAnalysis);
+                taSymbolInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') fetchTechnicalAnalysis();
+                });
+            }
+            
+            if (searchBtn && searchInput) {
+                searchBtn.addEventListener('click', searchSymbols);
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') searchSymbols();
+                });
+            }
+        });
+        
+        // Refresh quotes
+        async function refreshQuotes() {
+            if (!refreshQuotesBtn || !quotesBody) return;
+            
+            refreshQuotesBtn.textContent = 'Loading...';
+            refreshQuotesBtn.disabled = true;
+            quotesBody.innerHTML = '<tr><td colspan="5" class="loading">Loading real-time quotes...</td></tr>';
+            
+            try {
+                const quotes = [];
+                
+                // Fetch quotes for watched symbols (limited for rate limiting)
+                for (const symbol of watchedSymbols.slice(0, 3)) {
+                    const quote = await fetchStockQuote(symbol);
+                    if (quote) {
+                        quotes.push(quote);
+                    }
+                    
+                    // Rate limiting delay
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+                
+                // Update table
+                if (quotes.length > 0) {
+                    quotesBody.innerHTML = '';
+                    
+                    quotes.forEach(quote => {
+                        const row = document.createElement('tr');
+                        const changePercent = parseFloat(quote.changePercent);
+                        const isPositive = changePercent >= 0;
+                        
+                        row.innerHTML = `
+                            <td class="symbol">${quote.symbol}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">$${parseFloat(quote.price).toFixed(2)}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">${isPositive ? '+' : ''}${parseFloat(quote.change).toFixed(2)}</td>
+                            <td class="price ${isPositive ? 'up' : 'down'}">${isPositive ? '+' : ''}${parseFloat(quote.changePercent).toFixed(2)}%</td>
+                            <td>${parseInt(quote.volume).toLocaleString()}</td>
+                        `;
+                        quotesBody.appendChild(row);
+                    });
+                } else {
+                    quotesBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">No quotes received. Check API key or try again later.</td></tr>';
+                }
+                
+                // Update last refresh time
+                const now = new Date();
+                lastRefreshTime.textContent = now.toLocaleTimeString();
+                
+                showNotification(`Refreshed ${quotes.length} quotes`);
+                
+            } catch (error) {
+                console.error('Error refreshing quotes:', error);
+                quotesBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #ef4444;">Error loading quotes. Please try again.</td></tr>';
+                showNotification('Error loading quotes', 'error');
+            }
+            
+            refreshQuotesBtn.textContent = 'Refresh Quotes';
+            refreshQuotesBtn.disabled = false;
+        }
+        
+        // Add symbol to watchlist
+        function addSymbol() {
+            const symbol = addSymbolInput.value.trim().toUpperCase();
+            if (!symbol) return;
+            
+            if (!watchedSymbols.includes(symbol)) {
+                watchedSymbols.push(symbol);
+                addSymbolInput.value = '';
+                showNotification(`Added ${symbol} to watchlist`);
+                refreshQuotes();
+            } else {
+                showNotification(`${symbol} is already in watchlist`, 'warning');
+            }
+        }
+        
+        // Fetch technical analysis
+        async function fetchTechnicalAnalysis() {
+            const symbol = taSymbolInput.value.trim().toUpperCase();
+            const indicator = indicatorSelect.value;
+            
+            if (!symbol) {
+                taResults.innerHTML = '<p style="color: #ef4444; text-align: center;">Please enter a symbol</p>';
+                return;
+            }
+            
+            taResults.innerHTML = '<div class="loading">Fetching technical analysis...</div>';
+            fetchTaBtn.disabled = true;
+            
+            try {
+                const data = await fetchTechnicalIndicator(symbol, indicator);
+                
+                if (data) {
+                    // Get latest value
+                    const dates = Object.keys(data);
+                    const latestDate = dates[0];
+                    const latestValue = data[latestDate];
+                    
+                    let resultHtml = `<h3>${indicator} for ${symbol}</h3>`;
+                    resultHtml += `<p><strong>Latest (${latestDate}):</strong></p>`;
+                    resultHtml += `<div style="background: #f1f5f9; padding: 15px; border-radius: 6px; margin: 15px 0;">`;
+                    
+                    for (const [key, value] of Object.entries(latestValue)) {
+                        resultHtml += `<div><strong>${key}:</strong> ${value}</div>`;
+                    }
+                    
+                    resultHtml += `</div>`;
+                    
+                    // Add interpretation
+                    resultHtml += `<div style="padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid var(--primary);">`;
+                    resultHtml += `<strong>Interpretation
