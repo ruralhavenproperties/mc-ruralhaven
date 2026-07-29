@@ -1,11 +1,10 @@
-export async function onRequest(context) {
-  const kv = context.env.TRADING_KV;
+export async function handleStatus(request, env) {
+  const kv = env.TRADING_KV;
   const now = new Date();
-  
+
   try {
-    // Get last update time from KV
     const lastUpdate = await kv.get('last_update');
-    
+
     const status = {
       status: "online",
       timestamp: now.toISOString(),
@@ -26,7 +25,7 @@ export async function onRequest(context) {
         region: "auto"
       }
     };
-    
+
     return new Response(JSON.stringify(status, null, 2), {
       headers: {
         'Content-Type': 'application/json',
@@ -34,10 +33,10 @@ export async function onRequest(context) {
         'Cache-Control': 'max-age=60'
       }
     });
-    
+
   } catch (error) {
     console.error('Status check error:', error);
-    
+
     const errorStatus = {
       status: "degraded",
       timestamp: now.toISOString(),
@@ -49,7 +48,7 @@ export async function onRequest(context) {
         vps: { status: "unknown" }
       }
     };
-    
+
     return new Response(JSON.stringify(errorStatus, null, 2), {
       headers: {
         'Content-Type': 'application/json',

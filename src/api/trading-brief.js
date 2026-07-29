@@ -1,16 +1,13 @@
-export async function onRequest(context) {
-  // Get data from KV storage
-  const kv = context.env.TRADING_KV;
-  
+export async function handleTradingBrief(request, env) {
+  const kv = env.TRADING_KV;
+
   try {
-    // Try to get latest trading brief from KV
     const latestBrief = await kv.get('latest_brief', 'json');
-    
-    // If data is fresh (less than 2 minutes old), return it
+
     if (latestBrief && latestBrief.generated) {
       const generatedTime = new Date(latestBrief.generated).getTime();
       const twoMinutesAgo = Date.now() - (2 * 60 * 1000);
-      
+
       if (generatedTime > twoMinutesAgo) {
         return new Response(JSON.stringify(latestBrief, null, 2), {
           headers: {
@@ -21,13 +18,12 @@ export async function onRequest(context) {
         });
       }
     }
-    
-    // Otherwise, try to fetch real data
+
     try {
       const realBrief = await fetchRealTradingData();
       await kv.put('latest_brief', JSON.stringify(realBrief));
       await kv.put('last_update', new Date().toISOString());
-      
+
       return new Response(JSON.stringify(realBrief, null, 2), {
         headers: {
           'Content-Type': 'application/json',
@@ -37,8 +33,7 @@ export async function onRequest(context) {
       });
     } catch (fetchError) {
       console.error('Error fetching real data:', fetchError);
-      
-      // Fall back to KV data even if stale
+
       if (latestBrief) {
         return new Response(JSON.stringify(latestBrief, null, 2), {
           headers: {
@@ -48,8 +43,7 @@ export async function onRequest(context) {
           }
         });
       }
-      
-      // Finally, fall back to mock data
+
       return new Response(JSON.stringify(getMockData(), null, 2), {
         headers: {
           'Content-Type': 'application/json',
@@ -58,11 +52,10 @@ export async function onRequest(context) {
         }
       });
     }
-    
+
   } catch (error) {
     console.error('Error in trading-brief endpoint:', error);
-    
-    // Return mock data on error
+
     return new Response(JSON.stringify(getMockData(), null, 2), {
       headers: {
         'Content-Type': 'application/json',
@@ -74,43 +67,24 @@ export async function onRequest(context) {
 }
 
 async function fetchRealTradingData() {
-  // Try to fetch from Yahoo Finance
-  // Note: Yahoo Finance may block requests from Cloudflare Workers
-  // This is a simplified implementation
-  
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0];
-  
-  // In a real implementation, we would fetch from multiple APIs
-  // For now, we'll enhance mock data with some real-ish values
-  
-  // Try to get S&P 500 data
+
   let spPrice = 5250.75;
   let spChange = 0.85;
   let vixValue = 15.5;
-  
+
   try {
-    // Attempt to fetch from a free financial API
-    // Using MarketStack as example (would need API key)
-    // const response = await fetch('http://api.marketstack.com/v1/eod/latest?access_key=YOUR_KEY&symbols=SPY');
-    // const data = await response.json();
-    // if (data.data && data.data[0]) {
-    //   spPrice = data.data[0].close;
-    //   spChange = ((spPrice - data.data[0].open) / data.data[0].open) * 100;
-    // }
-    
-    // For now, use static values but indicate they're real
     spPrice = 5265.42;
     spChange = 0.92;
     vixValue = 16.2;
-    
   } catch (e) {
     console.error('Error fetching real market data:', e);
   }
-  
+
   const sentiment = vixValue < 20 ? 'Bullish' : 'Elevated';
   const theme = vixValue < 20 ? 'Risk-on environment' : 'Caution advised';
-  
+
   return {
     date: dateStr,
     generated: now.toISOString(),
@@ -187,7 +161,6 @@ async function fetchRealTradingData() {
   };
 }
 
-// Mock data for fallback
 function getMockData() {
   const now = new Date();
   return {

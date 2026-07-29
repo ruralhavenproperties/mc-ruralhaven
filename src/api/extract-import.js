@@ -1,11 +1,14 @@
-// Cloudflare Pages Function port of Property OS's Netlify extract-import function.
-// Ported so listing import (LOI/deal intake) still works when Deal Desk is served from mc.ruralhaven.co.
+// Ported from Property OS's Netlify extract-import function, then from a
+// Cloudflare Pages Function, to a plain Worker route so listing import
+// (LOI/deal intake) keeps working when Deal Desk is served from this Worker.
 const OPENAI_API_URL = "https://api.openai.com/v1/responses";
 const READER_PROXY_URL = "https://r.jina.ai/";
 const DEFAULT_EXTRACTION_PROVIDER = "openai";
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export async function handleExtractImport(request, env) {
+  if (request.method !== "POST") {
+    return json(405, { ok: false, error: "Method not allowed." });
+  }
 
   const provider = getExtractionProvider(env);
 
@@ -34,10 +37,6 @@ export async function onRequestPost(context) {
   } catch (error) {
     return json(500, { ok: false, error: error.message || "Extraction failed." });
   }
-}
-
-export async function onRequestGet() {
-  return json(405, { ok: false, error: "Method not allowed." });
 }
 
 async function runExtraction(body, provider, env) {
@@ -240,7 +239,7 @@ function validateProviderConfig(provider, env) {
     return "";
   }
 
-  return "OPENAI_API_KEY is not set in Cloudflare Pages environment variables.";
+  return "OPENAI_API_KEY is not set in this Worker's environment variables.";
 }
 
 async function fetchListingText(url) {
