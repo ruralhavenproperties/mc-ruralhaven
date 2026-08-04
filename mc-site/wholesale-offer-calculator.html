@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wholesale Offer Calculator — ARV &amp; Repairs</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#17212b; --panel2:#1d2933; --border:#2a3742;
+    --text:#e8edf2; --muted:#9aabb8; --accent:#3ea6ff; --accent2:#54c78d;
+    --warn:#e0a13d; --danger:#e0615f; --input-bg:#0f1720;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:linear-gradient(180deg,#0b1117,#111a22);color:var(--text);min-height:100vh;}
+  header{padding:28px 24px 12px;text-align:center;}
+  header h1{margin:0 0 6px;font-size:1.6rem;font-weight:700;letter-spacing:.2px;}
+  header p{margin:0;color:var(--muted);font-size:.92rem;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px 60px;}
+  .tabs{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap;justify-content:center;}
+  .tab-btn{background:var(--panel);border:1px solid var(--border);color:var(--muted);
+    padding:10px 18px;border-radius:999px;cursor:pointer;font-size:.88rem;font-weight:600;transition:.15s;}
+  .tab-btn:hover{color:var(--text);border-color:var(--accent);}
+  .tab-btn.active{background:var(--accent);color:#04121e;border-color:var(--accent);}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px;}
+  .card h2{margin:0 0 4px;font-size:1.05rem;}
+  .card .sub{color:var(--muted);font-size:.82rem;margin:0 0 16px;}
+  .qgroup{border-left:3px solid var(--accent);padding:10px 16px;margin-bottom:14px;background:var(--panel2);border-radius:0 10px 10px 0;}
+  .qgroup .num{color:var(--accent);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;}
+  .qgroup label.q{display:block;font-weight:600;margin:4px 0 8px;font-size:.95rem;}
+  .qgroup .why{color:var(--muted);font-size:.8rem;margin:0 0 8px;font-style:italic;}
+  textarea, input[type=text], input[type=number]{
+    width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);
+    padding:9px 11px;border-radius:8px;font-size:.92rem;font-family:inherit;
+  }
+  textarea{min-height:44px;resize:vertical;}
+  input[type=number]{width:100%;}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+  .row .btn-mini{white-space:nowrap;}
+  select{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.9rem;}
+  .checks{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+  .checks label{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--text);font-weight:400;cursor:pointer;}
+  .checks input{width:auto;}
+
+  .btn{background:var(--accent);color:#04121e;border:none;padding:8px 14px;border-radius:8px;
+    font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;}
+  .btn:hover{filter:brightness(1.1);}
+  .btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
+  .btn.small{padding:5px 10px;font-size:.75rem;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+  @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:5px;color:var(--text);}
+  .field .hint{font-size:.75rem;color:var(--muted);margin-top:4px;}
+  .prefix-wrap{position:relative;}
+  .prefix-wrap span.pfx{position:absolute;left:11px;top:9px;color:var(--muted);font-size:.9rem;}
+  .prefix-wrap input{padding-left:22px;}
+
+  .summary{background:linear-gradient(135deg,#12303f,#0e2430);border:1px solid #1f5372;border-radius:14px;padding:22px;margin-bottom:18px;}
+  .summary h2{margin:0 0 14px;font-size:1.1rem;color:#bfe6ff;}
+  .big{font-size:2.1rem;font-weight:800;color:var(--accent2);margin:2px 0 2px;}
+  .bigrow{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:10px;}
+  .bigcol{min-width:220px;}
+  .bigcol .lbl{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;}
+  table.breakdown{width:100%;border-collapse:collapse;margin-top:14px;font-size:.9rem;}
+  table.breakdown td{padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.08);}
+  table.breakdown td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
+  table.breakdown tr.total td{border-top:2px solid var(--accent);border-bottom:none;font-weight:800;font-size:1rem;color:var(--accent2);padding-top:10px;}
+  table.breakdown tr.neg td:last-child{color:var(--danger);}
+  .flag{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:6px;background:rgba(224,161,61,.18);color:var(--warn);margin-left:6px;}
+  .note{background:rgba(62,166,255,.08);border:1px solid rgba(62,166,255,.3);border-radius:10px;padding:12px 14px;font-size:.85rem;color:#bcd9f0;margin-bottom:16px;}
+  .note.warn{background:rgba(224,161,61,.08);border-color:rgba(224,161,61,.35);color:#f0d8ab;}
+  .refcalc{font-size:.85rem;color:var(--muted);}
+  .refcalc b{color:var(--text);}
+  details{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:10px;}
+  details summary{cursor:pointer;font-weight:600;font-size:.9rem;}
+  details p, details li{color:var(--muted);font-size:.85rem;}
+  .footer-note{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px;}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;}
+  .toolbar .btnrow{display:flex;flex-wrap:wrap;gap:8px;}
+  .toolbar .hint{width:100%;margin-top:2px;}
+
+  #print-summary{display:none;}
+  @media print{
+    body *{ visibility:hidden; }
+    #print-summary, #print-summary *{ visibility:visible; }
+    #print-summary{ display:block !important; position:absolute; left:0; top:0; width:100%; padding:10px 20px; color:#000; background:#fff; }
+    #print-summary h1{font-size:1.3rem;margin:0 0 4px;}
+    #print-summary h2{font-size:1.05rem;margin:16px 0 6px;border-bottom:1px solid #999;padding-bottom:4px;}
+    #print-summary p{font-size:.85rem;color:#333;}
+    #print-summary table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    #print-summary td{padding:5px 4px;border-bottom:1px solid #ddd;vertical-align:top;}
+    #print-summary td.label{font-weight:700;width:32%;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Wholesale Offer Calculator</h1>
+  <p>Discovery-call questions from your script → ARV &amp; repair analysis → maximum offer price</p>
+</header>
+
+<div class="wrap">
+  <div class="card toolbar">
+    <div class="field" style="flex:1;min-width:240px;margin-bottom:0;">
+      <label>Property (address or nickname) — used for file &amp; export names</label>
+      <input type="text" id="property_name" placeholder="e.g. 123 Main St, Denver">
+    </div>
+    <div class="btnrow">
+      <button class="btn secondary small" onclick="saveProperty()">💾 Save Property</button>
+      <button class="btn secondary small" onclick="triggerLoad()">📂 Load Property</button>
+      <input type="file" id="load_file_input" accept="application/json,.json" style="display:none" onchange="loadPropertyFile(event)">
+      <button class="btn secondary small" onclick="exportExcel()">📊 Export Excel</button>
+      <button class="btn small" onclick="exportPDF()">🖨️ Export / Print PDF</button>
+    </div>
+    <p class="hint" style="font-size:.78rem;color:var(--muted);margin:2px 0 0;">
+      "Save Property" downloads a small file for this address — reopen this calculator anytime and use "Load Property" to pick up right where you left off across multiple calls.
+    </p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="discovery">1. Discovery Call</button>
+    <button class="tab-btn" data-tab="calc">2. Offer Calculator</button>
+    <button class="tab-btn" data-tab="close">3. Close Call &amp; Objections</button>
+  </div>
+
+  <!-- ============ TAB 1: DISCOVERY CALL ============ -->
+  <div class="panel active" id="tab-discovery">
+    <div class="card">
+      <h2>First Call — Discovery Script</h2>
+      <p class="sub">Run through these live with the listing agent. Fields marked <span class="flag">feeds calculator</span> push straight into your offer math on the next tab.</p>
+
+      <div class="qgroup"><div class="num">Step 1–2 · Intro &amp; Representation</div>
+        <label class="q">"I'm a buyer, not an agent — would you be open to representing me as your buyer?"</label>
+        <p class="why">Doubles the agent's commission if they represent both sides — biggest single lever for getting your offer prioritized.</p>
+        <textarea id="q_rep" placeholder="Agent's response..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 3 · Motivation</div>
+        <label class="q">"What's the seller's reason for selling?"</label>
+        <p class="why">Distress/urgency (foreclosure, divorce, death, relocation deadline) = leverage and a chance to be the most accommodating offer.</p>
+        <textarea id="q_motivation" placeholder="Seller's reason / motivation..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 4 · Condition</div>
+        <label class="q">"From your perspective, what's the overall condition of the property?"</label>
+        <textarea id="q_condition" placeholder="Agent's description of condition..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 5 · Major issues <span class="flag">feeds repairs</span></div>
+        <label class="q">"Any major issues — structural, foundational, or electrical?"</label>
+        <p class="why">These are the big-ticket items ($5k–$25k+) that a simple $/sqft rule won't catch.</p>
+        <div class="checks">
+          <label><input type="checkbox" id="chk_hvac" data-add="6000"> HVAC replacement needed (+$6,000)</label>
+          <label><input type="checkbox" id="chk_electrical" data-add="7500"> Electrical rewiring needed (+$7,500)</label>
+          <label><input type="checkbox" id="chk_roof" data-add="9000"> Roof replacement needed (+$9,000)</label>
+          <label><input type="checkbox" id="chk_foundation" data-add="25000"> Foundation / structural / cracked slab (+$25,000)</label>
+          <label><input type="checkbox" id="chk_plumbing" data-add="5000"> Plumbing issues (+$5,000)</label>
+        </div>
+        <div class="field" style="margin-top:10px;">
+          <label>Other major issue — custom add ($)</label>
+          <input type="number" id="major_custom" value="0" min="0" step="500">
+        </div>
+        <textarea id="q_major_notes" placeholder="Notes on what the agent said..." style="margin-top:8px;"></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 6 · Upgrades <span class="flag">feeds repairs</span></div>
+        <label class="q">"Has anything been upgraded recently?"</label>
+        <p class="why">Recent bath/kitchen/roof/HVAC upgrades lower your repair budget — don't pay to redo what's already done.</p>
+        <div class="field">
+          <label>Repair budget credit for recent upgrades ($)</label>
+          <input type="number" id="upgrade_credit" value="0" min="0" step="500">
+        </div>
+        <textarea id="q_upgrade_notes" placeholder="What's already been upgraded..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 7 · Special features</div>
+        <label class="q">"Is there anything particularly special about this property vs. others in the area?"</label>
+        <p class="why">Views, lot, noise, neighbors — things not visible in photos that swing ARV up or down.</p>
+        <textarea id="q_special" placeholder="Positives / negatives not in the listing..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 8 · Agent's ARV guess <span class="flag">feeds ARV</span></div>
+        <label class="q">"What would you say this home is worth in its best possible condition?"</label>
+        <p class="why">Usually a rough number (agents are right only ~20–30% of the time) — use it as a starting point, then verify with your own comps.</p>
+        <div class="row">
+          <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+            <label>Agent's stated ARV ($)</label>
+            <input type="number" id="agent_arv" min="0" step="1000" placeholder="e.g. 500000">
+          </div>
+          <button class="btn secondary small btn-mini" onclick="useAgentARV()">Use this as my ARV →</button>
+        </div>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 9 · Competition</div>
+        <label class="q">"How's activity been? Any calls/offers so far — from homeowners or investors? How many, written or verbal?"</label>
+        <p class="why">If your competition is homeowners, you're probably not calling distressed enough leads. A single written offer beats several verbal ones.</p>
+        <textarea id="q_competition" placeholder="Number/type of offers on the table..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 10 · Purchase price &amp; flexibility</div>
+        <label class="q">"What price do I have to come in at today to get it under contract? How flexible is that? Would the seller review offers below that?"</label>
+        <p class="why">Most properties sell below list — this finds the seller's real floor. Use as a sanity check against your calculated offer, not as the offer itself.</p>
+        <div class="row">
+          <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+            <label>List price ($)</label>
+            <input type="number" id="list_price" min="0" step="1000">
+          </div>
+          <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+            <label>Agent-stated floor ($)</label>
+            <input type="number" id="agent_floor" min="0" step="1000">
+          </div>
+        </div>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 11 · Offer terms seller wants</div>
+        <label class="q">"Any specific offer terms the seller would like included?" (closing timeline, inspection length, EMD size/timing)</label>
+        <textarea id="q_terms" placeholder="Seller's preferred terms..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 12 · Review timeline</div>
+        <label class="q">"When does the seller plan on reviewing and deciding on offers?"</label>
+        <input type="text" id="q_review_time" placeholder="e.g. Friday 3pm">
+      </div>
+
+      <div class="qgroup"><div class="num">Step 13 · Other buyers agent represents</div>
+        <label class="q">"Are you currently representing any other buyers on this property?"</label>
+        <textarea id="q_other_buyers" placeholder="..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 14 · Off-market pipeline</div>
+        <label class="q">"Know of any other fixer properties — on or off market — that you could represent me on?"</label>
+        <textarea id="q_offmarket" placeholder="Leads mentioned..."></textarea>
+      </div>
+
+      <div class="qgroup"><div class="num">Step 15 · Wrap-up</div>
+        <p class="why">"Our offer will be justified with thorough research — let me meet with my team and get back to you shortly." Buys you time to run the numbers below before the close call.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: CALCULATOR ============ -->
+  <div class="panel" id="tab-calc">
+
+    <div class="summary">
+      <h2>Your Offer, Justified</h2>
+      <div class="bigrow">
+        <div class="bigcol">
+          <div class="lbl">Max Offer to Seller (call this in)</div>
+          <div class="big" id="out_offer">$0</div>
+        </div>
+        <div class="bigcol">
+          <div class="lbl">Price you quote your cash buyer (fee built in)</div>
+          <div class="big" id="out_buyerprice" style="color:#7fd0ff;">$0</div>
+        </div>
+        <div class="bigcol">
+          <div class="lbl">Your wholesale fee</div>
+          <div class="big" id="out_fee" style="color:#e8edf2;font-size:1.6rem;">$0</div>
+        </div>
+      </div>
+      <table class="breakdown" id="breakdown_table"></table>
+    </div>
+
+    <div class="note" id="sanity_note" style="display:none;"></div>
+
+    <div class="card">
+      <h2>1 · After Repair Value (ARV)</h2>
+      <p class="sub">From comps: renovated, same city/zip, sold in the last 6 months, within ~½ mile, model match where possible.</p>
+      <div class="field">
+        <label>ARV ($)</label>
+        <div class="prefix-wrap"><span class="pfx">$</span><input type="number" id="arv" value="500000" min="0" step="1000" oninput="calc()"></div>
+        <div class="hint" id="arv_source_hint"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2 · Repair Costs</h2>
+      <p class="sub">Quick estimate: ask your cash buyer their $/sq ft renovation rule, then adjust for major issues (Step 5) and recent upgrades (Step 6) from the discovery call.</p>
+      <div class="grid3">
+        <div class="field">
+          <label>Square footage</label>
+          <input type="number" id="sqft" value="1300" min="0" step="10" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Cash buyer's $/sq ft rule</label>
+          <div class="prefix-wrap"><span class="pfx">$</span><input type="number" id="sqft_rate" value="40" min="0" step="1" oninput="calc()"></div>
+        </div>
+        <div class="field">
+          <label>Base repair estimate</label>
+          <input type="text" id="base_repair_display" value="$52,000" disabled style="opacity:.7;">
+        </div>
+      </div>
+      <div class="row" style="margin-top:4px;">
+        <span class="hint">Major-issue add-ons and upgrade credit from the Discovery Call tab are applied automatically below.</span>
+      </div>
+      <div class="grid2" style="margin-top:14px;">
+        <div class="field">
+          <label>+ Major issues total (from Step 5)</label>
+          <input type="text" id="major_total_display" value="$0" disabled style="opacity:.7;">
+        </div>
+        <div class="field">
+          <label>− Upgrade credit (from Step 6)</label>
+          <input type="text" id="upgrade_display" value="$0" disabled style="opacity:.7;">
+        </div>
+      </div>
+      <div class="field">
+        <label>Final repair budget ($) — override if you have a contractor bid</label>
+        <div class="prefix-wrap"><span class="pfx">$</span><input type="number" id="repairs_final" value="52000" min="0" step="500" oninput="repairsOverridden=true; calc();"></div>
+        <div class="hint">Rule of thumb from the script: aim to land within $3,000–$5,000 of the true number — don't overanalyze, use the rule and move.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Selling &amp; Closing Costs</h2>
+      <p class="sub">What your cash buyer will pay to resell: agent commissions, title/escrow, transfer taxes, etc. — applied against ARV.</p>
+      <div class="field">
+        <label>Selling &amp; closing costs (% of ARV)</label>
+        <div class="row">
+          <input type="number" id="closing_pct" value="8" min="0" max="30" step="0.5" oninput="calc()" style="max-width:120px;">
+          <span>%  ≈ <span id="closing_dollar">$40,000</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4 · Holding Costs</h2>
+      <p class="sub">Taxes, insurance, utilities, and financing while the cash buyer renovates and resells — figured as a rate of ARV per month.</p>
+      <div class="grid3">
+        <div class="field">
+          <label>Monthly holding cost (% of ARV)</label>
+          <div class="row"><input type="number" id="hold_pct" value="1" min="0" max="10" step="0.1" oninput="calc()" style="max-width:120px;"><span>%  ≈ <span id="hold_monthly_dollar">$0</span>/mo</span></div>
+        </div>
+        <div class="field">
+          <label>Estimated months to renovate + sell</label>
+          <input type="number" id="hold_months" value="4" min="0" step="1" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Total holding cost</label>
+          <input type="text" id="hold_total_display" value="$0" disabled style="opacity:.7;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5 · Cash Buyer's Minimum Profit</h2>
+      <p class="sub">Learned directly from your cash buyer conversations (buy-box calls) — their non-negotiable profit floor.</p>
+      <div class="row" style="margin-bottom:10px;">
+        <label style="font-size:.85rem;font-weight:600;">Method:</label>
+        <select id="profit_method" onchange="calc()">
+          <option value="pct">% of ARV</option>
+          <option value="flat">Flat dollar amount</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Profit % of ARV</label>
+          <div class="row"><input type="number" id="profit_pct" value="15" min="0" max="50" step="1" oninput="calc()" style="max-width:120px;"><span>%</span></div>
+        </div>
+        <div class="field">
+          <label>Or flat profit ($)</label>
+          <div class="prefix-wrap"><span class="pfx">$</span><input type="number" id="profit_flat" value="75000" min="0" step="1000" oninput="calc()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>6 · Your Wholesale (Assignment) Fee</h2>
+      <div class="field">
+        <label>Desired wholesale fee ($)</label>
+        <div class="prefix-wrap"><span class="pfx">$</span><input type="number" id="wholesale_fee" value="20000" min="0" step="500" oninput="calc()"></div>
+        <div class="hint">Script benchmark: ~15 written offers → one $10k fee as a beginner; advanced wholesalers land $20k–$40k+ on fewer, better offers.</div>
+      </div>
+    </div>
+
+    <details>
+      <summary>Reference only — the crude "70% Rule" (script explicitly warns against relying on this alone)</summary>
+      <p>70% × ARV − Repairs = <b id="rule70_result">$0</b>. The script calls this a "paper napkin math rule" that ignores closing costs, holding costs, and the buyer's actual profit needs — using it alone will make you uncompetitive on offers. It's shown here only as a gut-check, not as your real number.</p>
+    </details>
+
+  </div>
+
+  <!-- ============ TAB 3: CLOSE CALL ============ -->
+  <div class="panel" id="tab-close">
+    <div class="card">
+      <h2>Close Call Script (Call #2)</h2>
+      <p class="sub">Once your numbers above are set, call the agent back same-day and present the offer live — don't just email or text it.</p>
+      <ol style="color:var(--muted);font-size:.9rem;line-height:1.7;">
+        <li><b>Re-open:</b> "Hey [Agent], this is [You]. Calling back on [address] — looking forward to getting an offer in today and having you represent us."</li>
+        <li><b>Present with justification, then go silent:</b> "We finished analyzing the property's costs — renovation, closing costs, holding costs, taxes, insurance. Accounting for all of that, we can do an all-cash offer today with a 7-day inspection, 14-day close, at <span id="close_offer_display">$—</span>."</li>
+        <li><b>Confirm next steps:</b> proof of funds + offer terms sent by email right after the call; confirm the agent's email; digital vs. wet signature; get a time commitment for when the signed offer comes back.</li>
+        <li><b>Push for same-day review:</b> "Will the seller be able to review our offer today?"</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Objection Handling</h2>
+      <details open>
+        <summary>"That seems a little low..."</summary>
+        <p>"I completely understand — I'd come in higher if I could right now, but an offer in is better than no offer. What if we get the process started with this contract and work toward a mutually beneficial number together?"</p>
+      </details>
+      <details>
+        <summary>"There are higher offers on the table."</summary>
+        <p>"I understand there may be higher offers — but the highest offer isn't always the best. Inexperienced investors often come in high, then ask for reductions at inspection. Ours is real, reliable, and we intend to stick to it. If the higher offers fall through — and 40–50% of the time they do — ours is still there."</p>
+      </details>
+      <details>
+        <summary>"The seller wants highest and best."</summary>
+        <p>"Totally understand. Sometimes the highest offer isn't the best offer, since inexperienced buyers ask for price reductions near closing. We'd rather build a long-term relationship than waste your time — our number is one we can commit to. How about we get it in today and see where it takes us?"</p>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Offer Terms Checklist (send with proof of funds)</h2>
+      <ul style="color:var(--muted);font-size:.9rem;">
+        <li>Purchaser name (and note the agent as buyer's agent — dual commission)</li>
+        <li>Earnest money deposit (EMD) — typically ~$10,000, refundable within 72 hrs</li>
+        <li>Inspection contingency — 7 days (your back-out clause; always include one)</li>
+        <li>Closing timeline — 14 days or sooner</li>
+        <li>Proof of funds (POF) — bank statement or hard-money/transactional lender letter covering the offer amount</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="footer-note">Built from your uploaded discovery-call / close-call script. Formula: <b>Offer to Seller = ARV − Repairs − Selling/Closing Costs − Holding Costs − Buyer's Minimum Profit − Your Wholesale Fee.</b></p>
+</div>
+
+<div id="print-summary"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let repairsOverridden = false;
+
+const FIELD_IDS = ['property_name','q_rep','q_motivation','q_condition','major_custom','q_major_notes',
+  'upgrade_credit','q_upgrade_notes','q_special','agent_arv','q_competition','list_price','agent_floor',
+  'q_terms','q_review_time','q_other_buyers','q_offmarket','arv','sqft','sqft_rate','repairs_final',
+  'closing_pct','hold_pct','hold_months','profit_method','profit_pct','profit_flat','wholesale_fee'];
+const CHECKBOX_IDS = ['chk_hvac','chk_electrical','chk_roof','chk_foundation','chk_plumbing'];
+
+function collectState(){
+  const state = {_repairsOverridden: repairsOverridden};
+  FIELD_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) state[id]=el.value; });
+  CHECKBOX_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) state[id]=el.checked; });
+  return state;
+}
+
+function applyState(state){
+  FIELD_IDS.forEach(id=>{
+    if(state[id]!==undefined){ const el=document.getElementById(id); if(el) el.value = state[id]; }
+  });
+  CHECKBOX_IDS.forEach(id=>{
+    if(state[id]!==undefined){ const el=document.getElementById(id); if(el) el.checked = !!state[id]; }
+  });
+  repairsOverridden = !!state._repairsOverridden;
+  calc();
+}
+
+function slugify(s){
+  return (s||'property').toString().trim().replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase() || 'property';
+}
+
+function saveProperty(){
+  const state = collectState();
+  const name = slugify(document.getElementById('property_name').value);
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name + '-wholesale-deal.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function triggerLoad(){ document.getElementById('load_file_input').click(); }
+
+function loadPropertyFile(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const state = JSON.parse(e.target.result);
+      applyState(state);
+      alert('Loaded "' + (state.property_name || 'property') + '" — pick up where you left off.');
+    }catch(err){
+      alert('Could not read that file — make sure it is a .json file saved from this calculator (via "Save Property").');
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+function computeMajorTotalFromState(s){
+  let total = 0;
+  if(s.chk_hvac) total += 6000;
+  if(s.chk_electrical) total += 7500;
+  if(s.chk_roof) total += 9000;
+  if(s.chk_foundation) total += 25000;
+  if(s.chk_plumbing) total += 5000;
+  total += parseFloat(s.major_custom)||0;
+  return total;
+}
+
+function exportExcel(){
+  if(typeof XLSX === 'undefined'){ alert('Excel export library did not load — check your internet connection and try again.'); return; }
+  const s = collectState();
+  const propertyName = document.getElementById('property_name').value || 'Untitled Property';
+
+  const majorTotal = computeMajorTotalFromState(s);
+  const upgradeCredit = parseFloat(s.upgrade_credit)||0;
+
+  const discoveryRows = [
+    ['Wholesale Deal — Discovery Call Notes'],
+    ['Property', propertyName],
+    [],
+    ['Step','Question','Notes / Answer'],
+    ['1-2','Representation — open to representing me as buyer?', s.q_rep||''],
+    ['3','Seller\'s reason for selling (motivation)?', s.q_motivation||''],
+    ['4','Overall condition of the property?', s.q_condition||''],
+    ['5','Major issues (structural/foundation/electrical) — notes', s.q_major_notes||''],
+    ['5','   HVAC replacement needed (+$6,000)', s.chk_hvac ? 'Yes' : 'No'],
+    ['5','   Electrical rewiring needed (+$7,500)', s.chk_electrical ? 'Yes' : 'No'],
+    ['5','   Roof replacement needed (+$9,000)', s.chk_roof ? 'Yes' : 'No'],
+    ['5','   Foundation / structural (+$25,000)', s.chk_foundation ? 'Yes' : 'No'],
+    ['5','   Plumbing issues (+$5,000)', s.chk_plumbing ? 'Yes' : 'No'],
+    ['5','   Other custom repair add-on ($)', parseFloat(s.major_custom)||0],
+    ['6','Anything upgraded recently? / repair credit ($)', (s.q_upgrade_notes||'') + '  [Credit: ' + (upgradeCredit) + ']'],
+    ['7','Anything special about this property?', s.q_special||''],
+    ['8',"Agent's ARV estimate ($)", s.agent_arv||''],
+    ['9','Competition — activity / offers on the table', s.q_competition||''],
+    ['10','List price ($)', s.list_price||''],
+    ['10','Agent-stated flexible floor ($)', s.agent_floor||''],
+    ['11','Offer terms seller wants', s.q_terms||''],
+    ['12','When will seller review/decide on offers?', s.q_review_time||''],
+    ['13','Other buyers agent currently represents', s.q_other_buyers||''],
+    ['14','Other off-market / fixer leads mentioned', s.q_offmarket||''],
+  ];
+  const ws1 = XLSX.utils.aoa_to_sheet(discoveryRows);
+  ws1['!cols'] = [{wch:6},{wch:46},{wch:60}];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws1, 'Discovery Call');
+
+  const arv = parseFloat(s.arv)||0;
+  const sqft = parseFloat(s.sqft)||0;
+  const sqftRate = parseFloat(s.sqft_rate)||0;
+  const repairsFinal = parseFloat(s.repairs_final)||0;
+  const closingPct = parseFloat(s.closing_pct)||0;
+  const holdPct = parseFloat(s.hold_pct)||0;
+  const holdMonths = parseFloat(s.hold_months)||0;
+  const profitMethod = s.profit_method||'pct';
+  const profitPct = parseFloat(s.profit_pct)||0;
+  const profitFlat = parseFloat(s.profit_flat)||0;
+  const fee = parseFloat(s.wholesale_fee)||0;
+
+  const closingCostVal = arv*closingPct/100;
+  const holdingCostVal = arv*holdPct/100*holdMonths;
+  const buyerProfitVal = profitMethod==='pct' ? arv*profitPct/100 : profitFlat;
+  const offerVal = arv - repairsFinal - closingCostVal - holdingCostVal - buyerProfitVal - fee;
+  const buyerPriceVal = offerVal + fee;
+
+  const calcRows = [
+    ['Wholesale Offer Calculator'],                                  // row1
+    ['Property', propertyName],                                      // row2
+    [],                                                               // row3
+    ['ARV ($)', arv],                                                 // row4
+    ['Square footage', sqft],                                         // row5
+    ['$/sq ft repair rate', sqftRate],                                // row6
+    ['Base repair estimate ($) = sqft × rate', sqft*sqftRate],        // row7 -> formula B5*B6
+    ['Major issues add-on ($) (Step 5)', majorTotal],                 // row8
+    ['Upgrade credit ($) (Step 6)', upgradeCredit],                   // row9
+    ['Final repair budget ($) — editable', repairsFinal],             // row10
+    ['Selling & closing cost (% of ARV)', closingPct],                // row11
+    ['Selling & closing cost ($)', closingCostVal],                   // row12 -> formula B4*B11/100
+    ['Holding cost (% of ARV / month)', holdPct],                     // row13
+    ['Months held', holdMonths],                                      // row14
+    ['Holding cost ($)', holdingCostVal],                             // row15 -> formula B4*B13/100*B14
+    ['Profit method (pct or flat)', profitMethod],                    // row16
+    ["Cash buyer profit (% of ARV)", profitPct],                      // row17
+    ['Cash buyer profit (flat $)', profitFlat],                       // row18
+    ['Cash buyer profit used ($)', buyerProfitVal],                   // row19 -> formula IF(B16="pct",B4*B17/100,B18)
+    ['Wholesale (assignment) fee ($)', fee],                          // row20
+    [],                                                               // row21
+    ['MAX OFFER TO SELLER ($)', offerVal],                            // row22 -> formula
+    ['Price to quote cash buyer ($) — fee built in', buyerPriceVal],  // row23 -> formula B22+B20
+  ];
+  const ws2 = XLSX.utils.aoa_to_sheet(calcRows);
+  ws2['!cols'] = [{wch:42},{wch:20}];
+  ws2['B7'] = {t:'n', v: sqft*sqftRate, f:'B5*B6'};
+  ws2['B12'] = {t:'n', v: closingCostVal, f:'B4*B11/100'};
+  ws2['B15'] = {t:'n', v: holdingCostVal, f:'B4*B13/100*B14'};
+  ws2['B19'] = {t:'n', v: buyerProfitVal, f:'IF(B16="pct",B4*B17/100,B18)'};
+  ws2['B22'] = {t:'n', v: offerVal, f:'B4-B10-B12-B15-B19-B20'};
+  ws2['B23'] = {t:'n', v: buyerPriceVal, f:'B22+B20'};
+  XLSX.utils.book_append_sheet(wb, ws2, 'Offer Calculator');
+
+  XLSX.writeFile(wb, slugify(propertyName) + '-wholesale-calculator.xlsx');
+}
+
+function exportPDF(){
+  const s = collectState();
+  const propertyName = document.getElementById('property_name').value || 'Untitled Property';
+
+  const qa = [
+    ['Representation (Step 1-2)', s.q_rep],
+    ["Seller's motivation (Step 3)", s.q_motivation],
+    ['Condition (Step 4)', s.q_condition],
+    ['Major issues notes (Step 5)', s.q_major_notes],
+    ['Upgrades notes (Step 6)', s.q_upgrade_notes],
+    ['Special features (Step 7)', s.q_special],
+    ["Agent's ARV guess (Step 8)", s.agent_arv],
+    ['Competition (Step 9)', s.q_competition],
+    ['List price / Agent floor (Step 10)', (s.list_price||'—') + ' / ' + (s.agent_floor||'—')],
+    ['Offer terms wanted (Step 11)', s.q_terms],
+    ['Review timeline (Step 12)', s.q_review_time],
+    ['Other buyers agent represents (Step 13)', s.q_other_buyers],
+    ['Off-market leads (Step 14)', s.q_offmarket],
+  ];
+  const esc = v => (v===undefined||v===null||v==='' ? '—' : v.toString()).replace(/</g,'&lt;');
+  const qaHtml = qa.map(([label,val])=>`<tr><td class="label">${esc(label)}</td><td>${esc(val)}</td></tr>`).join('');
+
+  const breakdownHtml = document.getElementById('breakdown_table').innerHTML;
+  const offerText = document.getElementById('out_offer').textContent;
+  const buyerPriceText = document.getElementById('out_buyerprice').textContent;
+  const feeText = document.getElementById('out_fee').textContent;
+
+  document.getElementById('print-summary').innerHTML = `
+    <h1>Wholesale Deal Summary — ${esc(propertyName)}</h1>
+    <p>Generated ${new Date().toLocaleString()}</p>
+    <h2>Discovery Call Notes</h2>
+    <table>${qaHtml}</table>
+    <h2>Offer Calculation</h2>
+    <table>${breakdownHtml}</table>
+    <p><b>Max Offer to Seller:</b> ${offerText} &nbsp;&nbsp; <b>Cash Buyer Price:</b> ${buyerPriceText} &nbsp;&nbsp; <b>Wholesale Fee:</b> ${feeText}</p>
+  `;
+  window.print();
+}
+
+function fmt(n){
+  n = isFinite(n) ? n : 0;
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
+
+function useAgentARV(){
+  const v = document.getElementById('agent_arv').value;
+  if(v){
+    document.getElementById('arv').value = v;
+    document.getElementById('arv_source_hint').textContent = "Loaded from agent's Step 8 estimate — verify against your own comps before finalizing.";
+    switchTab('calc');
+    calc();
+  }
+}
+
+// major issues checkboxes
+document.querySelectorAll('.checks input[type=checkbox]').forEach(c=>c.addEventListener('change', calc));
+document.getElementById('major_custom').addEventListener('input', calc);
+document.getElementById('upgrade_credit').addEventListener('input', calc);
+
+function majorIssuesTotal(){
+  let total = 0;
+  document.querySelectorAll('.checks input[type=checkbox]').forEach(c=>{ if(c.checked) total += parseFloat(c.dataset.add||0); });
+  total += parseFloat(document.getElementById('major_custom').value || 0);
+  return total;
+}
+
+function calc(){
+  const sqft = parseFloat(document.getElementById('sqft').value)||0;
+  const rate = parseFloat(document.getElementById('sqft_rate').value)||0;
+  const baseRepair = sqft*rate;
+  document.getElementById('base_repair_display').value = fmt(baseRepair);
+
+  const majorTotal = majorIssuesTotal();
+  const upgradeCredit = parseFloat(document.getElementById('upgrade_credit').value)||0;
+  document.getElementById('major_total_display').value = fmt(majorTotal);
+  document.getElementById('upgrade_display').value = fmt(upgradeCredit);
+
+  if(!repairsOverridden){
+    document.getElementById('repairs_final').value = Math.max(0, Math.round(baseRepair + majorTotal - upgradeCredit));
+  }
+  const repairs = parseFloat(document.getElementById('repairs_final').value)||0;
+
+  const arv = parseFloat(document.getElementById('arv').value)||0;
+  const closingPct = parseFloat(document.getElementById('closing_pct').value)||0;
+  const closingCost = arv * closingPct/100;
+  document.getElementById('closing_dollar').textContent = fmt(closingCost);
+
+  const holdPct = parseFloat(document.getElementById('hold_pct').value)||0;
+  const holdMonthly = arv * holdPct/100;
+  const holdMonths = parseFloat(document.getElementById('hold_months').value)||0;
+  const holdingCost = holdMonthly*holdMonths;
+  document.getElementById('hold_monthly_dollar').textContent = fmt(holdMonthly);
+  document.getElementById('hold_total_display').value = fmt(holdingCost);
+
+  const profitMethod = document.getElementById('profit_method').value;
+  const profitPct = parseFloat(document.getElementById('profit_pct').value)||0;
+  const profitFlat = parseFloat(document.getElementById('profit_flat').value)||0;
+  const buyerProfit = profitMethod==='pct' ? arv*profitPct/100 : profitFlat;
+
+  const fee = parseFloat(document.getElementById('wholesale_fee').value)||0;
+
+  const offer = arv - repairs - closingCost - holdingCost - buyerProfit - fee;
+  const buyerPrice = offer + fee; // what you quote the cash buyer, fee built in
+
+  document.getElementById('out_offer').textContent = fmt(offer);
+  document.getElementById('out_buyerprice').textContent = fmt(buyerPrice);
+  document.getElementById('out_fee').textContent = fmt(fee);
+  document.getElementById('close_offer_display').textContent = fmt(offer);
+
+  const rule70 = arv*0.7 - repairs;
+  document.getElementById('rule70_result').textContent = fmt(rule70);
+
+  const rows = [
+    ['ARV', arv, false],
+    ['− Repair costs', -repairs, true],
+    [`− Selling &amp; closing costs (${closingPct}%)`, -closingCost, true],
+    [`− Holding costs (${holdMonths} mo × ${holdPct}% ARV = ${fmt(holdMonthly)}/mo)`, -holdingCost, true],
+    [`− Cash buyer's minimum profit`, -buyerProfit, true],
+    [`− Your wholesale fee`, -fee, true],
+  ];
+  let html = '';
+  rows.forEach(r=>{
+    html += `<tr class="${r[2]?'neg':''}"><td>${r[0]}</td><td>${r[2] ? '−' : ''}${fmt(Math.abs(r[1]))}</td></tr>`;
+  });
+  html += `<tr class="total"><td>Max offer to seller</td><td>${fmt(offer)}</td></tr>`;
+  document.getElementById('breakdown_table').innerHTML = html;
+
+  // sanity check vs agent floor / list price
+  const listPrice = parseFloat(document.getElementById('list_price').value)||0;
+  const agentFloor = parseFloat(document.getElementById('agent_floor').value)||0;
+  const note = document.getElementById('sanity_note');
+  if(agentFloor>0 || listPrice>0){
+    const ref = agentFloor>0?agentFloor:listPrice;
+    const diff = ref - offer;
+    note.style.display='block';
+    if(offer > ref){
+      note.className='note';
+      note.innerHTML = `Your calculated offer (${fmt(offer)}) is <b>above</b> what the agent indicated the seller might accept (${fmt(ref)}). You may have room to increase your wholesale fee or lower the buyer's profit assumption.`;
+    } else {
+      note.className='note warn';
+      note.innerHTML = `Your calculated offer (${fmt(offer)}) is <b>${fmt(diff)} below</b> the agent's stated flexibility (${fmt(ref)}). Be ready to justify the gap with repairs/condition (Steps 4–6), or negotiate terms instead of price.`;
+    }
+  } else {
+    note.style.display='none';
+  }
+
+  if(offer < 0){
+    document.getElementById('out_offer').style.color = 'var(--danger)';
+  } else {
+    document.getElementById('out_offer').style.color = 'var(--accent2)';
+  }
+}
+
+calc();
+</script>
+</body>
+</html>
