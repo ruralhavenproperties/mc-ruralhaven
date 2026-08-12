@@ -14,7 +14,7 @@ export function renderSellHomePage() {
     --red: #D2232A;
     --olive: #6B7D3A;
     --olive-dark: #57682F;
-    --cream: #F5F5F5;
+    --cream: #F7F1E1;
     --cream-line: #E4E2D8;
     --ink: #3A3A3A;
     --muted: #5C6259;
@@ -68,6 +68,49 @@ export function renderSellHomePage() {
   }
   header .sell-nav a:hover { background: var(--navy-dark); }
   header .sell-nav a.active { background: var(--red); }
+  /* Info bubble tooltip */
+  .tip {
+    position: relative;
+    display: inline-block;
+  }
+  .tip .tip-bubble {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    width: 240px;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    z-index: 20;
+    transition: opacity .15s, visibility .15s;
+    pointer-events: none;
+  }
+  .tip .tip-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: var(--navy);
+  }
+  .tip:hover .tip-bubble {
+    visibility: visible;
+    opacity: 1;
+  }
+  .tip .tip-bubble a {
+    color: #fff;
+    text-decoration: underline;
+  }
   .hero {
     max-width: 720px;
     margin: 0 auto;
@@ -198,8 +241,11 @@ export function renderSellHomePage() {
       Rural Haven<span> Properties</span>
     </div>
     <nav class="sell-nav">
-      <a href="/" class="active">Sell</a>
-      <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener">Back40</a>
+      <a href="/" class="active">Home</a>
+      <span class="tip">
+        <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener">Back40</a>
+        <span class="tip-bubble">Back40 is your real-estate underwriting &amp; deal engine — analyze deals, run the numbers, and manage your portfolio.</span>
+      </span>
       <a href="https://mc.ruralhaven.co" target="_blank" rel="noopener">Mission Control</a>
     </nav>
   </header>
