@@ -4,78 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowledge Base - Rural Haven</title>
-    <style>
-        :root {
-            --primary: #ef4444;
-            --primary-dark: #dc2626;
-            --secondary: #475569;
-            --dark: #0f172a;
-            --darker: #020617;
-            --light: #e2e8f0;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
-            color: var(--light); min-height: 100vh; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { text-align: center; padding: 30px 20px; background: rgba(15, 23, 42, 0.8);
-            border-radius: 15px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 5px solid var(--primary); }
-        .header h1 { font-size: 2.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .card { background: rgba(15, 23, 42, 0.8); padding: 25px; border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 25px; }
-        .card h3 { color: var(--primary); margin-bottom: 20px; font-size: 1.5rem; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex;
-            align-items: center; gap: 8px; transition: all 0.3s; text-decoration: none; }
-        .btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        .nav { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-    </style>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="/assets/favicon-32.png">
-<link rel="stylesheet" href="/assets/brand.css">
-
-<style>
-  :root {
-    --brand-navy: #0b1f33;
-    --brand-navy-700: #16314f;
-    --brand-red: #8c1c1c;
-    --brand-olive: #52551f;
-    --brand-olive-600: #6b6f29;
-    --brand-cream: #f8f8e8;
-    --brand-cream-line: #e4e2d0;
-    --brand-ink: #1c2420;
-    --brand-muted: #5c6259;
-  }
-  body.branded, .branded body {
-    background: var(--brand-cream) !important;
-    color: var(--brand-ink) !important;
-  }
-  /* Neutralize the dark gradient/near-black backgrounds used by dashboard pages */
-  body {
-    background: var(--brand-cream) !important;
-  }
-  .container, .content, main, .card, .panel, .dashboard {
-    background: transparent;
-  }
-</style>
+    
 </head>
 <body class="branded">
 <header class="brand-header">
-<img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <nav class="brand-nav">
+    <a href="/">Mission Control</a>
+    <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener">Back40</a>
+    <a href="https://ruralhaven.co" target="_blank" rel="noopener">Sell</a>
+  </nav>
 </header>
 
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-book"></i> Knowledge Base</h1>
             <p>Centralized knowledge repository with content ingestion, monetization, and business system.</p>
-            <p style="color: #94a3b8;">Browser extension, local server, YouTube/PDF/Web scraping, SQLite database.</p>
+            <p style="color: #5C6259;">Browser extension, local server, YouTube/PDF/Web scraping, SQLite database.</p>
         </div>
         
         <div class="nav">
@@ -86,7 +31,7 @@
         
         <div class="card">
             <h3><i class="fas fa-tools"></i> Under Construction</h3>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Knowledge Base system ingests content from web, YouTube, PDFs, and Twitter for monetization and business intelligence. Features include:</p>
+            <p style="color: #5C6259; margin-bottom: 20px;">Knowledge Base system ingests content from web, YouTube, PDFs, and Twitter for monetization and business intelligence. Features include:</p>
             <ul style="color: #cbd5e1; margin-left: 20px; margin-bottom: 20px;">
                 <li>Browser extension for URL ingestion and tagging</li>
                 <li>Local server with YouTube transcript extraction</li>

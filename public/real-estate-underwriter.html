@@ -9,190 +9,16 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon" href="/favicon.svg">
-<style>
-  :root{
-    --paper:#F1ECE0;
-    --paper-line:#B9C7CE;
-    --ink:#1F3A52;
-    --ink-soft:#4C6478;
-    --blue:#2B5C7A;
-    --flag:#C1541C;
-    --flag-dark:#9A3F16;
-    --green:#3F6B4A;
-    --red:#A23B2E;
-    --panel:#FFFDF8;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:
-      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
-      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
-      var(--paper);
-    background-blend-mode:multiply;
-    font-family:'IBM Plex Mono', monospace;
-    color:var(--ink);
-    min-height:100vh;
-    padding:18px;
-  }
-  .wrap{max-width:1180px;margin:0 auto;}
 
-  .titleblock{
-    border:2px solid var(--ink);
-    background:var(--panel);
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    padding:14px 18px;
-    margin-bottom:14px;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-  .titleblock h1{
-    font-family:'Zilla Slab', serif;
-    font-weight:700;
-    font-size:clamp(20px,4vw,30px);
-    margin:0 0 2px 0;
-    letter-spacing:0.3px;
-  }
-  .titleblock .sub{font-size:11px;color:var(--ink-soft);letter-spacing:1.5px;text-transform:uppercase;}
-  .titleblock .back{display:inline-block;margin-bottom:6px;font-size:11px;color:var(--blue);text-decoration:none;letter-spacing:0.5px;}
-  .titleblock .back:hover{text-decoration:underline;}
-  .stamp{
-    border:2px solid var(--flag);
-    color:var(--flag-dark);
-    padding:6px 12px;
-    font-size:11px;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    font-weight:600;
-    transform:rotate(-2deg);
-    white-space:nowrap;
-  }
-
-  .modetabs{display:flex;gap:8px;margin-bottom:16px;}
-  .modetabs button{
-    flex:1;
-    font-family:'Zilla Slab',serif;font-weight:600;font-size:15px;
-    border:2px solid var(--ink);background:var(--panel);color:var(--ink);
-    padding:12px 10px;cursor:pointer;letter-spacing:0.3px;
-  }
-  .modetabs button.active{background:var(--ink);color:var(--paper);}
-
-  .mode{display:none;}
-  .mode.active{display:block;}
-
-  .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;}
-  @media (max-width:860px){ .grid{grid-template-columns:1fr;} }
-
-  .card{border:1.5px solid var(--ink);background:var(--panel);padding:18px 20px;margin-bottom:18px;}
-  .card h2{
-    font-family:'Zilla Slab', serif;font-size:15px;text-transform:uppercase;letter-spacing:1.5px;
-    margin:0 0 14px 0;padding-bottom:8px;border-bottom:1px dashed var(--paper-line);color:var(--blue);
-  }
-
-  .field{margin-bottom:13px;}
-  .field label{
-    display:flex;justify-content:space-between;align-items:baseline;
-    font-size:11.5px;color:var(--ink-soft);letter-spacing:0.4px;margin-bottom:5px;text-transform:uppercase;
-  }
-  .field label .val{color:var(--flag-dark);font-weight:600;font-size:12px;}
-  .field input[type=range]{width:100%;accent-color:var(--flag);height:4px;}
-  .field .numrow{display:flex;align-items:center;gap:8px;}
-  .field input[type=number], .field input[type=text]{
-    width:100%;font-family:'IBM Plex Mono', monospace;font-size:14px;padding:7px 8px;
-    border:1px solid var(--ink);background:#fff;color:var(--ink);
-  }
-  .field .prefix{color:var(--ink-soft);font-size:13px;}
-
-  .unit-toggle{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-  .unit-toggle button{
-    flex:1;min-width:70px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;
-    border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:8px 6px;cursor:pointer;
-  }
-  .unit-toggle button.active{background:var(--ink);color:var(--paper);}
-
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-  @media (max-width:600px){ .row3{grid-template-columns:1fr;} }
-
-  .results{position:sticky;top:18px;}
-  .lineitem{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted var(--paper-line);font-size:13px;}
-  .lineitem .k{color:var(--ink-soft);}
-  .lineitem .v{font-weight:600;}
-  .lineitem.total{border-bottom:2px solid var(--ink);font-size:14px;padding-top:8px;}
-
-  .headline{
-    text-align:center;padding:16px 8px 18px 8px;margin-bottom:14px;border:2px solid var(--flag);
-    background:repeating-linear-gradient(135deg, rgba(193,84,28,0.05) 0 10px, transparent 10px 20px);
-  }
-  .headline .label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--flag-dark);}
-  .headline .num{font-family:'Zilla Slab',serif;font-weight:700;font-size:clamp(26px,5vw,38px);color:var(--ink);margin-top:2px;}
-  .headline .num.neg{color:var(--red);}
-  .headline .sub{font-size:11px;color:var(--ink-soft);margin-top:4px;}
-
-  .verdict{
-    text-align:center;font-family:'Zilla Slab',serif;font-weight:700;font-size:15px;
-    letter-spacing:1px;padding:6px;margin-top:8px;border:1.5px solid var(--ink);
-  }
-  .verdict.deal{background:var(--green);color:#fff;border-color:var(--green);}
-  .verdict.nodeal{background:var(--red);color:#fff;border-color:var(--red);}
-
-  .section-gap{margin-top:16px;}
-  .footnote{font-size:10.5px;color:var(--ink-soft);line-height:1.5;margin-top:14px;padding-top:10px;border-top:1px dashed var(--paper-line);}
-  .badge-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
-  .badge{flex:1;min-width:110px;border:1px solid var(--ink);padding:8px 10px;text-align:center;background:#fff;}
-  .badge .bk{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);}
-  .badge .bv{font-family:'Zilla Slab',serif;font-weight:700;font-size:16px;margin-top:2px;}
-
-  /* Comps table */
-  table.comps{width:100%;border-collapse:collapse;font-size:11.5px;}
-  table.comps th{
-    text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-soft);
-    border-bottom:1px solid var(--ink);padding:5px 4px;
-  }
-  table.comps td{padding:4px 4px;border-bottom:1px dotted var(--paper-line);}
-  table.comps input{
-    width:100%;font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:4px;
-    border:1px solid var(--paper-line);background:#fff;color:var(--ink);
-  }
-  .comps-note{font-size:10.5px;color:var(--ink-soft);margin-bottom:10px;line-height:1.5;}
-  .comps-avg{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;padding-top:8px;margin-top:6px;border-top:1.5px solid var(--ink);}
-  .comps-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media (max-width:860px){ .comps-cols{grid-template-columns:1fr;} }
-  .comps-cols h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--flag-dark);margin:0 0 6px 0;}
-</style>
-<link rel="icon" type="image/png" href="/assets/favicon-32.png">
-<link rel="stylesheet" href="/assets/brand.css">
-
-<style>
-  :root {
-    --brand-navy: #0b1f33;
-    --brand-navy-700: #16314f;
-    --brand-red: #8c1c1c;
-    --brand-olive: #52551f;
-    --brand-olive-600: #6b6f29;
-    --brand-cream: #f8f8e8;
-    --brand-cream-line: #e4e2d0;
-    --brand-ink: #1c2420;
-    --brand-muted: #5c6259;
-  }
-  body.branded, .branded body {
-    background: var(--brand-cream) !important;
-    color: var(--brand-ink) !important;
-  }
-  /* Neutralize the dark gradient/near-black backgrounds used by dashboard pages */
-  body {
-    background: var(--brand-cream) !important;
-  }
-  .container, .content, main, .card, .panel, .dashboard {
-    background: transparent;
-  }
-</style>
 </head>
 <body class="branded">
 <header class="brand-header">
-<img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <nav class="brand-nav">
+    <a href="/">Mission Control</a>
+    <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener">Back40</a>
+    <a href="https://ruralhaven.co" target="_blank" rel="noopener">Sell</a>
+  </nav>
 </header>
 
 <div class="wrap">
@@ -202,6 +28,9 @@
       <a href="/" class="back">&larr; Mission Control</a><br>
       <h1>Real Estate Underwriter</h1>
       <div class="sub">Ground-up multifamily · single-family flip / reno</div>
+      <p style="margin-top:10px;">
+        <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener" style="display:inline-block;background:var(--navy);color:var(--cream);padding:10px 18px;border-radius:8px;font-weight:700;text-decoration:none;">Open Back40 &rarr;</a>
+      </p>
     </div>
     <div class="stamp">Not Financial Advice</div>
   </div>

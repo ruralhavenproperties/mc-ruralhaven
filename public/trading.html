@@ -4,304 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Dashboard - Mission Control</title>
-    <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-dark: #1d4ed8;
-            --secondary: #475569;
-            --dark: #0f172a;
-            --darker: #020617;
-            --light: #e2e8f0;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
-            color: var(--light);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 30px 20px;
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto 20px;
-        }
-        
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            background: var(--primary);
-            transform: translateY(-2px);
-        }
-        
-        .btn.primary {
-            background: var(--primary);
-        }
-        
-        .btn.success {
-            background: var(--success);
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
-            font-size: 1.2rem;
-        }
-        
-        .loading i {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        /* Content */
-        #content {
-            display: none;
-        }
-        
-        /* Card */
-        .card {
-            background: rgba(15, 23, 42, 0.8);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 25px;
-        }
-        
-        .card h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        /* Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-        
-        /* Market Stats */
-        .market-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .stat {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .stat-label {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        
-        .stat-value.positive {
-            color: var(--success);
-        }
-        
-        .stat-value.negative {
-            color: var(--danger);
-        }
-        
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th {
-            text-align: left;
-            padding: 12px 15px;
-            color: #94a3b8;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .trend-up {
-            color: var(--success);
-        }
-        
-        .trend-down {
-            color: var(--danger);
-        }
-        
-        /* Trade Cards */
-        .trade {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid;
-        }
-        
-        .trade.risk {
-            border-left-color: var(--danger);
-        }
-        
-        .trade.profit {
-            border-left-color: var(--success);
-        }
-        
-        .trade-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .trade-symbol {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--light);
-        }
-        
-        .trade-type {
-            background: var(--secondary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        /* Last Updated */
-        .last-updated {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .market-stats {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="/assets/favicon-32.png">
-<link rel="stylesheet" href="/assets/brand.css">
-
-<style>
-  :root {
-    --brand-navy: #0b1f33;
-    --brand-navy-700: #16314f;
-    --brand-red: #8c1c1c;
-    --brand-olive: #52551f;
-    --brand-olive-600: #6b6f29;
-    --brand-cream: #f8f8e8;
-    --brand-cream-line: #e4e2d0;
-    --brand-ink: #1c2420;
-    --brand-muted: #5c6259;
-  }
-  body.branded, .branded body {
-    background: var(--brand-cream) !important;
-    color: var(--brand-ink) !important;
-  }
-  /* Neutralize the dark gradient/near-black backgrounds used by dashboard pages */
-  body {
-    background: var(--brand-cream) !important;
-  }
-  .container, .content, main, .card, .panel, .dashboard {
-    background: transparent;
-  }
-</style>
+    
 </head>
 <body class="branded">
 <header class="brand-header">
-<img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+  <nav class="brand-nav">
+    <a href="/">Mission Control</a>
+    <a href="https://back40.ruralhaven.co" target="_blank" rel="noopener">Back40</a>
+    <a href="https://ruralhaven.co" target="_blank" rel="noopener">Sell</a>
+  </nav>
 </header>
 
     <div class="container">
@@ -577,14 +289,14 @@
                                 <div class="trade-type">${trade.type}</div>
                             </div>
                             <div style="color: #cbd5e1; margin-bottom: 5px;">${trade.description}</div>
-                            <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.9rem;">
+                            <div style="display: flex; justify-content: space-between; color: #5C6259; font-size: 0.9rem;">
                                 <span>Premium: $${trade.premium}</span>
                                 <span>Probability: ${trade.probability}% OTM</span>
                             </div>
                         </div>
                     `).join('');
                 } else {
-                    topTradesEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No trade recommendations available.</p>';
+                    topTradesEl.innerHTML = '<p style="color: #5C6259; text-align: center;">No trade recommendations available.</p>';
                 }
                 
                 // Commodities Table
@@ -604,7 +316,7 @@
                         </tr>
                     `).join('');
                 } else {
-                    commoditiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No commodity data available.</td></tr>';
+                    commoditiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #5C6259;">No commodity data available.</td></tr>';
                 }
                 
                 // Futures Table
@@ -624,7 +336,7 @@
                         </tr>
                     `).join('');
                 } else {
-                    futuresTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No futures data available.</td></tr>';
+                    futuresTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #5C6259;">No futures data available.</td></tr>';
                 }
                 
                 // Equities Table
@@ -644,7 +356,7 @@
                         </tr>
                     `).join('');
                 } else {
-                    equitiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">No equity data available.</td></tr>';
+                    equitiesTableEl.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #5C6259;">No equity data available.</td></tr>';
                 }
                 
                 // Weather Risk
@@ -657,11 +369,11 @@
                                     ${risk.risk}/10
                                 </span>
                             </div>
-                            <div style="color: #94a3b8; font-size: 0.9rem;">${risk.reason}</div>
+                            <div style="color: #5C6259; font-size: 0.9rem;">${risk.reason}</div>
                         </div>
                     `).join('');
                 } else {
-                    weatherRiskEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No weather risk data available.</p>';
+                    weatherRiskEl.innerHTML = '<p style="color: #5C6259; text-align: center;">No weather risk data available.</p>';
                 }
                 
                 // IV Opportunities
@@ -674,11 +386,11 @@
                                     IV: ${opp.iv}%
                                 </span>
                             </div>
-                            <div style="color: #94a3b8; font-size: 0.9rem;">${opp.recommendation}</div>
+                            <div style="color: #5C6259; font-size: 0.9rem;">${opp.recommendation}</div>
                         </div>
                     `).join('');
                 } else {
-                    ivOpportunitiesEl.innerHTML = '<p style="color: #94a3b8; text-align: center;">No IV opportunities available.</p>';
+                    ivOpportunitiesEl.innerHTML = '<p style="color: #5C6259; text-align: center;">No IV opportunities available.</p>';
                 }
                 
             } catch (error) {
