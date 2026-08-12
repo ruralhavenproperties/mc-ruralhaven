@@ -1,0 +1,95 @@
+:root {
+  --navy: #0b1f33; /* headings, primary buttons, header rule */
+  --navy-700: #16314f; /* button hover */
+  --red: #8c1c1c; /* small accents only: required-field marks, thin stripe */
+  --olive: #52551f; /* secondary accents: checkmarks, links, tags */
+  --olive-600: #6b6f29;
+  --cream: #f8f8e8; /* page/header background — matches the logo's own background exactly */
+  --cream-line: #e4e2d0;
+  --ink: #1c2420;
+  --muted: #5c6259;
+}
+
+.brand-header {
+  background: var(--cream);
+  border-bottom: 3px solid var(--navy);
+  box-shadow: 0 3px 0 var(--red);
+  padding: 14px 20px;
+  text-align: center;
+}
+.brand-header img.brand-logo {
+  height: 56px;
+  width: 56px;
+  vertical-align: middle;
+}
+.brand-footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--cream-line);
+  background: var(--cream);
+}
+.brand-btn-primary {
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 12px 20px;
+  cursor: pointer;
+}
+.brand-btn-primary:hover { background: var(--navy-700); }
+.brand-status-ok { color: var(--olive); }
+.brand-status-warn { color: var(--red); }
+
+/* ---- Palette override for legacy dashboard pages (styling-only) ---- */
+body {
+  background: var(--cream) !important;
+  color: var(--ink) !important;
+}
+
+/* Remap the dark near-black gradients/backgrounds used by dashboard pages */
+body {
+  background-color: var(--cream) !important;
+  background-image: none !important;
+}
+.header,
+.container > .header,
+.main-header {
+  background: var(--cream) !important;
+  color: var(--navy) !important;
+}
+.card,
+.panel,
+.dashboard-panel {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: var(--cream-line) !important;
+  color: var(--ink) !important;
+}
+
+/* Headings + links adopt brand colors */
+h1, h2, h3, h4 {
+  color: var(--navy) !important;
+}
+a {
+  color: var(--olive) !important;
+}
+a:hover {
+  color: var(--olive-600) !important;
+}
+
+/* Neutralize the blue/purple primary accents -> navy */
+.status--ok, .status.ok, .success {
+  color: var(--olive) !important;
+}
+.status--warn, .status.warn, .warning {
+  color: var(--red) !important;
+}
+
+/* Footer inside page content -> brand footer look */
+.footer {
+  background: var(--cream) !important;
+  color: var(--muted) !important;
+  border-top: 1px solid var(--cream-line) !important;
+}

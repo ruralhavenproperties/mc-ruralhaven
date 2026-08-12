@@ -1,5 +1,5 @@
 name = "ruralhaven"
-compatibility_date = "2024-04-01"
+compatibility_date = "2024-09-01"
 main = "src/index.js"
 
 [assets]

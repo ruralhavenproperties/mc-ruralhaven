@@ -301,8 +301,39 @@
     <link rel="icon" href="/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png">
+<link rel="stylesheet" href="/assets/brand.css">
+
+<style>
+  :root {
+    --brand-navy: #0b1f33;
+    --brand-navy-700: #16314f;
+    --brand-red: #8c1c1c;
+    --brand-olive: #52551f;
+    --brand-olive-600: #6b6f29;
+    --brand-cream: #f8f8e8;
+    --brand-cream-line: #e4e2d0;
+    --brand-ink: #1c2420;
+    --brand-muted: #5c6259;
+  }
+  body.branded, .branded body {
+    background: var(--brand-cream) !important;
+    color: var(--brand-ink) !important;
+  }
+  /* Neutralize the dark gradient/near-black backgrounds used by dashboard pages */
+  body {
+    background: var(--brand-cream) !important;
+  }
+  .container, .content, main, .card, .panel, .dashboard {
+    background: transparent;
+  }
+</style>
 </head>
-<body>
+<body class="branded">
+<header class="brand-header">
+<img class="brand-logo" src="/assets/logo-240.png" alt="Rural Haven Properties">
+</header>
+
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -690,5 +721,8 @@
         // Auto-refresh every 2 minutes
         setInterval(refreshData, 120000);
     </script>
+<footer class="brand-footer">
+&copy; Rural Haven Properties &mdash; Mission Control
+</footer>
 </body>
 </html>
