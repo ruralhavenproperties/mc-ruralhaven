@@ -29,6 +29,17 @@ async function handleAPI(request, url, env) {
   }
   
   try {
+    // Real Estate Deals API - proxy to origin nginx server
+    if (path.startsWith('/api/deals')) {
+      const originUrl = `https://45.32.195.189${url.pathname}${url.search}`;
+      const response = await fetch(originUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body
+      });
+      return response;
+    }
+    
     // Alpha Vantage endpoints
     if (path === '/api/alpha/quote') {
       const symbol = url.searchParams.get('symbol') || 'SPY';
