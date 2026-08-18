@@ -137,6 +137,19 @@ a:hover {
   color: var(--olive-dark) !important;
 }
 
+/* Anchor-based buttons (nav-btn on the main page, .btn on subpages, and any
+   button-styled <a>) need readable light text ON their colored backgrounds —
+   NOT the olive link color above, which made button text unreadable (Nathan
+   2026-08-18). Leave plain text links olive as intended. */
+a.nav-btn, a.btn, a.brand-btn, a.brand-btn-primary,
+a[class*="btn"], a[class*="button"] {
+  color: var(--white, #FFFFFF) !important;
+}
+a.nav-btn:hover, a.btn:hover, a.brand-btn:hover, a.brand-btn-primary:hover,
+a[class*="btn"]:hover, a[class*="button"]:hover {
+  color: var(--white, #FFFFFF) !important;
+}
+
 /* Buttons with blue/indigo -> navy */
 button, .btn, .button, input[type="submit"] {
   background: var(--navy) !important;
