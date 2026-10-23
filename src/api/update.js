@@ -9,6 +9,7 @@ export async function handleUpdate(request, env) {
   }
 
   const apiKey = request.headers.get('X-API-Key');
+  // Worker secret: `npx wrangler secret put API_KEY` (not a wrangler.toml var).
   const expectedKey = env.API_KEY;
 
   if (!expectedKey || apiKey !== expectedKey) {

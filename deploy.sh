@@ -23,6 +23,7 @@ echo "📝 Creating .gitignore..."
 cat > .gitignore << EOF
 # Cloudflare
 wrangler.toml
+.dev.vars
 .env
 node_modules/
 
@@ -57,7 +58,8 @@ echo ""
 echo "🔧 After deployment:"
 echo "1. Create KV namespace in Cloudflare"
 echo "2. Update wrangler.toml with namespace ID"
-echo "3. Set API_KEY in wrangler.toml"
+echo "3. Set the API key as a Worker secret (do not put it in wrangler.toml):"
+echo "   npx wrangler secret put API_KEY"
 echo "4. Add custom domain: mc.ruralhaven.co"
 echo ""
 echo "💻 VPS setup:"

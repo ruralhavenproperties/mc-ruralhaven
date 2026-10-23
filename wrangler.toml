@@ -11,5 +11,7 @@ run_worker_first = true
 binding = "TRADING_KV"
 id = "7897be3dd02240bcb61bcccc33ad6ec1"
 
-[vars]
-API_KEY = "1ea53bef7ef3111c599fbbc0b853a25253ff057178cca0bc16015805b82ee34b"
+# API_KEY is a Worker secret, read in code as env.API_KEY.
+# Do not put it in [vars] or commit the value.
+#   npx wrangler secret put API_KEY
+# Local dev: set API_KEY in .dev.vars (gitignored).

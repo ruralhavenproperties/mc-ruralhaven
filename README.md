@@ -33,10 +33,15 @@ Edit `wrangler.toml`:
 [[kv_namespaces]]
 binding = "TRADING_KV"
 id = "YOUR_NAMESPACE_ID_HERE"  # ← Paste here
-
-[vars]
-API_KEY = "generate-a-secure-key-here"  # ← Change this
 ```
+
+Set the Mission Control API key as a Worker secret. Do not put `API_KEY` in `wrangler.toml` or commit the value. The Worker reads it as `env.API_KEY`.
+
+```bash
+npx wrangler secret put API_KEY
+```
+
+For local `wrangler dev`, put `API_KEY=...` in `.dev.vars` (gitignored).
 
 #### C. Deploy to Cloudflare Pages
 1. Go to **Pages**
@@ -55,7 +60,7 @@ API_KEY = "generate-a-secure-key-here"  # ← Change this
 ### 1. Set API Key on VPS
 ```bash
 # Add to ~/.bashrc or environment
-export CLOUDFLARE_API_KEY="your-secure-key-from-wrangler.toml"
+export CLOUDFLARE_API_KEY="the value set with wrangler secret put API_KEY"
 ```
 
 ### 2. Test Connection
@@ -140,8 +145,8 @@ wrangler pages dev public --kv TRADING_KV
 ## 🔒 Security
 
 ### API Key Protection
-- Store API key in `wrangler.toml` (not in repo)
-- Use environment variables on VPS
+- Store `API_KEY` as a Worker secret (`npx wrangler secret put API_KEY`), not in the repo
+- Use `CLOUDFLARE_API_KEY` on the VPS (same value, sent as `X-API-Key`)
 - Rotate keys periodically
 
 ### CORS Configuration
