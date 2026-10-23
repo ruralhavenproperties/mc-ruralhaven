@@ -103,6 +103,7 @@ export default {
     //   https://mc.ruralhaven.co/back40-log?key=<API_KEY>
     if (url.pathname === "/back40-log") {
       const key = url.searchParams.get("key");
+      // Worker secret: `npx wrangler secret put API_KEY` (not a wrangler.toml var).
       if (!env.API_KEY || key !== env.API_KEY) {
         return new Response("Unauthorized", { status: 401 });
       }

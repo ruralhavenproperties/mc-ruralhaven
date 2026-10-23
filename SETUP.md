@@ -42,15 +42,20 @@ Edit `wrangler.toml` with your values:
 binding = "TRADING_KV"
 id = "YOUR_NAMESPACE_ID_HERE"  # ← Paste here
 
-[vars]
-API_KEY = "your-secure-api-key-here"  # ← Change this
-
 [env.production]
 zone_id = "your-zone-id-here"  # Your Cloudflare zone ID
 routes = [
   { pattern = "mc.ruralhaven.co", custom_domain = true }
 ]
 ```
+
+Set the API key as a Worker secret after the Worker exists. Do not put `API_KEY` in `wrangler.toml`.
+
+```bash
+npx wrangler secret put API_KEY
+```
+
+The Worker reads it as `env.API_KEY`. For local dev, put `API_KEY` in `.dev.vars` (gitignored).
 
 ## Step 3: Deploy to Cloudflare Pages
 
@@ -67,7 +72,7 @@ routes = [
 ### A. Set Environment Variable
 ```bash
 # Add to ~/.bashrc
-export CLOUDFLARE_API_KEY="your-secure-api-key-here"
+export CLOUDFLARE_API_KEY="the value set with wrangler secret put API_KEY"
 
 # Reload
 source ~/.bashrc
@@ -131,7 +136,7 @@ Edit crontab: `crontab -e`
 1. **API Key**: Rotate periodically
 2. **KV Access**: Only this Worker can access
 3. **CORS**: Configured for all origins (`*`); restrict for production
-4. **Environment Variables**: Store secrets in `wrangler.toml` or environment
+4. **Environment Variables**: Store `API_KEY` with `wrangler secret put API_KEY`. Use `CLOUDFLARE_API_KEY` on the VPS. Do not commit secrets.
 
 ## Support
 

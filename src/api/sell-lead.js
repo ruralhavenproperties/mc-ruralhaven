@@ -83,6 +83,7 @@ export async function handleSellLead(request, env) {
 // used by /api/update.
 export async function handleListLeads(request, env) {
   const apiKey = request.headers.get("X-API-Key");
+  // Worker secret: `npx wrangler secret put API_KEY` (not a wrangler.toml var).
   const expectedKey = env.API_KEY;
   if (!expectedKey || apiKey !== expectedKey) {
     return json(401, { ok: false, error: "Unauthorized" });

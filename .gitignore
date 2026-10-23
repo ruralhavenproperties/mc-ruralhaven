@@ -1,5 +1,7 @@
-# Secrets (create local copies)
+# Secrets (create local copies). Never commit values.
 wrangler.local.toml
+.dev.vars
+.dev.vars.*
 .env
 .env.local
 
